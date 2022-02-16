@@ -5,13 +5,16 @@
     components : {
       MainLayout,
       LoginForm
+    },
+    methods:{
+
     }
   }
 </script>
 
 <template>
   <MainLayout>
-    <LoginForm>
+    <LoginForm v-bind:login="true">
 
     </LoginForm>
   </MainLayout>

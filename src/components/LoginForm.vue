@@ -2,32 +2,53 @@
   export default {
     data(){
       return{
-        login : '',
-        password : ''
+        email : '',
+        password : '',
+        error_msg : false
       }
+    },
+    props:{
+      login : Boolean
+    },
+    mounted() {
+      console.log(this.login)
     },
     methods:{
       auth(e){
         e.preventDefault()
-        axios.post('//127.0.0.1:8000/api/login', {
-          email : 'admin@gmail.com',
-          password : 123
-        }).then(function (response){
+        axios({method:'post', url : '//127.0.0.1:8000/api/login',headers:{}}).then((response)=>{
           if(response.data.success) {
             localStorage.setItem('auth' , 'true')
             localStorage.setItem('token' , response.data.data.token)
             location.href = '/mainmenu'
           }
-          else {
-            alert('login failed')
+          else{
+            this.error_msg = response.data.message
           }
         })
       },
       inputLogin(e){
-        this.login = e.target.value
+        this.email = e.target.value
       },
       inputPass(e){
         this.password = e.target.value
+      },
+      goToRegistration(e){
+        e.preventDefault()
+        location.href = '/registration'
+      },
+      registration(e){
+        e.preventDefault()
+        axios({method:'post', url : '//127.0.0.1:8000/api/register',headers:{}}).then((response)=>{
+          if(response.data.success) {
+            localStorage.setItem('auth' , 'true')
+            localStorage.setItem('token' , response.data.data.token)
+            location.href = '/mainmenu'
+          }
+          else{
+            this.error_msg = response.data.message
+          }
+        })
       }
     }
   }
@@ -36,9 +57,14 @@
 <template>
   <div>
     <form>
-      <input @input="inputLogin" v-bind:value="login" class="input" type="text">
+      <input @input="inputLogin" v-bind:value="email" class="input" type="text">
       <input @input="inputPass" v-bind:value="password" class="input" type="text">
-      <button @click="auth" class="btn">Login in</button>
+      <button v-if="login" @click="auth" class="btn" >Login in</button>
+      <button v-if="login" @click="goToRegistration" class="btn" >Registration</button>
+
+      <button v-if="!login" @click="registration">Registration</button>
+
+      <p v-if="error_msg">{{ error_msg }}</p>
     </form>
   </div>
 </template>
@@ -56,5 +82,10 @@
     background-color: snow;
     border: 2px solid aqua;
     cursor: pointer;
+    margin-bottom: 10px;
+  }
+  p{
+    text-align: center;
+    color: darkred;
   }
 </style>
