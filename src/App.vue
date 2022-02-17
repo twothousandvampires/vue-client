@@ -18,9 +18,6 @@ export default {
     logout(){
       this.auth = false
     },
-    does(){
-      this.auth = false
-    }
   },
 }
 </script>
@@ -31,7 +28,8 @@ export default {
     <div class="wrapper">
       <nav>
         <RouterLink  to="/" v-if="!auth">Login</RouterLink>
-        <RouterLink  to="/logout" v-else>Logout</RouterLink>
+        <RouterLink  to="/" v-if="auth">Profile</RouterLink>
+        <RouterLink  to="/logout" v-if="auth">Logout</RouterLink>
         <RouterLink to="/canvas">Scoreboard</RouterLink>
       </nav>
     </div>
@@ -79,6 +77,9 @@ a,
 }
 
 nav {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
   width: 100%;
   font-size: 12px;
   text-align: center;

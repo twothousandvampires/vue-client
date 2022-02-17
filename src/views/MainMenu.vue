@@ -1,6 +1,9 @@
 <script>
   import NotLogin from "@/components/NotLogin.vue";
   import MainLayout from '@/layouts/MainLayout.vue'
+  import LoginView from "./LoginView.vue";
+  import Profile from "./Profile.vue";
+
   export default {
     data(){
       return{
@@ -8,8 +11,10 @@
       }
     },
     components : {
+      LoginView,
       NotLogin,
-      MainLayout
+      MainLayout,
+      Profile
     },
     methods:{
 
@@ -19,8 +24,8 @@
 
 <template>
   <MainLayout>
-    <h1 v-if="auth">auth</h1>
-    <NotLogin v-else />
+    <Profile v-if="auth"/>
+    <LoginView v-else />
   </MainLayout>
 </template>
 

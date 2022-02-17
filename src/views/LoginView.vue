@@ -6,9 +6,6 @@
       MainLayout,
       LoginForm
     },
-    methods:{
-
-    }
   }
 </script>
 

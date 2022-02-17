@@ -2,25 +2,32 @@
   export default {
     data(){
       return{
+        name : '',
         email : '',
         password : '',
-        error_msg : false
+        c_password : '',
+        error_msg : false,
+        success_msg : false
       }
     },
     props:{
       login : Boolean
     },
     mounted() {
-      console.log(this.login)
+
     },
     methods:{
       auth(e){
         e.preventDefault()
-        axios({method:'post', url : '//127.0.0.1:8000/api/login',headers:{}}).then((response)=>{
+        axios({method:'post', url : '//127.0.0.1:8000/api/login',data:{
+          email : this.email,
+          password : this.password
+          }}).then((response)=>{
           if(response.data.success) {
             localStorage.setItem('auth' , 'true')
             localStorage.setItem('token' , response.data.data.token)
-            location.href = '/mainmenu'
+            localStorage.setItem('user_id', response.data.data.id)
+            location.href = '/'
           }
           else{
             this.error_msg = response.data.message
@@ -30,6 +37,12 @@
       inputLogin(e){
         this.email = e.target.value
       },
+      inputName(e){
+        this.name = e.target.value
+      },
+      inputCpass(e){
+        this.c_password = e.target.value
+      },
       inputPass(e){
         this.password = e.target.value
       },
@@ -37,16 +50,31 @@
         e.preventDefault()
         location.href = '/registration'
       },
+      goToLogin(e){
+        e.preventDefault()
+        location.href = '/'
+      },
+      clear(){
+        this.password = ''
+        this.name = ''
+        this.c_password = ''
+        this.email = ''
+      },
       registration(e){
         e.preventDefault()
-        axios({method:'post', url : '//127.0.0.1:8000/api/register',headers:{}}).then((response)=>{
+        axios({method:'post', url : '//127.0.0.1:8000/api/register', data: {
+            name : this.name,
+            email : this.email,
+            password : this.password,
+            c_password : this.c_password
+          }}).then((response)=>{
           if(response.data.success) {
-            localStorage.setItem('auth' , 'true')
-            localStorage.setItem('token' , response.data.data.token)
-            location.href = '/mainmenu'
+            this.success_msg = response.data.message
+            this.clear()
           }
           else{
             this.error_msg = response.data.message
+
           }
         })
       }
@@ -57,19 +85,29 @@
 <template>
   <div>
     <form>
-      <input @input="inputLogin" v-bind:value="email" class="input" type="text">
-      <input @input="inputPass" v-bind:value="password" class="input" type="text">
+
+      <input v-if="!login" @input="inputName" v-bind:value="name" class="input" type="text" placeholder="name">
+
+      <input @input="inputLogin" v-bind:value="email" class="input" type="text" placeholder="email">
+      <input @input="inputPass" v-bind:value="password" class="input" type="text" placeholder="password">
+
+      <input v-if="!login" @input="inputCpass" v-bind:value="c_password" class="input" type="text" placeholder="retype password">
+
       <button v-if="login" @click="auth" class="btn" >Login in</button>
       <button v-if="login" @click="goToRegistration" class="btn" >Registration</button>
 
-      <button v-if="!login" @click="registration">Registration</button>
+
+      <button v-if="!login" @click="registration" class="btn">Registration</button>
+      <button v-if="!login" @click="goToLogin" class="btn">Go to login</button>
+
 
       <p v-if="error_msg">{{ error_msg }}</p>
+      <p v-if="success_msg">{{ success_msg }}</p>
     </form>
   </div>
 </template>
 
-<style>
+<style scoped>
   form{
     display: flex;
     flex-direction: column;
@@ -86,6 +124,6 @@
   }
   p{
     text-align: center;
-    color: darkred;
+    color: red;
   }
 </style>
