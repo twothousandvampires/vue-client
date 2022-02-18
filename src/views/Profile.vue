@@ -16,16 +16,21 @@ export default {
     this.getUser()
   }
   ,methods:{
-    getUser(){
-      axios({method:'get', url : '//127.0.0.1:8000/api/user/' + localStorage.getItem('user_id'),
-        headers: {
-          'Authorization': 'Bearer ' + localStorage.getItem('token'),
-        }
-      }).then((response) => {
-        this.user = response.data.data
-        console.log(this.user)
-      })
-
+    async getUser(){
+      try{
+        await axios({method:'get', url : '//127.0.0.1:8000/api/user/' + localStorage.getItem('user_id'),
+          headers: {
+            'Authorization': 'Bearer ' + localStorage.getItem('token'),
+          }
+        }).then((response) => {
+          console.log(response)
+          this.user = response.data.data
+        })
+      }
+      catch(e){
+        localStorage.clear()
+        window.location = '/'
+      }
     }
   }
 }
