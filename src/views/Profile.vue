@@ -4,7 +4,7 @@ import CharactersInfo from "../components/CharactersInfo.vue";
 export default {
   data(){
     return{
-      user : undefined
+      user : undefined,
     }
   },
   name: "UserMainInfo.vue",
@@ -41,7 +41,7 @@ export default {
   <p v-if="!user">Loading...</p>
   <div class="profile-wrap" v-else>
     <AccountInfo v-bind:user="user"/>
-    <CharactersInfo />
+    <CharactersInfo v-bind:characters="user.characters"/>
   </div>
 </template>
 

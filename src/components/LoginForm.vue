@@ -114,7 +114,6 @@
   }
   .input{
     margin-bottom: 10px;
-
   }
   .btn{
     background-color: snow;
