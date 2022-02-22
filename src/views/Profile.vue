@@ -1,6 +1,8 @@
 <script>
 import AccountInfo from "../components/AccountInfo.vue";
 import CharactersInfo from "../components/CharactersInfo.vue";
+import MainLayout from '@/layouts/MainLayout.vue';
+
 export default {
   data(){
     return{
@@ -10,7 +12,8 @@ export default {
   name: "UserMainInfo.vue",
   components:{
     AccountInfo,
-    CharactersInfo
+    CharactersInfo,
+    MainLayout
   },
   mounted() {
     this.getUser()
@@ -32,11 +35,13 @@ export default {
 
 
 <template>
-  <p v-if="!user">Loading...</p>
-  <div class="profile-wrap" v-else>
-    <AccountInfo v-bind:user="user"/>
-    <CharactersInfo v-bind:characters="user.characters"/>
-  </div>
+  <MainLayout>
+    <p v-if="!user">Loading...</p>
+    <div class="profile-wrap" v-else>
+      <AccountInfo v-bind:user="user"/>
+      <CharactersInfo v-bind:characters="user.characters"/>
+    </div>
+  </MainLayout>
 </template>
 
 

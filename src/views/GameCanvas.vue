@@ -1,106 +1,127 @@
 <script>
-class Node{
-  constructor(x,y,id,links) {
-    this.x = x
-    this.y = y
-    this.id = id
-    this.links = links
-  }
-}
+import Mouse from "../script/Mouse";
+import NodeModal from "../components/NodeModal.vue";
 export default {
+
   data(){
     return {
-      nodes : [],
-      filled : false,
       ctx : undefined,
-      can_to_link : []
+      data : undefined,
+      char : undefined,
+      mouse : undefined,
+      over_node : false
     }
+  },
+  components:{
+    NodeModal
+  },
+  props:{
+    char_id : String
   },
   mounted() {
-    this.ctx = this.$refs.canvas.getContext('2d')
-    let node = new Node(0,0,this.nodes.length + 1,4)
-    this.nodes.push(node)
-    this.can_to_link.push(node)
-    setInterval(()=>{
-      this.draw()
-    },50)
+    axios({method: 'post', url: '//127.0.0.1:8000/api/character/world/' + localStorage.getItem('user_id') + '/' + this.char_id, headers: {
+        'Authorization': 'Bearer ' + localStorage.getItem('token'),
+      }}).then(response =>{
+        if(response.data.success){
+          console.log(response.data)
+          this.data = response.data.data[0]
+          this.char = response.data.data[1]
+          setTimeout(()=>{
+            this.ctx = this.$refs.canvas.getContext('2d')
+            this.mouse = new Mouse(this.$refs.canvas)
+            setInterval(()=>{
+              this.draw()
+            },50)
+          },200)
+          this.prettifyData()
+        }
+     })
+  },
+  watch:{
+    data () {
+
+    }
   },
   methods : {
-    findNode(x,y){
-      for(let i = 0; i < this.nodes.length; i++){
-        if(this.nodes[i].x === x && this.nodes[i].y === y){
-          return this.nodes[i]
+    goTo(node){
+      axios({method: 'post', url: '//127.0.0.1:8000/api/character/move/' + localStorage.getItem('user_id') + '/' + this.char_id, headers: {
+          'Authorization': 'Bearer ' + localStorage.getItem('token')
+        },data :{
+          x : node.x,
+          y : node.y
+        }}).then(response =>{
+        if(response.data.success){
+          console.log(response.data.data)
+          this.data = response.data.data[0]
+          this.char = response.data.data[1]
+          this.prettifyData()
         }
-      }
-      return false
+      })
     },
-    getParent(){
-      return this.can_to_link[Math.floor(Math.random() * this.can_to_link.length)]
-    },
-    checkWay(x, y , parent){
-      let n_node = this.findNode(x,y+1)
-      let s_node = this.findNode(x,y-1)
-      let w_node = this.findNode(x-1,y)
-      let e_node = this.findNode(x+1,y)
-      if(n_node && n_node !== parent){
-        return false
-      }if(s_node && s_node !== parent){
-        return false
-      }if(w_node && w_node !== parent){
-        return false
-      }if(e_node && e_node !== parent){
-        return false
-      }
-      return true
+    prettifyData(){
+      this.data.map(elem => {
+        elem.pretti_x = elem.x - this.char.x
+        elem.pretti_y = elem.y - this.char.y
+        return elem
+      })
+
+      this.char.pretti_x = 0
+      this.char.pretti_y = 0
+
     },
     draw(){
-      this.ctx.clearRect(0,0,1000,1000)
-      this.nodes.forEach(elem => {
-        this.ctx.fillRect(elem.x + 500 + (elem.x * 12), elem.y + 500 + (elem.y * 12),6,6)
-      })
-      // this.createNode()
+      if(this.data){
+        let coord = this.mouse.getСoord()
+
+        if(coord){
+          this.data.forEach(elem => {
+            if(coord.x > 500 + (elem.pretti_x * 40)
+                && coord.x < 500 + (elem.pretti_x * 40) + 20
+                && coord.y > 500 + (elem.pretti_y * 40)
+                && coord.y < 500 + (elem.pretti_y * 40) + 20){
+              elem.over = true
+              this.over_node = elem
+              if(this.mouse.click){
+                if(Math.abs(this.char.pretti_x - elem.pretti_x) <= 1 && Math.abs(this.char.pretti_y - elem.pretti_y) <=1){
+                  this.goTo(elem)
+                }
+              }
+            }
+            else {
+              elem.over = false
+            }
+          })
+        }
+
+        if(!this.data.some(elem =>{
+          return elem.over
+        })){
+          this.over_node = false
+        }
+
+        this.ctx.clearRect(0,0,1000,1000)
+        this.data.forEach(elem => {
+          this.ctx.fillStyle = 'black'
+          if(elem.over){
+            this.ctx.fillStyle = 'red'
+            this.ctx.fillRect(500 + (elem.pretti_x * 40), 500 + (elem.pretti_y * 40),20,20)
+          }
+          else {
+            this.ctx.fillRect(500 + (elem.pretti_x * 40), 500 + (elem.pretti_y * 40),20,20)
+          }
+        })
+        this.ctx.fillStyle = 'blue'
+        this.ctx.fillRect(500 + (this.char.pretti_x * 40), 500 + (this.char.pretti_y * 40),20,20)
+      }
     },
-    createNode(){
-      let parent = this.getParent()
-      let avalaible_nodes = [
-          [parent.x , parent.y - 1],
-          [parent.x , parent.y + 1],
-          [parent.x + 1, parent.y],
-          [parent.x - 1 , parent.y],
-      ]
-      let n = []
-
-      avalaible_nodes.forEach(elem => {
-        if(this.checkWay(elem[0],elem[1],parent)){
-          n.push(elem)
-        }
-      })
-
-      let new_node = n[Math.floor(Math.random() * n.length)]
-
-      if(new_node){
-        new_node = new Node(new_node[0],new_node[1],parent.id + 1, Math.ceil(Math.random() * 2))
-        this.nodes.push(new_node)
-        this.can_to_link.push(new_node)
-
-
-        parent.links -= 1
-        if(parent.links === 0){
-         this.can_to_link.splice(this.can_to_link.indexOf(parent),1)
-        }
-      }
-      else {
-        this.can_to_link.splice(this.can_to_link.indexOf(parent),1)
-      }
-    }
   }
 }
 </script>
 
 <template>
-  <p>Кан ту линк - {{this.can_to_link.length}}</p>
-  <p>Всего - {{this.nodes.length}}</p>
-<!--  <canvas @click="createNode" ref="canvas" width="1000" height="1000"></canvas>-->
+  <canvas v-if="data" width="1000" height="1000" ref="canvas"></canvas>
+  <p v-else>Loading</p>
+  <NodeModal v-bind:mouse="mouse" v-bind:over_node="over_node" v-if="over_node"/>
 </template>
 <style>
 

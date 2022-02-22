@@ -23,7 +23,6 @@ export default {
             class_name : this.character_class
           }})
             .then( (response)=>{
-              console.log(response)
               location.href = '/'
             })
       }

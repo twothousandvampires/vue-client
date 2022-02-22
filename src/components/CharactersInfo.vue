@@ -16,7 +16,6 @@ export default {
     CharacterCreate
   },
   mounted() {
-
   },
   methods:{
     create(){
@@ -24,6 +23,10 @@ export default {
     },
     classImage(str){
       return 'src/assets//img/' + str + '.jpg'
+    },
+    play(id){
+      localStorage.setItem('char_id', id)
+      location.href = '/world'
     }
   }
 }
@@ -35,6 +38,7 @@ export default {
     <div class="character" v-for="character in characters">
         <p>{{ character.name }}</p>
         <img width="160" height="240" :src="classImage(character.class)" alt="">
+        <p  @click="play(character.id)">Play</p>
     </div>
   </div>
   <button @click="create">Create</button>

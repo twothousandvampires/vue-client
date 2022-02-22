@@ -3,6 +3,7 @@ import LoginView from '../views/LoginView.vue'
 import MainMenu from "../views/MainMenu.vue";
 import LogoutView from "../views/LogoutView.vue";
 import Registration from "../views/Registration.vue";
+import World from "../views/World.vue";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -16,6 +17,11 @@ const router = createRouter({
       path: '/logout',
       name: 'logout',
       component: LogoutView
+    },
+    {
+      path: '/world',
+      name: 'world',
+      component: World
     },
     {
       path: '/login',
