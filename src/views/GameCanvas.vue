@@ -1,8 +1,8 @@
 <script>
 import Mouse from "../script/Mouse";
 import NodeModal from "../components/NodeModal.vue";
-export default {
 
+export default {
   data(){
     return {
       ctx : undefined,
@@ -19,21 +19,23 @@ export default {
     char_id : String
   },
   mounted() {
-    axios({method: 'post', url: '//127.0.0.1:8000/api/character/world/' + localStorage.getItem('user_id') + '/' + this.char_id, headers: {
-        'Authorization': 'Bearer ' + localStorage.getItem('token'),
-      }}).then(response =>{
-        if(response.data.success){
-          console.log(response.data)
-          this.data = response.data.data[0]
-          this.char = response.data.data[1]
-          setTimeout(()=>{
-            this.ctx = this.$refs.canvas.getContext('2d')
-            this.mouse = new Mouse(this.$refs.canvas)
-            setInterval(()=>{
-              this.draw()
-            },50)
-          },200)
-          this.prettifyData()
+    axios({method: 'post',
+          url: '//127.0.0.1:8000/api/character/world/' + localStorage.getItem('user_id') + '/' + this.char_id,
+          headers: {
+            'Authorization': 'Bearer ' + localStorage.getItem('token'),
+                   }
+          }).then(response =>{
+            if(response.data.success){
+            this.data = response.data.data[0]
+            this.char = response.data.data[1]
+            setTimeout(()=>{
+              this.ctx = this.$refs.canvas.getContext('2d')
+              this.mouse = new Mouse(this.$refs.canvas)
+              setInterval(()=>{
+                this.draw()
+              },50)
+            },200)
+            this.prettifyData()
         }
      })
   },
