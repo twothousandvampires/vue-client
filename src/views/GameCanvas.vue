@@ -1,19 +1,27 @@
 <script>
 import Mouse from "../script/Mouse";
 import NodeModal from "../components/NodeModal.vue";
+import MainLayout from "../layouts/MainLayout.vue";
+import Render from "../script/Render.js";
+import ImageData from "../script/ImageData.js";
 
 export default {
   data(){
     return {
+      img_data : undefined,
+      render : undefined,
       ctx : undefined,
       data : undefined,
       char : undefined,
       mouse : undefined,
-      over_node : false
+      over_node : false,
+      loaded : true,
+      type : 0,
     }
   },
   components:{
-    NodeModal
+    NodeModal,
+    MainLayout
   },
   props:{
     char_id : String
@@ -23,21 +31,18 @@ export default {
           url: '//127.0.0.1:8000/api/character/world/' + localStorage.getItem('user_id') + '/' + this.char_id,
           headers: {
             'Authorization': 'Bearer ' + localStorage.getItem('token'),
-                   }
-          }).then(response =>{
-            if(response.data.success){
-            this.data = response.data.data[0]
-            this.char = response.data.data[1]
-            setTimeout(()=>{
-              this.ctx = this.$refs.canvas.getContext('2d')
-              this.mouse = new Mouse(this.$refs.canvas)
-              setInterval(()=>{
-                this.draw()
-              },50)
-            },200)
-            this.prettifyData()
+          }
+    }).then(response =>{
+        if(response.data.success){
+          this.img_data = new ImageData()
+          this.ctx = this.$refs.canvas.getContext('2d')
+          this.mouse = new Mouse(this.$refs.canvas)
+          this.render = new Render(this.ctx, this.mouse)
+          this.prettifyData(response.data.data)
+          this.loaded = false
+          this.draw()
         }
-     })
+      })
   },
   watch:{
     data () {
@@ -46,83 +51,71 @@ export default {
   },
   methods : {
     goTo(node){
-      axios({method: 'post', url: '//127.0.0.1:8000/api/character/move/' + localStorage.getItem('user_id') + '/' + this.char_id, headers: {
-          'Authorization': 'Bearer ' + localStorage.getItem('token')
-        },data :{
-          x : node.x,
-          y : node.y
-        }}).then(response =>{
-        if(response.data.success){
-          console.log(response.data.data)
-          this.data = response.data.data[0]
-          this.char = response.data.data[1]
-          this.prettifyData()
-        }
+      axios({method: 'post',
+            url: '//127.0.0.1:8000/api/character/move/' + localStorage.getItem('user_id') + '/' + this.char_id,
+            headers: {
+            'Authorization': 'Bearer ' + localStorage.getItem('token')
+            },
+            data :{
+              x : node.x,
+              y : node.y
+            }
+      }).then(response =>{
+            if(response.data.success){
+              this.prettifyData(response.data.data)
+            }
       })
     },
-    prettifyData(){
-      this.data.map(elem => {
-        elem.pretti_x = elem.x - this.char.x
-        elem.pretti_y = elem.y - this.char.y
-        return elem
-      })
+    prettifyData(response){
+      switch (response.node_type){
+        case 0:
+          this.data = response.nodes
+          this.char = response.char
+          this.data.map(elem => {
+            elem.frame_timer = 0
+            elem.frame = Math.floor(Math.random() * 10)
+            elem.img = this.img_data.getImage(elem.solar_system_image + (elem.visited ? '_visited': '_not_visited'))
+            elem.pretti_x = elem.x - this.char.x + 5
+            elem.pretti_y = elem.y - this.char.y + 5
+            return elem
+          })
+          this.char.pretti_x = 0
+          this.char.pretti_y = 0
+          console.log(this.data)
+          break;
 
-      this.char.pretti_x = 0
-      this.char.pretti_y = 0
+        case 1:
+
+          break;
+      }
+
 
     },
     draw(){
-      if(this.data){
-        let coord = this.mouse.getСoord()
-
-        if(coord){
-          this.data.forEach(elem => {
-            if(coord.x > 500 + (elem.pretti_x * 40)
-                && coord.x < 500 + (elem.pretti_x * 40) + 20
-                && coord.y > 500 + (elem.pretti_y * 40)
-                && coord.y < 500 + (elem.pretti_y * 40) + 20){
-              elem.over = true
-              this.over_node = elem
-              if(this.mouse.click){
-                if(Math.abs(this.char.pretti_x - elem.pretti_x) <= 1 && Math.abs(this.char.pretti_y - elem.pretti_y) <=1){
-                  this.goTo(elem)
-                }
-              }
-            }
-            else {
-              elem.over = false
-            }
-          })
-        }
-
-        if(!this.data.some(elem =>{
-          return elem.over
-        })){
-          this.over_node = false
-        }
-
-        this.ctx.clearRect(0,0,1000,1000)
-        this.data.forEach(elem => {
-          this.ctx.fillStyle = 'black'
-          if(elem.over){
-            this.ctx.fillStyle = 'red'
-            this.ctx.fillRect(500 + (elem.pretti_x * 40), 500 + (elem.pretti_y * 40),20,20)
+      if(this.data) {
+        setInterval(()=>{
+          switch (this.type){
+            case 0:
+              this.render.drawWorld(this)
+              break;
           }
-          else {
-            this.ctx.fillRect(500 + (elem.pretti_x * 40), 500 + (elem.pretti_y * 40),20,20)
-          }
-        })
-        this.ctx.fillStyle = 'blue'
-        this.ctx.fillRect(500 + (this.char.pretti_x * 40), 500 + (this.char.pretti_y * 40),20,20)
+        },50)
       }
     },
+  },
+  computed:{
+    can_style(){
+      return this.loaded ? 'visibility : hidden' : 'visibility : visible'
+    }
   }
 }
 </script>
 
 <template>
-  <canvas v-if="data" width="1000" height="1000" ref="canvas"></canvas>
-  <p v-else>Loading</p>
+  <MainLayout>
+    <canvas :style="can_style" width="900" height="900" ref="canvas"></canvas>
+    <p style="position:absolute" v-if="loaded">Loading</p>
+  </MainLayout>
   <NodeModal v-bind:mouse="mouse" v-bind:over_node="over_node" v-if="over_node"/>
 </template>
 <style>
