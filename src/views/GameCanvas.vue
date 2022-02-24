@@ -51,6 +51,7 @@ export default {
   },
   methods : {
     goTo(node){
+      console.log("!")
       axios({method: 'post',
             url: '//127.0.0.1:8000/api/character/move/' + localStorage.getItem('user_id') + '/' + this.char_id,
             headers: {
@@ -73,14 +74,14 @@ export default {
           this.char = response.char
           this.data.map(elem => {
             elem.frame_timer = 0
-            elem.frame = Math.floor(Math.random() * 10)
+            elem.frame = Math.floor(Math.random() * 8)
             elem.img = this.img_data.getImage(elem.solar_system_image + (elem.visited ? '_visited': '_not_visited'))
             elem.pretti_x = elem.x - this.char.x + 5
             elem.pretti_y = elem.y - this.char.y + 5
             return elem
           })
-          this.char.pretti_x = 0
-          this.char.pretti_y = 0
+          this.char.pretti_x = 5
+          this.char.pretti_y = 5
           console.log(this.data)
           break;
 

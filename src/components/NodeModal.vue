@@ -27,7 +27,7 @@ export default {
 
   <div :style="cssVars">
 
-    <p>Node {{this.over_node.nomenclature}}</p>
+    <p>Node {{this.over_node.id}}</p>
 
   </div>
 

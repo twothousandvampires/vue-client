@@ -16,7 +16,8 @@ export default class Render{
                     elem.over = true
                         game.over_node = elem
                         if(this.mouse.click){
-                            if(Math.abs(game.char.pretti_x + 5 - elem.pretti_x) <= 1 && Math.abs(game.char.pretti_y + 5 - elem.pretti_y) <=1){
+                            if(Math.abs(game.char.pretti_x - elem.pretti_x) <= 1 && Math.abs(game.char.pretti_y - elem.pretti_y) <=1){
+                                console.log("!")
                                 game.goTo(elem)
                             }
                         }
@@ -41,14 +42,15 @@ export default class Render{
                 if(elem.frame_timer === 6){
                     elem.frame_timer = 0
                     elem.frame += 1
-                    if(elem.frame === 10){
+                    if(elem.frame === 8){
+                        elem.frame = 0
                         elem.frame = 0
                     }
                 }
-                this.ctx.drawImage(elem.img,50 * elem.frame,0,50,50,elem.pretti_x * 80 + elem.image_offset_x * 2 ,elem.pretti_y * 80 + elem.image_offset_y * 2 ,80,80)
+                this.ctx.drawImage(game.img_data.getImage('system_1_not_visited'),100 * elem.frame,0,100,100,elem.pretti_x * 80 + elem.image_offset_x * 2 ,elem.pretti_y * 80 + elem.image_offset_y * 2 ,80,80)
             })
-            this.ctx.fillStyle = 'black'
-            this.ctx.fillRect(500 + (game.char.pretti_x * 40), 500 + (game.char.pretti_y * 40),20,20)
+            this.ctx.fillStyle = 'blue'
+            this.ctx.fillRect(game.char.pretti_x * 80, game.char.pretti_y * 80,80,80)
 
         if(game.over_node){
             let frame = game.over_node.type != 1 ? game.img_data.getImage('green_frame') : game.img_data.getImage('red_frame')
