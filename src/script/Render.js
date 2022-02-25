@@ -3,6 +3,10 @@ export default class Render{
     constructor(context ,mouse) {
         this.ctx = context
         this.mouse = mouse
+        this.bg_frame = 0
+        this.bg_timer = 0
+        this.character_frame = 0
+        this.character_timer = 0
     }
 
     drawWorld(game,timer){
@@ -33,10 +37,19 @@ export default class Render{
                 game.over_node = false
             }
 
-
-
             this.ctx.clearRect(0,0,1000,1000)
-            this.ctx.drawImage(game.img_data.getImage('background'),0,0,1000,1000,0,0,1000,1000)
+
+            this.bg_timer += 1
+            if(this.bg_timer === 30){
+                this.bg_timer = 0
+                this.bg_frame += 1
+                if(this.bg_frame === 8){
+                    this.bg_frame = 0
+                }
+            }
+
+            this.ctx.drawImage(game.img_data.getImage('background'),this.bg_frame * 300,0,300,300,0,0,1000,1000)
+
             game.data.forEach(elem => {
                 elem.frame_timer += 1
                 if(elem.frame_timer === 6){
@@ -47,14 +60,25 @@ export default class Render{
                         elem.frame = 0
                     }
                 }
-                this.ctx.drawImage(game.img_data.getImage('system_1_not_visited'),100 * elem.frame,0,100,100,elem.pretti_x * 80 + elem.image_offset_x * 2 ,elem.pretti_y * 80 + elem.image_offset_y * 2 ,80,80)
+                if(!(elem.pretti_x == game.char.pretti_x && elem.pretti_y == game.char.pretti_y) ){
+                    this.ctx.drawImage(elem.img,100 * elem.frame,0,100,100,elem.pretti_x * 80 + elem.image_offset_x * 2 ,elem.pretti_y * 80 + elem.image_offset_y * 2 ,60,60)
+                }
             })
-            this.ctx.fillStyle = 'blue'
-            this.ctx.fillRect(game.char.pretti_x * 80, game.char.pretti_y * 80,80,80)
 
-        if(game.over_node){
-            let frame = game.over_node.type != 1 ? game.img_data.getImage('green_frame') : game.img_data.getImage('red_frame')
-            this.ctx.drawImage(frame,0,0,30,30,game.over_node.pretti_x * 80 + game.over_node.image_offset_x * 2 ,game.over_node.pretti_y * 80 + game.over_node.image_offset_y * 2 ,80,80)
-        }
+            this.character_timer += 1
+            if(this.character_timer === 2){
+                this.character_timer = 0
+                this.character_frame += 1
+                if(this.character_frame === 6){
+                    this.character_frame = 0
+                }
+            }
+
+            this.ctx.drawImage(game.img_data.getImage('char'),this.character_frame * 92,0,92,120,game.char.pretti_x * 80 - 23,game.char.pretti_y * 80 - 30,92,120)
+
+            if(game.over_node){
+                let frame = game.over_node.type != 1 ? game.img_data.getImage('green_frame') : game.img_data.getImage('red_frame')
+                this.ctx.drawImage(frame,0,0,30,30,game.over_node.pretti_x * 80 + game.over_node.image_offset_x * 2 ,game.over_node.pretti_y * 80 + game.over_node.image_offset_y * 2 ,80,80)
+            }
     }
 }
