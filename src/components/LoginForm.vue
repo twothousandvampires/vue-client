@@ -74,7 +74,6 @@
           }
           else{
             this.error_msg = response.data.message
-
           }
         })
       }

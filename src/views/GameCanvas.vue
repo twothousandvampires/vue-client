@@ -4,6 +4,7 @@ import NodeModal from "../components/NodeModal.vue";
 import MainLayout from "../layouts/MainLayout.vue";
 import Render from "../script/Render.js";
 import ImageData from "../script/ImageData.js";
+import {Enemy} from "../script/Enemy/Enemy.js";
 
 export default {
   data(){
@@ -17,6 +18,7 @@ export default {
       over_node : false,
       loaded : true,
       type : 0,
+      enemy : []
     }
   },
   components:{
@@ -51,7 +53,6 @@ export default {
   },
   methods : {
     goTo(node){
-      console.log("!")
       axios({method: 'post',
             url: '//127.0.0.1:8000/api/character/move/' + localStorage.getItem('user_id') + '/' + this.char_id,
             headers: {
@@ -67,9 +68,15 @@ export default {
             }
       })
     },
+    createEnemy(dist, count){
+      for(let i = 0; i < 1; i++){
+        this.enemy.push(new Enemy(Math.round(Math.random() * 800),Math.round(Math.random() * 800 )))
+      }
+    },
     prettifyData(response){
       switch (response.node_type){
         case 0:
+          this.type = 0
           this.data = response.nodes
           this.char = response.char
           this.data.map(elem => {
@@ -82,15 +89,15 @@ export default {
           })
           this.char.pretti_x = 5
           this.char.pretti_y = 5
-          console.log(this.data)
           break;
-
         case 1:
-
+          this.createEnemy(response.dist, response.number)
+          this.type = 1
+          this.char = response.char
+          this.char.cord_x = 450
+          this.char.cord_y = 450
           break;
       }
-
-
     },
     draw(){
       if(this.data) {
@@ -98,6 +105,9 @@ export default {
           switch (this.type){
             case 0:
               this.render.drawWorld(this)
+              break;
+            case 1:
+              this.render.drawFight(this)
               break;
           }
         },50)

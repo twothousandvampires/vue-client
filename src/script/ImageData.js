@@ -25,6 +25,9 @@ export default class ImageData{
 
         this.char = new Image()
         this.char.src = './src/assets/img/characters/1t.png'
+
+        this.shadow = new Image()
+        this.shadow.src = './src/assets/img/solar_systems/shadow.png'
     }
 
     getImage(name){
