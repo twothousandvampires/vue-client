@@ -107,6 +107,8 @@ export default class Render{
             }
         }
 
+        game.char.cord_x += 0.5
+
         this.ctx.drawImage(game.img_data.getImage('char'),this.character_frame * 92,0,92,120,game.char.cord_x - 46,game.char.cord_y- 60,92,120)
 
         game.enemy.forEach(elem => {

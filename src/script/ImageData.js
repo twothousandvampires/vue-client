@@ -28,6 +28,10 @@ export default class ImageData{
 
         this.shadow = new Image()
         this.shadow.src = './src/assets/img/solar_systems/shadow.png'
+
+        this.shadow_enemy = new Image()
+        this.shadow_enemy.src = './src/assets/img/enemy/shadow.png'
+
     }
 
     getImage(name){

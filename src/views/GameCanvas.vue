@@ -4,7 +4,8 @@ import NodeModal from "../components/NodeModal.vue";
 import MainLayout from "../layouts/MainLayout.vue";
 import Render from "../script/Render.js";
 import ImageData from "../script/ImageData.js";
-import {Enemy} from "../script/Enemy/Enemy.js";
+import Enemy from "../script/Enemy/Enemy.js";
+import Shadow from "../script/Enemy/Shadow.js";
 
 export default {
   data(){
@@ -69,8 +70,8 @@ export default {
       })
     },
     createEnemy(dist, count){
-      for(let i = 0; i < 1; i++){
-        this.enemy.push(new Enemy(Math.round(Math.random() * 800),Math.round(Math.random() * 800 )))
+      for(let i = 0; i < 100; i++){
+        this.enemy.push(new Shadow(Math.round(Math.random() * 800),Math.round(Math.random() * 800 )))
       }
     },
     prettifyData(response){
