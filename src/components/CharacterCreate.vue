@@ -16,9 +16,10 @@ export default {
     create(e){
       e.preventDefault()
       if(this.character_name !== ''){
-        axios({method: 'post', url: '//127.0.0.1:8000/api/character/create/' + localStorage.getItem('user_id'), headers: {
+        axios({method: 'post', url: '//127.0.0.1:8000/api/character/create/', headers: {
             'Authorization': 'Bearer ' + localStorage.getItem('token'),
           }, data : {
+            user_id : localStorage.getItem('user_id'),
             name : this.character_name,
             class_name : this.character_class
           }})

@@ -1,4 +1,4 @@
-export default class Mouse{
+export default class Input {
     constructor(canvas) {
         this.x = undefined
         this.y = undefined
@@ -18,6 +18,17 @@ export default class Mouse{
                 this.click = false
             },50)
         })
+        window.addEventListener('keydown',(e)=>{
+            this.pressed[e.key] = true
+        })
+        window.addEventListener('keyup',(e)=>{
+            this.pressed[e.key] = false
+        })
+        this.pressed ={}
+    }
+
+    getInput(){
+        return this.pressed
     }
 
     getСoord(){

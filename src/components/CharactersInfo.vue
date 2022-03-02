@@ -1,6 +1,7 @@
 <script>
 import GameCanvas from "../views/GameCanvas.vue";
 import CharacterCreate from "./CharacterCreate.vue";
+import CharacterSingleInfo from "./CharacterSingleInfo.vue";
 export default {
   data(){
     return{
@@ -13,7 +14,8 @@ export default {
   name: "CharactersInfo.vue",
   components:{
     GameCanvas,
-    CharacterCreate
+    CharacterCreate,
+    CharacterSingleInfo
   },
   mounted() {
   },
@@ -21,13 +23,6 @@ export default {
     create(){
       this.character_creating = true
     },
-    classImage(str){
-      return 'src/assets//img/' + str + '.jpg'
-    },
-    play(id){
-      localStorage.setItem('char_id', id)
-      location.href = '/world'
-    }
   }
 }
 </script>
@@ -36,9 +31,7 @@ export default {
 <template>
   <div class="characters-wrap">
     <div class="character" v-for="character in characters">
-        <p>{{ character.name }}</p>
-        <img width="160" height="240" :src="classImage(character.class)" alt="">
-        <p  @click="play(character.id)">Play</p>
+        <CharacterSingleInfo v-bind:character="character"/>
     </div>
   </div>
   <button @click="create">Create</button>
@@ -53,6 +46,8 @@ export default {
     justify-content: space-around;
   }
   .character{
+    background-color: dimgrey;
+    padding: 10px;
     min-width: 200px;
     min-height: 320px;
     border: 2px solid darkblue;

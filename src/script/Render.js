@@ -5,12 +5,11 @@ export default class Render{
         this.mouse = mouse
         this.bg_frame = 0
         this.bg_timer = 0
-        this.character_frame = 0
-        this.character_timer = 0
 
         this.can_w = 900
         this.can_h = 900
-
+        this.character_frame = 0
+        this.character_timer = 0
         // ms
         this.bg_aniamtion_speed = 4000
     }
@@ -28,11 +27,11 @@ export default class Render{
     }
 
     drawWorld(game){
-
         this.ctx.clearRect(0,0,900,900)
         this.drawBg(game);
 
         let coords = this.mouse.getСoord()
+
         if(coords){
             game.data.forEach(elem => {
                 if(coords.x > elem.pretti_x * 80
@@ -98,18 +97,7 @@ export default class Render{
         this.ctx.clearRect(0,0,900,900)
         this.drawBg(game);
 
-        this.character_timer += 1
-        if(this.character_timer === 2){
-            this.character_timer = 0
-            this.character_frame += 1
-            if(this.character_frame === 6){
-                this.character_frame = 0
-            }
-        }
-
-        game.char.cord_x += 0.5
-
-        this.ctx.drawImage(game.img_data.getImage('char'),this.character_frame * 92,0,92,120,game.char.cord_x - 46,game.char.cord_y- 60,92,120)
+        game.char.act(game)
 
         game.enemy.forEach(elem => {
             elem.act(game)

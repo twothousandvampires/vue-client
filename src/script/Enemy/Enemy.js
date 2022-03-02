@@ -32,12 +32,6 @@ export default class Enemy{
         }
     }
 
-    setBehaviorTime(time){
-        this.image.frame = 0
-        this.image.frame_timer = 0
-        this.change_behavior_time = time
-    }
-
     draw(game){
         let sheet = this.image['move']
 
@@ -51,7 +45,6 @@ export default class Enemy{
                 }
             }
         }
-
 
         game.ctx.fillStyle = ' yellow'
         game.ctx.fillText(this.state, this.cord_x - this.box_x/2 , this.cord_y - (this.size_y - this.box_y/2) - 10)
@@ -85,22 +78,20 @@ export default class Enemy{
         }
     }
 
-    setBehavior(){
-
+    setBehavior(type = 'idle', time = 0){
+        this.image.frame = 0
+        this.image.frame_timer = 0
+        this.change_behavior_time = time
+        this.state = type
     }
 
     chargeBehavior(){
-
         this.setCord(Math.sin(this.charge_angle),Math.cos(this.charge_angle))
-
         if(Functions.distance(this, {cord_x : this.start_point_x,cord_y : this.start_point_y}) > 400){
-
-            this.state = 'idle'
             this.speed = 1
             this.charge_angle = 0
-            this.setBehavior(40)
+            this.setBehavior('idle',40)
         }
-
     }
 
     retreatBehavior(char){
@@ -111,25 +102,21 @@ export default class Enemy{
 
         if(!this.change_behavior_time){
             if(distance > 200){
-                this.state = 'move'
                 this.move_offset = (Math.random() * (0.3)).toFixed(2)
-                this.setBehaviorTime(10)
+                this.setBehavior('move',10)
             }
             else if (distance < 50){
-                this.state = 'attack'
-                this.setBehavior(30)
+                this.setBehavior('attack',30)
             }
             else {
                 let rng = (Math.random()).toFixed(1)
                 if( rng > 0.5 ){
                     this.move_offset = Math.random() > 0.5 ? 1.57 : -1.57
-                    this.state = 'around'
-                    this.setBehaviorTime(10)
+                    this.setBehavior('around',10)
                 }
                 else {
-                    this.state = 'move'
                     this.move_offset = (Math.random() * (0.3)).toFixed(2)
-                    this.setBehaviorTime(10)
+                    this.setBehavior('move',20)
                 }
             }
         }
@@ -141,12 +128,11 @@ export default class Enemy{
         if(!this.change_behavior_time){
             let rng = (Math.random()).toFixed(1)
             if( rng > 0.5 ){
-                this.setBehaviorTime(30)
+                this.setBehavior('attack',30)
             }
             else {
-                this.state = 'retreat'
                 this.move_offset = (Math.random() * (0.3)).toFixed(2)
-                this.setBehaviorTime(25)
+                this.setBehavior('retreat',25)
             }
         }
     }
@@ -161,33 +147,30 @@ export default class Enemy{
         if(!this.change_behavior_time){
             if(distance > 200){
                 if(this.can_charge){
-                    this.state = 'charge'
                     this.start_point_x = this.cord_x
                     this.start_point_y = this.cord_y
                     this.charge_angle = angle
                     this.speed = 4
+                    this.setBehavior('charge')
                 }
                 else{
-                    this.state = 'move'
                     this.move_offset = (Math.random() * (0.3)).toFixed(2)
-                    this.setBehaviorTime(10)
+                    this.setBehavior('move',10)
                 }
             }
             else if (distance < 50){
-                this.state = 'attack'
-                this.setBehavior(30)
+                this.setBehavior('attack',30)
             }
             else {
                 let rng = (Math.random()).toFixed(1)
                 if( rng > 0.5 ){
                     this.move_offset = Math.random() > 0.5 ? 1.57 : -1.57
                     this.state = 'around'
-                    this.setBehaviorTime(10)
+                    this.setBehavior('around',10)
                 }
                 else {
-                    this.state = 'move'
                     this.move_offset = (Math.random() * (0.3)).toFixed(2)
-                    this.setBehaviorTime(10)
+                    this.setBehavior('move',10)
                 }
             }
         }
@@ -203,29 +186,28 @@ export default class Enemy{
         if(!this.change_behavior_time){
             if(distance > 200){
                 if(this.can_charge){
-                    this.state = 'charge'
                     this.start_point_x = this.cord_x
                     this.start_point_y = this.cord_y
                     this.charge_angle = angle
                     this.speed = 4
+                    this.setBehavior('charge')
                 }
                 else{
-                    this.setBehaviorTime(10)
+                    this.setBehavior('move',10)
                 }
             }
             else if(distance < 50){
-                this.state = 'attack'
-                this.setBehavior(30)
+                this.setBehavior('attack',30)
             }
             else {
                 let rng = (Math.random()).toFixed(1)
                 if( rng > 0.5 ){
                     this.move_offset = Math.random() > 0.5 ? 1.57 : -1.57
                     this.state = 'around'
-                    this.setBehaviorTime(10)
+                    this.setBehavior('around',10)
                 }
                 else {
-                    this.setBehaviorTime(10)
+                    this.setBehavior('move',10)
                 }
             }
         }
@@ -233,23 +215,19 @@ export default class Enemy{
     }
 
     idleBehavior(char){
-
         if(!this.change_behavior_time){
-
             if(Functions.distance(this,char) > 150){
-                this.state = 'move'
                 this.move_offset = (Math.random() * (0.3)).toFixed(2)
-                this.setBehaviorTime(20)
+                this.setBehavior('move',20)
             }
             else {
                 let rng = (Math.random()).toFixed(1)
                 if( rng > 0.5 ){
                     this.move_offset = Math.random() > 0.5 ? 1.57 : -1.57
-                    this.state = 'around'
-                    this.setBehaviorTime(10)
+                    this.setBehavior('around',10)
                 }
                 else {
-                    this.setBehaviorTime(10)
+                    this.setBehavior('idle',10)
                 }
             }
         }

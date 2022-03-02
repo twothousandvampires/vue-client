@@ -1,11 +1,11 @@
 <script>
-import Mouse from "../script/Mouse";
+import Input from "../script/Input";
 import NodeModal from "../components/NodeModal.vue";
 import MainLayout from "../layouts/MainLayout.vue";
 import Render from "../script/Render.js";
 import ImageData from "../script/ImageData.js";
-import Enemy from "../script/Enemy/Enemy.js";
 import Shadow from "../script/Enemy/Shadow.js";
+import Character from "../script/Character/Character.js";
 
 export default {
   data(){
@@ -31,15 +31,20 @@ export default {
   },
   mounted() {
     axios({method: 'post',
-          url: '//127.0.0.1:8000/api/character/world/' + localStorage.getItem('user_id') + '/' + this.char_id,
-          headers: {
+          url : '//127.0.0.1:8000/api/character/world/',
+          data : {
+            user_id : localStorage.getItem('user_id'),
+            char_id : this.char_id
+          },
+          headers : {
             'Authorization': 'Bearer ' + localStorage.getItem('token'),
           }
     }).then(response =>{
+        console.log(response)
         if(response.data.success){
           this.img_data = new ImageData()
           this.ctx = this.$refs.canvas.getContext('2d')
-          this.mouse = new Mouse(this.$refs.canvas)
+          this.mouse = new Input(this.$refs.canvas)
           this.render = new Render(this.ctx, this.mouse)
           this.prettifyData(response.data.data)
           this.loaded = false
@@ -55,13 +60,15 @@ export default {
   methods : {
     goTo(node){
       axios({method: 'post',
-            url: '//127.0.0.1:8000/api/character/move/' + localStorage.getItem('user_id') + '/' + this.char_id,
+            url: '//127.0.0.1:8000/api/character/move/',
             headers: {
             'Authorization': 'Bearer ' + localStorage.getItem('token')
             },
             data :{
               x : node.x,
-              y : node.y
+              y : node.y,
+              user_id : localStorage.getItem('user_id'),
+              char_id : this.char_id
             }
       }).then(response =>{
             if(response.data.success){
@@ -70,7 +77,7 @@ export default {
       })
     },
     createEnemy(dist, count){
-      for(let i = 0; i < 100; i++){
+      for(let i = 0; i < 1; i++){
         this.enemy.push(new Shadow(Math.round(Math.random() * 800),Math.round(Math.random() * 800 )))
       }
     },
@@ -92,11 +99,9 @@ export default {
           this.char.pretti_y = 5
           break;
         case 1:
-          this.createEnemy(response.dist, response.number)
           this.type = 1
-          this.char = response.char
-          this.char.cord_x = 450
-          this.char.cord_y = 450
+          this.createEnemy(response.dist, response.number)
+          this.char = new Character(response.char)
           break;
       }
     },
