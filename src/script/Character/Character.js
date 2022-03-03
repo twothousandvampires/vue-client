@@ -22,6 +22,12 @@ export default class Character{
         this.character_frame = 0
         this.character_timer = 0
 
+        this.speed = 2
+    }
+
+    setCord(x ,y){
+        this.cord_x += x * this.speed
+        this.cord_y += y * this.speed
     }
 
     getMoveAngle(input){
@@ -65,15 +71,11 @@ export default class Character{
 
         if(this.moveInputIsPressed(input)){
             this.getMoveAngle(input)
-            console.log(this.move_angle)
-            this.cord_x += Math.sin(this.move_angle)
-            this.cord_y += Math.cos(this.move_angle)
+            this.setCord(Math.sin(this.move_angle), Math.cos(this.move_angle))
         }
         this.draw(game)
     }
     draw(game){
-
-
         this.character_timer += 1
         if(this.character_timer === 2){
             this.character_timer = 0
@@ -82,7 +84,6 @@ export default class Character{
                 this.character_frame = 0
             }
         }
-
         game.ctx.drawImage(game.img_data.getImage('char'),this.character_frame * 92,0,92,120, this.cord_x - 46, this.cord_y- 60,92,120)
     }
 

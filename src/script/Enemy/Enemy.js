@@ -10,6 +10,8 @@ export default class Enemy{
         this.box_x = 50
         this.box_y = 25
 
+        this.deal_hit = false
+
         this.move_offset = 0
 
         this.can_charge = true
@@ -125,7 +127,13 @@ export default class Enemy{
 
     attackBehavior(char){
 
+        if(this.image.frame == 4 && !this.deal_hit){
+            console.log('!')
+            this.deal_hit = true
+        }
+
         if(!this.change_behavior_time){
+            this.deal_hit = false
             let rng = (Math.random()).toFixed(1)
             if( rng > 0.5 ){
                 this.setBehavior('attack',30)
