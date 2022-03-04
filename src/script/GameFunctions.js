@@ -56,6 +56,10 @@ export default class Functions{
         return false
     }
 
+    static msToTick(ms){
+        return ms/50
+    }
+
     static rectCollision(item , other){
         let rect1_x = Math.floor(item.cords.x - (item.box_size_w/2))
         let rect1_y = Math.floor(item.cords.y)
@@ -79,6 +83,7 @@ export default class Functions{
     static circleCollision(radius, item , other){
         return Functions.distance(item, other) < radius
     }
+
 
     static angle( item , other ){
 

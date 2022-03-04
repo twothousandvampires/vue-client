@@ -22,6 +22,13 @@ export default class Character{
         this.character_frame = 0
         this.character_timer = 0
 
+        this.size_x = 92
+        this.size_y = 120
+
+
+        this.box_size_x = 46
+        this.box_size_y = 30
+
         this.speed = 2
     }
 
@@ -84,7 +91,10 @@ export default class Character{
                 this.character_frame = 0
             }
         }
-        game.ctx.drawImage(game.img_data.getImage('char'),this.character_frame * 92,0,92,120, this.cord_x - 46, this.cord_y- 60,92,120)
+
+        game.ctx.drawImage(game.img_data.getImage('char'),this.character_frame * 92,0,92,120, this.cord_x - this.size_x/2, this.cord_y- this.size_y/2,this.size_x,this.size_y)
+        game.ctx.fillStyle = 'blue'
+        game.ctx.fillRect(this.cord_x - this.box_size_x/2,this.cord_y - this.box_size_y/2,this.box_size_x,this.box_size_y)
     }
 
 }
