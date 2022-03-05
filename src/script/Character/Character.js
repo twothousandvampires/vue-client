@@ -93,8 +93,8 @@ export default class Character{
         }
 
         game.ctx.drawImage(game.img_data.getImage('char'),this.character_frame * 92,0,92,120, this.cord_x - this.size_x/2, this.cord_y- this.size_y/2,this.size_x,this.size_y)
-        game.ctx.fillStyle = 'blue'
-        game.ctx.fillRect(this.cord_x - this.box_size_x/2,this.cord_y - this.box_size_y/2,this.box_size_x,this.box_size_y)
+        // game.ctx.fillStyle = 'blue'
+        // game.ctx.fillRect(this.cord_x - this.box_size_x/2,this.cord_y - this.box_size_y/2,this.box_size_x,this.box_size_y)
     }
 
 }

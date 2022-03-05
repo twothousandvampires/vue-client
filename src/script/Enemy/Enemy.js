@@ -110,7 +110,7 @@ export default class Enemy{
     }
 
     draw(game){
-        let sheet = this.image['move']
+        let sheet = this.image[this.state]
 
         if(sheet){
             this.image.frame_timer ++
@@ -123,16 +123,19 @@ export default class Enemy{
             }
         }
 
-        game.ctx.fillStyle = ' yellow'
-        game.ctx.fillText(this.state, this.cord_x - this.box_size_x/2 , this.cord_y - (this.size_y - this.box_size_y/2) - 10)
+        // game.ctx.fillStyle = ' yellow'
+        // game.ctx.fillText(this.state, this.cord_x - this.box_size_x/2 , this.cord_y - (this.size_y - this.box_size_y/2) - 10)
 
-        if(sheet){
-            game.ctx.drawImage(this.image.src, sheet.sprite_size_w * this.image.frame,sheet.y_offset,sheet.sprite_size_w - 2,sheet.sprite_size_h,this.cord_x - this.box_size_x/2,this.cord_y - (this.size_y - this.box_size_y/2),this.size_x,this.size_y)
-        }
-        game.ctx.fillStyle = 'blue'
-        game.ctx.fillRect(this.cord_x - this.box_size_x/2,this.cord_y - this.box_size_y/2,this.box_size_x,this.box_size_y)
-        game.ctx.fillStyle = 'yellow'
-        game.ctx.fillRect(this.attack_rect.cord_x,this.attack_rect.cord_y,this.attack_rect.box_size_x,this.attack_rect.box_size_y)
+
+        let f = ((this.size_x * sheet.sprite_size_w) / 90) - this.size_x
+
+
+        game.ctx.drawImage(this.image.src, sheet.sprite_size_w * this.image.frame,sheet.y_offset,sheet.sprite_size_w - 2,sheet.sprite_size_h,this.cord_x - this.size_x/2 - f/2,this.cord_y - (this.size_y/2 + (this.size_y/2 - this.box_size_y/2)) - f/2,this.size_x + f,this.size_y+ f)
+
+        // game.ctx.fillStyle = 'blue'
+        // game.ctx.fillRect(this.cord_x - this.box_size_x/2,this.cord_y - this.box_size_y/2,this.box_size_x,this.box_size_y)
+        // game.ctx.fillStyle = 'yellow'
+        // game.ctx.fillRect(this.attack_rect.cord_x,this.attack_rect.cord_y,this.attack_rect.box_size_x,this.attack_rect.box_size_y)
     }
 
     act(game){
@@ -169,7 +172,7 @@ export default class Enemy{
     chargeBehavior(){
         this.setCord(Math.sin(this.charge_angle),Math.cos(this.charge_angle))
         if(Functions.distance(this, {cord_x : this.start_point_x,cord_y : this.start_point_y}) > 400){
-            this.speed = 1
+            this.speed = 10
             this.charge_angle = 0
             this.setBehavior('idle',1000)
         }

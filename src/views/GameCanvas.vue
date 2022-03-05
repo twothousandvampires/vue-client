@@ -77,7 +77,7 @@ export default {
       })
     },
     createEnemy(dist, count){
-      for(let i = 0; i < 1; i++){
+      for(let i = 0; i < 500; i++){
         this.enemy.push(new Shadow(Math.round(Math.random() * 800),Math.round(Math.random() * 800 )))
       }
     },
