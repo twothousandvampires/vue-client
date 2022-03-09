@@ -13,12 +13,13 @@ export default class Input {
             this.y = undefined
         })
         this.canvas.addEventListener('click',(e)=>{
-           this.click = true
+            this.click = true
             setTimeout(()=>{
                 this.click = false
             },50)
         })
         window.addEventListener('keydown',(e)=>{
+            e.preventDefault()
             this.pressed[e.key] = true
         })
         window.addEventListener('keyup',(e)=>{

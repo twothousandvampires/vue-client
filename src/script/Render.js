@@ -84,7 +84,7 @@ export default class Render{
             }
         }
 
-        this.ctx.drawImage(game.img_data.getImage('char'),this.character_frame * 92,0,92,120,game.char.pretti_x * 80 - 23,game.char.pretti_y * 80 - 30,92,120)
+        this.ctx.drawImage(game.img_data.getImage('young'),this.character_frame * 92,0,92,120,game.char.pretti_x * 80 - 23,game.char.pretti_y * 80 - 30,92,120)
 
         if(game.over_node){
             let frame = game.over_node.type != 1 ? game.img_data.getImage('green_frame') : game.img_data.getImage('red_frame')
@@ -95,8 +95,8 @@ export default class Render{
 
     drawFight(game){
         this.ctx.clearRect(0,0,900,900)
-        // this.drawBg(game);
-
+        this.drawBg(game)
+        console.log(game.char)
         game.char.act(game)
 
         game.enemy.forEach(elem => {

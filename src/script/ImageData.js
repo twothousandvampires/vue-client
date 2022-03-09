@@ -23,8 +23,8 @@ export default class ImageData{
         this.red_frame = new Image()
         this.red_frame.src = './src/assets/img/utility/enemy_frame.png'
 
-        this.char = new Image()
-        this.char.src = './src/assets/img/characters/1t.png'
+        this.young= new Image()
+        this.young.src = './src/assets/img/characters/young.png'
 
         this.shadow = new Image()
         this.shadow.src = './src/assets/img/solar_systems/shadow.png'

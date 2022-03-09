@@ -1,3 +1,6 @@
+import ImageData from "../ImageData";
+let data = new ImageData()
+
 export default class Character{
 
     constructor(template) {
@@ -17,6 +20,8 @@ export default class Character{
         this.cord_x = 450
         this.cord_y = 450
 
+        this.state = 'idle'
+
         this.move_angle = 0
 
         this.character_frame = 0
@@ -30,6 +35,54 @@ export default class Character{
         this.box_size_y = 30
 
         this.speed = 2
+        this.image = {
+            frame_timer : 0,
+            frame : 0,
+            src : data.getImage('young'),
+            'idle' : {
+                sprite_size_w : 92,
+                sprite_size_h : 120,
+                y_offset : 0,
+                max_frame : 6,
+                f : 0
+            },
+            'charge' : {
+                sprite_size_w : 90,
+                sprite_size_h : 90,
+                y_offset : 0,
+                max_frame : 6,
+                f : 0
+            },
+            'move' : {
+                sprite_size_w : 92,
+                sprite_size_h : 120,
+                y_offset : 120,
+                max_frame : 6,
+                f : 0
+            },
+            'retreat' : {
+                sprite_size_w : 90,
+                sprite_size_h : 90,
+                y_offset : 90,
+                max_frame : 5,
+                f : 0
+            },
+            'around' : {
+                sprite_size_w : 90,
+                sprite_size_h : 90,
+                y_offset : 90,
+                max_frame : 5,
+                f : 0
+
+            },
+            'attack' : {
+                sprite_size_w : 152,
+                sprite_size_h : 120,
+                y_offset : 240,
+                max_frame : 8,
+                f : 32
+            }
+        }
     }
 
     setCord(x ,y){
@@ -77,22 +130,39 @@ export default class Character{
         let input = game.mouse.getInput()
 
         if(this.moveInputIsPressed(input)){
+            this.state = 'move'
             this.getMoveAngle(input)
             this.setCord(Math.sin(this.move_angle), Math.cos(this.move_angle))
+        }
+        else if(input.e){
+            this.state = 'attack'
+        }
+        else {
+            this.state = 'idle'
         }
         this.draw(game)
     }
     draw(game){
-        this.character_timer += 1
-        if(this.character_timer === 2){
-            this.character_timer = 0
-            this.character_frame += 1
-            if(this.character_frame === 6){
-                this.character_frame = 0
+
+
+        let sheet = this.image[this.state]
+
+        this.image.frame_timer ++
+        if(this.image.frame_timer === 6){
+            this.image.frame_timer = 0
+            this.image.frame += 1
+            if(this.image.frame === sheet.max_frame){
+                this.image.frame = 0
             }
         }
 
-        game.ctx.drawImage(game.img_data.getImage('char'),this.character_frame * 92,0,92,120, this.cord_x - this.size_x/2, this.cord_y- this.size_y/2,this.size_x,this.size_y)
+        let f_x = ((this.size_x * sheet.sprite_size_w) / 92) - this.size_x
+        let f_y = ((this.size_y * sheet.sprite_size_h) / 120) - this.size_y
+
+
+        game.ctx.drawImage(this.image.src, sheet.sprite_size_w * this.image.frame,sheet.y_offset,sheet.sprite_size_w - 2,sheet.sprite_size_h,this.cord_x - this.size_x/2 - f_x/2,this.cord_y - (this.size_y/2 + (this.size_y/2 - this.box_size_y/2)) - f_y/2,this.size_x + f_x,this.size_y + f_y)
+
+
         // game.ctx.fillStyle = 'blue'
         // game.ctx.fillRect(this.cord_x - this.box_size_x/2,this.cord_y - this.box_size_y/2,this.box_size_x,this.box_size_y)
     }
