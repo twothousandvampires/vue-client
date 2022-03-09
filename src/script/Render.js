@@ -96,7 +96,6 @@ export default class Render{
     drawFight(game){
         this.ctx.clearRect(0,0,900,900)
         this.drawBg(game)
-        console.log(game.char)
         game.char.act(game)
 
         game.enemy.forEach(elem => {

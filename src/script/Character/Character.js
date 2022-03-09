@@ -1,3 +1,4 @@
+import Functions from "../GameFunctions";
 import ImageData from "../ImageData";
 let data = new ImageData()
 
@@ -19,6 +20,14 @@ export default class Character{
 
         this.cord_x = 450
         this.cord_y = 450
+
+        this.fliped = false
+
+        this.immobilized = false
+        this.damaged = false
+
+        //ms
+        this.attack_speed = 2000
 
         this.state = 'idle'
 
@@ -44,35 +53,32 @@ export default class Character{
                 sprite_size_h : 120,
                 y_offset : 0,
                 max_frame : 6,
-                f : 0
+                tick : ()=> {return 6}
             },
             'charge' : {
                 sprite_size_w : 90,
                 sprite_size_h : 90,
                 y_offset : 0,
                 max_frame : 6,
-                f : 0
             },
             'move' : {
                 sprite_size_w : 92,
                 sprite_size_h : 120,
                 y_offset : 120,
                 max_frame : 6,
-                f : 0
+                tick : ()=> {return 6}
             },
             'retreat' : {
                 sprite_size_w : 90,
                 sprite_size_h : 90,
                 y_offset : 90,
                 max_frame : 5,
-                f : 0
             },
             'around' : {
                 sprite_size_w : 90,
                 sprite_size_h : 90,
                 y_offset : 90,
                 max_frame : 5,
-                f : 0
 
             },
             'attack' : {
@@ -80,7 +86,7 @@ export default class Character{
                 sprite_size_h : 120,
                 y_offset : 240,
                 max_frame : 8,
-                f : 32
+                tick : ()=> {return Math.floor(this.attack_speed/350)}
             }
         }
     }
@@ -127,41 +133,78 @@ export default class Character{
 
     act(game){
 
-        let input = game.mouse.getInput()
 
-        if(this.moveInputIsPressed(input)){
-            this.state = 'move'
-            this.getMoveAngle(input)
-            this.setCord(Math.sin(this.move_angle), Math.cos(this.move_angle))
+        if(this.immobilized){
+            //
         }
-        else if(input.e){
-            this.state = 'attack'
+        else if(this.damaged){
+            //
+        }
+        else if(this.state === 'attack'){
+
         }
         else {
-            this.state = 'idle'
+            let input = game.mouse.getInput()
+
+            if(this.moveInputIsPressed(input)){
+                this.state = 'move'
+                this.getMoveAngle(input)
+                let move_x = Math.sin(this.move_angle)
+                if(move_x <= 0 ){
+                    this.fliped = true
+                }
+                else {
+                    this.fliped = false
+                }
+                let move_y = Math.cos(this.move_angle)
+                this.setCord(move_x, move_y)
+            }
+            else if(input.e){
+                this.image.frame = 0
+                this.image.frame_timer = 0
+                this.state = 'attack'
+                setTimeout(()=>{
+                    this.state = 'idle'
+                    this.image.frame = 0
+                    this.image.frame_timer = 0
+                },this.attack_speed)
+            }
+            else {
+                this.state = 'idle'
+            }
         }
+
         this.draw(game)
     }
     draw(game){
 
 
         let sheet = this.image[this.state]
-
         this.image.frame_timer ++
-        if(this.image.frame_timer === 6){
+        if(this.image.frame_timer >= sheet.tick()){
             this.image.frame_timer = 0
             this.image.frame += 1
-            if(this.image.frame === sheet.max_frame){
+            if(this.image.frame === sheet.max_frame && this.state !== 'attack'){
                 this.image.frame = 0
+            }
+            else if(this.image.frame === sheet.max_frame && this.state === 'attack'){
+                this.image.frame = sheet.max_frame - 1
             }
         }
 
         let f_x = ((this.size_x * sheet.sprite_size_w) / 92) - this.size_x
         let f_y = ((this.size_y * sheet.sprite_size_h) / 120) - this.size_y
 
+        if(this.fliped){
+            game.ctx.save()
+            Functions.flipHorizontally(game.ctx, this.cord_x)
+        }
 
         game.ctx.drawImage(this.image.src, sheet.sprite_size_w * this.image.frame,sheet.y_offset,sheet.sprite_size_w - 2,sheet.sprite_size_h,this.cord_x - this.size_x/2 - f_x/2,this.cord_y - (this.size_y/2 + (this.size_y/2 - this.box_size_y/2)) - f_y/2,this.size_x + f_x,this.size_y + f_y)
 
+        if(this.fliped){
+            game.ctx.restore()
+        }
 
         // game.ctx.fillStyle = 'blue'
         // game.ctx.fillRect(this.cord_x - this.box_size_x/2,this.cord_y - this.box_size_y/2,this.box_size_x,this.box_size_y)
