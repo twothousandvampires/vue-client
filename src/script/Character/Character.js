@@ -46,10 +46,10 @@ export default class Character{
                 max_frame : 6,
                 f : 0
             },
-            'charge' : {
-                sprite_size_w : 90,
-                sprite_size_h : 90,
-                y_offset : 0,
+            'defend' : {
+                sprite_size_w : 92,
+                sprite_size_h : 120,
+                y_offset : 360,
                 max_frame : 6,
                 f : 0
             },
@@ -129,7 +129,11 @@ export default class Character{
 
         let input = game.mouse.getInput()
 
-        if(this.moveInputIsPressed(input)){
+        if(input.e){
+            this.state = 'defend'
+        }
+
+        else if(this.moveInputIsPressed(input)){
             this.state = 'move'
             this.getMoveAngle(input)
             this.setCord(Math.sin(this.move_angle), Math.cos(this.move_angle))
