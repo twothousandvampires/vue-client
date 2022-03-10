@@ -84,6 +84,11 @@ export default class Functions{
         return Functions.distance(item, other) < radius
     }
 
+    static flipHorizontally(context, around){
+        context.translate(around , 0);
+        context.scale(-1, 1);
+        context.translate(-around, 0)
+    }
 
     static angle( item , other ){
 
