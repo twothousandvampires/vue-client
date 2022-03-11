@@ -132,8 +132,6 @@ export default class Character{
     }
 
     act(game){
-
-
         if(this.immobilized){
             //
         }
@@ -145,7 +143,6 @@ export default class Character{
         }
         else {
             let input = game.mouse.getInput()
-
             if(this.moveInputIsPressed(input)){
                 this.state = 'move'
                 this.getMoveAngle(input)
@@ -173,12 +170,10 @@ export default class Character{
                 this.state = 'idle'
             }
         }
-
         this.draw(game)
     }
+
     draw(game){
-
-
         let sheet = this.image[this.state]
         this.image.frame_timer ++
         if(this.image.frame_timer >= sheet.tick()){

@@ -5,6 +5,7 @@ import MainLayout from "../layouts/MainLayout.vue";
 import Render from "../script/Render.js";
 import ImageData from "../script/ImageData.js";
 import Shadow from "../script/Enemy/Shadow.js";
+import Reaper from "../script/Enemy/Reaper.js";
 import Character from "../script/Character/Character.js";
 
 export default {
@@ -77,9 +78,12 @@ export default {
       })
     },
     createEnemy(dist, count){
-      for(let i = 0; i < 1; i++){
+      for(let i = 0; i < 10; i++){
         this.enemy.push(new Shadow(Math.round(Math.random() * 800),Math.round(Math.random() * 800 )))
       }
+      // for(let i = 0; i < 5; i++){
+      //   this.enemy.push(new Reaper(Math.round(Math.random() * 800),Math.round(Math.random() * 800 )))
+      // }
     },
     prettifyData(response){
       switch (response.node_type){
