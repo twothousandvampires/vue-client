@@ -5,6 +5,7 @@ import MainLayout from "../layouts/MainLayout.vue";
 import Render from "../script/Render.js";
 import ImageData from "../script/ImageData.js";
 import Shadow from "../script/Enemy/Shadow.js";
+import Reaper from "../script/Enemy/Reaper.js";
 import Character from "../script/Character/Character.js";
 
 export default {
@@ -13,13 +14,14 @@ export default {
       img_data : undefined,
       render : undefined,
       ctx : undefined,
-      data : undefined,
+      nodes: undefined,
       char : undefined,
       mouse : undefined,
       over_node : false,
       loaded : true,
       type : 0,
-      enemy : []
+      enemy : [],
+      effects : []
     }
   },
   components:{
@@ -45,7 +47,7 @@ export default {
           this.img_data = new ImageData()
           this.ctx = this.$refs.canvas.getContext('2d')
           this.mouse = new Input(this.$refs.canvas)
-          this.render = new Render(this.ctx, this.mouse)
+          this.render = new Render(this.ctx, this.mouse ,this.img_data)
           this.prettifyData(response.data.data)
           this.loaded = false
           this.draw()
@@ -77,8 +79,11 @@ export default {
       })
     },
     createEnemy(dist, count){
-      for(let i = 0; i < 1; i++){
+      for(let i = 0; i < 10; i++){
         this.enemy.push(new Shadow(Math.round(Math.random() * 800),Math.round(Math.random() * 800 )))
+      }
+      for(let i = 0; i < 5; i++){
+        this.enemy.push(new Reaper(Math.round(Math.random() * 800),Math.round(Math.random() * 800 )))
       }
     },
     prettifyData(response){
@@ -133,7 +138,7 @@ export default {
     <canvas :style="can_style" width="900" height="900" ref="canvas"></canvas>
     <p style="position:absolute" v-if="loaded">Loading</p>
   </MainLayout>
-  <NodeModal v-bind:mouse="mouse" v-bind:over_node="over_node" v-if="over_node"/>
+<!--  <NodeModal v-bind:mouse="mouse" v-bind:over_node="over_node" v-if="over_node"/>-->
 </template>
 <style>
 

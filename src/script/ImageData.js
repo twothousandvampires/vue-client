@@ -32,6 +32,11 @@ export default class ImageData{
         this.shadow_enemy = new Image()
         this.shadow_enemy.src = './src/assets/img/enemy/shadow.png'
 
+        this.reaper_enemy = new Image()
+        this.reaper_enemy.src = './src/assets/img/enemy/reaper.png'
+
+        this.weapon_swing = new Image()
+        this.weapon_swing.src = './src/assets/img/effects/weapon_swing.png'
     }
 
     getImage(name){

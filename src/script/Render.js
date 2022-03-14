@@ -1,10 +1,13 @@
 export default class Render{
 
-    constructor(context ,mouse) {
-        this.ctx = context
-        this.mouse = mouse
+    constructor(ctx, input, img_data) {
         this.bg_frame = 0
         this.bg_timer = 0
+
+        this.ctx = ctx
+        this.input = input
+
+        this.image_data = img_data
 
         this.can_w = 900
         this.can_h = 900
@@ -14,7 +17,7 @@ export default class Render{
         this.bg_aniamtion_speed = 4000
     }
 
-    drawBg(game){
+    drawBg(){
         this.bg_timer += 1
         if(this.bg_timer >= this.bg_aniamtion_speed / 50){
             this.bg_timer = 0
@@ -23,24 +26,24 @@ export default class Render{
                 this.bg_frame = 0
             }
         }
-        this.ctx.drawImage(game.img_data.getImage('background'),this.bg_frame * 300,0,300,300,0,0,this.can_w,this.can_h)
+        this.ctx.drawImage(this.image_data.getImage('background'),this.bg_frame * 300,0,300,300,0,0,this.can_w,this.can_h)
     }
 
     drawWorld(game){
         this.ctx.clearRect(0,0,900,900)
-        this.drawBg(game);
+        this.drawBg();
 
-        let coords = this.mouse.getСoord()
+        let coords = this.input.getСoord()
 
         if(coords){
             game.data.forEach(elem => {
-                if(coords.x > elem.pretti_x * 80
-                    && coords.x < elem.pretti_x * 80 + 80
-                    && coords.y > elem.pretti_y * 80
-                    && coords.y < elem.pretti_y * 80 + 80){
+                if(coords.cord_x > elem.pretti_x * 80
+                    && coords.cord_x < elem.pretti_x * 80 + 80
+                    && coords.cord_y > elem.pretti_y * 80
+                    && coords.cord_y < elem.pretti_y * 80 + 80){
                     elem.over = true
                         game.over_node = elem
-                        if(this.mouse.click){
+                        if(this.input.click){
                             if(Math.abs(game.char.pretti_x - elem.pretti_x) <= 1 && Math.abs(game.char.pretti_y - elem.pretti_y) <=1){
                                 game.goTo(elem)
                             }
@@ -86,11 +89,11 @@ export default class Render{
 
         this.ctx.drawImage(game.img_data.getImage('young'),this.character_frame * 92,0,92,120,game.char.pretti_x * 80 - 23,game.char.pretti_y * 80 - 30,92,120)
 
-        if(game.over_node){
-            let frame = game.over_node.type != 1 ? game.img_data.getImage('green_frame') : game.img_data.getImage('red_frame')
-            this.ctx.drawImage(frame,0,0,60,60,game.over_node.pretti_x * 80 + game.over_node.image_offset_x * 2  - 12 ,game.over_node.pretti_y * 80 + game.over_node.image_offset_y * 2 - 12
-                ,80,80)
-        }
+        // if(game.over_node){
+        //     let frame = game.over_node.type != 1 ? game.img_data.getImage('green_frame') : game.img_data.getImage('red_frame')
+        //     this.ctx.drawImage(frame,0,0,60,60,game.over_node.pretti_x * 80 + game.over_node.image_offset_x * 2  - 12 ,game.over_node.pretti_y * 80 + game.over_node.image_offset_y * 2 - 12
+        //         ,80,80)
+        // }
     }
 
     drawFight(game){
@@ -98,9 +101,13 @@ export default class Render{
         this.drawBg(game)
         game.char.act(game)
 
-        game.enemy.forEach(elem => {
+        // game.enemy.forEach(elem => {
+        //     elem.act(game)
+        //     elem.draw(game)
+        // })
+
+        game.effects.forEach(elem => {
             elem.act(game)
-            elem.draw(game)
         })
     }
 }

@@ -35,8 +35,8 @@ export default class Input {
     getСoord(){
         if(this.x && this.y){
             return {
-                x : this.x,
-                y : this.y
+                cord_x : this.x,
+                cord_y : this.y
             }
         }
         else{
