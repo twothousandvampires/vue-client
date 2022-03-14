@@ -61,15 +61,15 @@ export default class Functions{
     }
 
     static rectCollision(item , other){
-        let rect1_x = Math.floor(item.cords.x - (item.box_size_w/2))
-        let rect1_y = Math.floor(item.cords.y)
-        let rect1_w = item.box_size_w
-        let rect1_h = item.box_size_h
+        let rect1_x = Math.floor(item.cord_x - (item.box_size_x/2))
+        let rect1_y = Math.floor(item.cord_y)
+        let rect1_w = item.box_size_x
+        let rect1_h = item.box_size_y
 
-        let rect2_x = Math.floor(other.cords.x - (other.box_size_w/2))
-        let rect2_y = Math.floor(other.cords.y)
-        let rect2_w = other.box_size_w
-        let rect2_h = other.box_size_h
+        let rect2_x = Math.floor(other.cord_x - (other.box_size_x/2))
+        let rect2_y = Math.floor(other.cord_y)
+        let rect2_w = other.box_size_x
+        let rect2_h = other.box_size_y
 
         let XColl=false;
         let YColl=false;

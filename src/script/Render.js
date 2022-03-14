@@ -103,10 +103,10 @@ export default class Render{
         this.drawBg(game)
         game.char.act(game)
 
-        // game.enemy.forEach(elem => {
-        //     elem.act(game)
-        //     elem.draw(game)
-        // })
+        game.enemy.forEach(elem => {
+            elem.act(game)
+            elem.draw(game)
+        })
 
         game.effects.forEach(elem => {
             elem.act(game)

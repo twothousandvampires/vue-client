@@ -85,8 +85,8 @@ export default class Enemy{
             this.size_y + f_y)
 
         // show box
-        game.ctx.fillStyle = 'blue'
-        game.ctx.fillRect(this.cord_x - this.box_size_x/2,this.cord_y - this.box_size_y/2,this.box_size_x,this.box_size_y)
+        // game.ctx.fillStyle = 'blue'
+        // game.ctx.fillRect(this.cord_x - this.box_size_x/2,this.cord_y - this.box_size_y/2,this.box_size_x,this.box_size_y)
         // show attack rect
         // game.ctx.fillStyle = 'yellow'
         // game.ctx.fillRect(this.attack_rect.cord_x,this.attack_rect.cord_y,this.attack_rect.box_size_x,this.attack_rect.box_size_y)
