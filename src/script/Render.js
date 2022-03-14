@@ -34,6 +34,8 @@ export default class Render{
         this.drawBg();
 
         let coords = this.input.getСoord()
+        let click = this.input.pressed.click
+
 
         if(coords){
             game.data.forEach(elem => {
@@ -43,7 +45,7 @@ export default class Render{
                     && coords.cord_y < elem.pretti_y * 80 + 80){
                     elem.over = true
                         game.over_node = elem
-                        if(this.input.click){
+                        if(click){
                             if(Math.abs(game.char.pretti_x - elem.pretti_x) <= 1 && Math.abs(game.char.pretti_y - elem.pretti_y) <=1){
                                 game.goTo(elem)
                             }

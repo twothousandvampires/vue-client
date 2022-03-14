@@ -1,6 +1,6 @@
 export default class Effect{
 
-    constructor(img_src , size , angle) {
+    constructor(img_src , size , angle , y_offset) {
         this.cord_x = size.cord_x
         this.cord_y = size.cord_y
         this.image = img_src
@@ -9,6 +9,7 @@ export default class Effect{
         this.angle = angle
         this.frame = 0
         this.frame_timer = 0
+        this.y_offset = y_offset * 100
     }
 
     act(game){
@@ -28,7 +29,7 @@ export default class Effect{
         if(this.angle){
             ctx.translate(this.cord_x, this.cord_y);
             ctx.rotate(-this.angle);
-            ctx.drawImage(this.image, 100 * this.frame, 0 ,100,100, -this.box_size_x / 2 , - this.box_size_y/2, this.box_size_x , this.box_size_y);
+            ctx.drawImage(this.image, 100 * this.frame, this.y_offset ,100,100, -this.box_size_x / 2 , - this.box_size_y/2, this.box_size_x , this.box_size_y);
             ctx.rotate(this.angle);
             ctx.translate(-this.cord_x, -this.cord_y);
 

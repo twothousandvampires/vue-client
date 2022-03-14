@@ -4,6 +4,7 @@ export default class Input {
         this.y = undefined
         this.click = false
         this.canvas = canvas
+        this.pressed ={}
         this.canvas.addEventListener('mousemove',(e)=>{
             this.x = e.offsetX
             this.y = e.offsetY
@@ -13,9 +14,9 @@ export default class Input {
             this.y = undefined
         })
         this.canvas.addEventListener('click',(e)=>{
-            this.click = true
+            this.pressed.click = true
             setTimeout(()=>{
-                this.click = false
+                this.pressed.click = false
             },50)
         })
         window.addEventListener('keydown',(e)=>{
@@ -25,7 +26,6 @@ export default class Input {
         window.addEventListener('keyup',(e)=>{
             this.pressed[e.key] = false
         })
-        this.pressed ={}
     }
 
     getInput(){

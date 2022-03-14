@@ -29,8 +29,8 @@ export default class Character{
         this.damaged = false
 
         //ms
-        this.attack_speed = 1500
-        this.attack_range = 300
+        this.attack_speed = 1200
+        this.attack_range = 75
 
         this.attack_rect = undefined
 
@@ -221,8 +221,8 @@ export default class Character{
             if(input.e){
                 this.setDefend()
             }
-            else if(input.q){
-                this.setAttack(input,mouse_cord ,game)
+            else if(input.click){
+                this.setAttack(input,mouse_cord,game)
             }
             else if(this.moveInputIsPressed(input)){
                 if(input[' ']){
@@ -274,8 +274,8 @@ export default class Character{
         // }
 
 
-        game.ctx.fillStyle = 'blue'
-        game.ctx.fillRect(this.cord_x - this.box_size_x/2,this.cord_y - this.box_size_y/2,this.box_size_x,this.box_size_y)
+        // game.ctx.fillStyle = 'blue'
+        // game.ctx.fillRect(this.cord_x - this.box_size_x/2,this.cord_y - this.box_size_y/2,this.box_size_x,this.box_size_y)
     }
 
     setAttack(input, mouse, game){
