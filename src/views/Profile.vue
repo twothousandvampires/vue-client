@@ -26,7 +26,6 @@ export default {
             'Authorization': 'Bearer ' + localStorage.getItem('token'),
           }
         }).then((response) => {
-          console.log(response)
           this.user = response.data.data
         })
       }

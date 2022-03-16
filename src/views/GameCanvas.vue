@@ -42,7 +42,6 @@ export default {
             'Authorization': 'Bearer ' + localStorage.getItem('token'),
           }
     }).then(response =>{
-        console.log(response)
         if(response.data.success){
           this.img_data = new ImageData()
           this.ctx = this.$refs.canvas.getContext('2d')
@@ -53,11 +52,6 @@ export default {
           this.draw()
         }
       })
-  },
-  watch:{
-    data () {
-
-    }
   },
   methods : {
     goTo(node){
@@ -87,11 +81,13 @@ export default {
       }
     },
     prettifyData(response){
+      if(response.char_update){
+        this.char = new Character(response.char)
+      }
       switch (response.node_type){
         case 0:
           this.type = 0
           this.data = response.nodes
-          this.char = response.char
           this.data.map(elem => {
             elem.frame_timer = 0
             elem.frame = Math.floor(Math.random() * 8)
@@ -106,7 +102,6 @@ export default {
         case 1:
           this.type = 1
           this.createEnemy(response.dist, response.number)
-          this.char = new Character(response.char)
           break;
       }
     },

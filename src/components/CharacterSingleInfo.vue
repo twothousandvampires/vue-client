@@ -1,12 +1,17 @@
 <script>
-import ImageData from "../script/ImageData";
-import Input from "../script/Input";
-import Render from "../script/Render";
-
+import Character from "../script/Character/Character.js";
 export default {
   name: "CharacterSingleInfo",
   props : {
     character : Object
+  },
+  data(){
+    return{
+      char : new Character(this.character)
+    }
+  },
+  mounted() {
+
   },
   methods : {
     classImage(str){
@@ -44,29 +49,29 @@ export default {
 <template>
   <div>
     <div id="info-head">
-      <p class="stat-elem">{{ character.name }}</p>
-      <p>Level<span class="stat-elem">{{ character.level }}</span></p>
+      <p class="stat-elem">{{ char.name }}</p>
+      <p>Level<span class="stat-elem">{{ char.level }}</span></p>
     </div>
     <div id="info-body">
-      <img width="180" height="240" :src="classImage(character.class)" alt="">
+      <img width="180" height="240" :src="classImage(char.class)" alt="">
       <div id="info-stats">
         <p>
           <img title="life" src="@/assets/img/icons/life_icon.png" alt="life">
-          <span class="stat-elem">{{ character.hit_point }} / {{ character.max_hit_point }}</span>
+          <span class="stat-elem">{{ char.life }} / {{ char.max_life }}</span>
         </p>
         <p>
           <img title="energy" src="@/assets/img/icons/energy_icon.png" alt="energy">
-          <span class="stat-elem">{{ character.energy }} / {{ character.max_energy }}</span>
+          <span class="stat-elem">{{ char.energy }} / {{ char.max_energy }}</span>
         </p>
         <p>
           <img title="damage" src="@/assets/img/icons/sword.png" alt="damage">
-          <span class="stat-elem">{{ character.min_damage }} - {{ character.max_damage }}</span>
+          <span class="stat-elem">{{ char.min_damage }} - {{ char.max_damage }}</span>
         </p>
       </div>
     </div>
     <div id="info-bottom">
-      <button  @click="play(character.id, $event)">Play</button>
-      <button  @click="delete_char(character.id, $event)">Delete</button>
+      <button  @click="play(char.id, $event)">Play</button>
+      <button  @click="delete_char(char.id, $event)">Delete</button>
     </div>
   </div>
 </template>

@@ -7,19 +7,7 @@ let data = new ImageData()
 export default class Character{
 
     constructor(template) {
-
-        this.name = template.name
-        this.class = template.class
-        this.level = template.level
-        this.world_x = template.x
-        this.world_y = template.y
-        this.hit_point = template.hit_point
-        this.max_hit_point = template.max_hit_point
-        this.energy = template.energy
-        this.max_energy = template.max_energy
-        this.min_damage = template.min_damage
-        this.max_damage = template.max_damage
-
+        this.parseStats(template)
         this.cord_x = 450
         this.cord_y = 450
 
@@ -30,7 +18,7 @@ export default class Character{
 
         //ms
         this.attack_speed = 1200
-        this.attack_range = 75
+        this.attack_range = 60
 
         this.attack_rect = undefined
 
@@ -49,6 +37,9 @@ export default class Character{
         this.box_size_x = 46
         this.box_size_y = 30
 
+        this.affected = {
+
+        }
         this.speed = 2
         this.image = {
             y_draw_offset : 30,
@@ -104,6 +95,25 @@ export default class Character{
                 tick : ()=> {return Math.floor(500/350)}
             }
         }
+        console.log(this)
+    }
+
+    parseStats(template){
+        for(let elem in template){
+            this[elem] = this.calcStat(template[elem],
+                                    template['increased_' + elem] ? template['increased_' + elem] : 0,
+                                    template['reduced_' + elem] ? template['reduced_' + elem] : 0)
+        }
+    }
+
+    calcStat(flat, inc , red , recalc = false){
+        if(inc === 0 && red === 0){
+            return flat
+        }
+        else {
+            let total = inc - red
+            return Math.floor(flat * (1 + total / 100))
+        }
     }
 
     angleToAttackRect(angle){
@@ -113,44 +123,6 @@ export default class Character{
             box_size_x : this.attack_range,
             box_size_y : this.attack_range
         }
-
-
-        // if(angle > 0 && angle < 1.56){
-        //     console.log('!')
-        //     return {
-        //         cord_x : this.cord_x,
-        //         cord_y : this.cord_y,
-        //         box_size_x : this.attack_range,
-        //         box_size_y : this.attack_range
-        //     }
-        // }
-        // if(angle > 1.56 && angle < 3.12){
-        //     console.log('!')
-        //     return {
-        //         cord_x : this.cord_x,
-        //         cord_y : this.cord_y - this.attack_range,
-        //         box_size_x : this.attack_range,
-        //         box_size_y : this.attack_range
-        //     }
-        // }
-        // if(angle > 3.12 && angle < 4.68){
-        //     console.log('!')
-        //     return {
-        //         cord_x : this.cord_x - this.attack_range ,
-        //         cord_y : this.cord_y - this.attack_range,
-        //         box_size_x : this.attack_range,
-        //         box_size_y : this.attack_range
-        //     }
-        // }
-        // if(angle > 4.68 || angle < 6.24){
-        //     console.log('!')
-        //     return {
-        //         cord_x : this.cord_x - this.attack_range,
-        //         cord_y : this.cord_y,
-        //         box_size_x : this.attack_range,
-        //         box_size_y : this.attack_range
-        //     }
-        // }
     }
 
     setCord(x ,y){
@@ -194,6 +166,7 @@ export default class Character{
     }
 
     act(game){
+
         // get pressed keys
         let input = game.mouse.getInput()
         let mouse_cord = game.mouse.getСoord()
@@ -340,6 +313,4 @@ export default class Character{
             EffectCreator.createWeaponSwing(this.attack_rect , this.attack_angle , game)
         }
     }
-
-
 }
