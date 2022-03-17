@@ -1,9 +1,9 @@
--- phpMyAdmin SQL Dump
+ -- phpMyAdmin SQL Dump
 -- version 5.1.0
 -- https://www.phpmyadmin.net/
 --
 -- Хост: 127.0.0.1:3306
--- Время создания: Мар 16 2022 г., 18:46
+-- Время создания: Мар 17 2022 г., 18:05
 -- Версия сервера: 8.0.24
 -- Версия PHP: 7.4.21
 
@@ -774,6 +774,83 @@ INSERT INTO `users` (`id`, `name`, `email`, `email_verified_at`, `password`, `re
 (13, 'nik', 'admin3@gmail.com', NULL, '$2y$10$ORiaUSnIRgrpiso0nVgt.OXsaDgH31iKQqdKw4fAn9ld0zDxZz8oy', NULL, '2022-02-17 06:10:13', '2022-02-17 06:10:13'),
 (14, 'dima', 'admin4@gmail.com', NULL, '$2y$10$dHHqQQhFXhm1iHttxa5tW.2P3ZvwlYedaMgFuwNSp21xoD3QXsmMO', NULL, '2022-02-17 06:14:29', '2022-02-17 06:14:29');
 
+-- --------------------------------------------------------
+
+--
+-- Структура таблицы `weapons`
+--
+
+CREATE TABLE `weapons` (
+  `name` varchar(100) NOT NULL,
+  `type` varchar(100) NOT NULL,
+  `inv_slot` tinyint NOT NULL,
+  `equip_slot` tinyint NOT NULL,
+  `subtype` varchar(100) NOT NULL,
+  `min_damage` smallint DEFAULT NULL,
+  `max_damage` smallint DEFAULT NULL,
+  `full_name` int NOT NULL,
+  `char_id` bigint NOT NULL,
+  `id` int NOT NULL,
+  `img_path` varchar(100) NOT NULL,
+  `class` varchar(100) NOT NULL,
+  `attack_speed` float NOT NULL,
+  `attack_range` tinyint NOT NULL,
+  `property_1` varchar(100) DEFAULT NULL,
+  `property_2` varchar(100) DEFAULT NULL,
+  `property_3` varchar(100) DEFAULT NULL,
+  `property_4` varchar(100) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Структура таблицы `weapons_list`
+--
+
+CREATE TABLE `weapons_list` (
+  `id` int NOT NULL,
+  `name` varchar(100) NOT NULL,
+  `min_damage` smallint NOT NULL,
+  `max_damage` smallint NOT NULL,
+  `class` varchar(100) NOT NULL,
+  `size` tinyint NOT NULL,
+  `attack_speed` float NOT NULL,
+  `attack_range` tinyint NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--
+-- Дамп данных таблицы `weapons_list`
+--
+
+INSERT INTO `weapons_list` (`id`, `name`, `min_damage`, `max_damage`, `class`, `size`, `attack_speed`, `attack_range`) VALUES
+(1, 'Void slasher', 2, 7, 'sword', 1, 0, 0),
+(2, 'Star crasher', 3, 10, 'mace', 2, 0, 0),
+(3, 'Pale razor', 1, 3, 'knife', 1, 0, 0);
+
+-- --------------------------------------------------------
+
+--
+-- Структура таблицы `weapons_property_list`
+--
+
+CREATE TABLE `weapons_property_list` (
+  `id` tinyint NOT NULL,
+  `max_value` int NOT NULL,
+  `type` varchar(100) NOT NULL,
+  `name` varchar(100) NOT NULL,
+  `min_value` smallint NOT NULL,
+  `inc_type` varchar(10) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--
+-- Дамп данных таблицы `weapons_property_list`
+--
+
+INSERT INTO `weapons_property_list` (`id`, `max_value`, `type`, `name`, `min_value`, `inc_type`) VALUES
+(1, 3, 'local', 'add_damage', 1, 'between'),
+(2, 20, 'local', 'icreased_weapon_damage', 10, 'icreased'),
+(3, 10, 'global', 'incresed_life', 5, 'icreased');
+
 --
 -- Индексы сохранённых таблиц
 --
@@ -859,6 +936,25 @@ ALTER TABLE `users`
   ADD UNIQUE KEY `users_email_unique` (`email`);
 
 --
+-- Индексы таблицы `weapons`
+--
+ALTER TABLE `weapons`
+  ADD PRIMARY KEY (`id`,`type`),
+  ADD KEY `char_id` (`char_id`);
+
+--
+-- Индексы таблицы `weapons_list`
+--
+ALTER TABLE `weapons_list`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Индексы таблицы `weapons_property_list`
+--
+ALTER TABLE `weapons_property_list`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- AUTO_INCREMENT для сохранённых таблиц
 --
 
@@ -911,6 +1007,24 @@ ALTER TABLE `users`
   MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
 
 --
+-- AUTO_INCREMENT для таблицы `weapons`
+--
+ALTER TABLE `weapons`
+  MODIFY `id` int NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT для таблицы `weapons_list`
+--
+ALTER TABLE `weapons_list`
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+
+--
+-- AUTO_INCREMENT для таблицы `weapons_property_list`
+--
+ALTER TABLE `weapons_property_list`
+  MODIFY `id` tinyint NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+
+--
 -- Ограничения внешнего ключа сохраненных таблиц
 --
 
@@ -925,6 +1039,12 @@ ALTER TABLE `characters`
 --
 ALTER TABLE `nodes`
   ADD CONSTRAINT `nodes_ibfk_1` FOREIGN KEY (`char_id`) REFERENCES `characters` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Ограничения внешнего ключа таблицы `weapons`
+--
+ALTER TABLE `weapons`
+  ADD CONSTRAINT `weapons_ibfk_1` FOREIGN KEY (`char_id`) REFERENCES `characters` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
