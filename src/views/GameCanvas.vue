@@ -21,7 +21,7 @@ export default {
       loaded : true,
       type : 0,
       enemy : [],
-      effects : []
+      effects : [],
     }
   },
   components:{
@@ -69,6 +69,7 @@ export default {
       }).then(response =>{
             if(response.data.success){
               this.prettifyData(response.data.data)
+              console.log('!git')
             }
       })
     },
