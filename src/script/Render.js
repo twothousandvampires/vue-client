@@ -36,7 +36,6 @@ export default class Render{
         let coords = this.input.getСoord()
         let click = this.input.pressed.click
 
-
         if(coords){
             game.data.forEach(elem => {
                 if(coords.cord_x > elem.pretti_x * 80

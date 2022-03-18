@@ -14,7 +14,7 @@ export default {
       img_data : undefined,
       render : undefined,
       ctx : undefined,
-      nodes: undefined,
+      data: undefined,
       char : undefined,
       mouse : undefined,
       over_node : false,
@@ -49,6 +49,7 @@ export default {
           this.render = new Render(this.ctx, this.mouse ,this.img_data)
           this.prettifyData(response.data.data)
           this.loaded = false
+          console.log(response.data.data)
           this.draw()
         }
       })
@@ -69,7 +70,6 @@ export default {
       }).then(response =>{
             if(response.data.success){
               this.prettifyData(response.data.data)
-              console.log('!git')
             }
       })
     },
@@ -83,7 +83,12 @@ export default {
     },
     prettifyData(response){
       if(response.char_update){
-        this.char = new Character(response.char)
+        this.char = new Character(response.char.character)
+        this.char.inv = response.char.items
+      }
+      else {
+        this.char.x = response.char.character.x
+        this.char.y = response.char.character.y
       }
       switch (response.node_type){
         case 0:
