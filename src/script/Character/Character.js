@@ -1,13 +1,14 @@
 import Functions from "../GameFunctions";
 import ImageData from "../ImageData";
 import EffectCreator from "../Effects/EffectCreator.js";
-
+import Inventory from "./Inventory";
 let data = new ImageData()
 
 export default class Character{
 
-    constructor(template) {
+    constructor(template ,items = false) {
         this.parseStats(template)
+        if(items) this.inv = new Inventory(items)
         this.cord_x = 450
         this.cord_y = 450
 
