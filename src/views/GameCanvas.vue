@@ -83,12 +83,11 @@ export default {
     },
     prettifyData(response){
       if(response.char_update){
-        this.char = new Character(response.char.character)
-        this.char.inv = response.char.items
+        this.char = new Character(response.character.character, response.character.items)
       }
       else {
-        this.char.x = response.char.character.x
-        this.char.y = response.char.character.y
+        this.char.x = response.char.x
+        this.char.y = response.char.y
       }
       switch (response.node_type){
         case 0:
