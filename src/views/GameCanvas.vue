@@ -7,6 +7,7 @@ import ImageData from "../script/ImageData.js";
 import Shadow from "../script/Enemy/Shadow.js";
 import Reaper from "../script/Enemy/Reaper.js";
 import Character from "../script/Character/Character.js";
+import Inventory from "../components/Inventory.vue";
 
 export default {
   data(){
@@ -22,11 +23,13 @@ export default {
       type : 0,
       enemy : [],
       effects : [],
+      inv_is_open : false
     }
   },
   components:{
     NodeModal,
-    MainLayout
+    MainLayout,
+    Inventory
   },
   props:{
     char_id : String
@@ -55,6 +58,9 @@ export default {
       })
   },
   methods : {
+    close_inv(){
+      this.inv_is_open = false
+    },
     goTo(node){
       axios({method: 'post',
             url: '//127.0.0.1:8000/api/character/move/',
@@ -82,6 +88,7 @@ export default {
       }
     },
     prettifyData(response){
+      console.log(response)
       if(response.char_update){
         this.char = new Character(response.character.character, response.character.items)
       }
@@ -115,7 +122,12 @@ export default {
         setInterval(()=>{
           switch (this.type){
             case 0:
-              this.render.drawWorld(this)
+              if(this.mouse.getInput().i){
+                this.inv_is_open = true
+              }
+              if(!this.inv_is_open) {
+                this.render.drawWorld(this)
+              }
               break;
             case 1:
               this.render.drawFight(this)
@@ -128,6 +140,9 @@ export default {
   computed:{
     can_style(){
       return this.loaded ? 'visibility : hidden' : 'visibility : visible'
+    },
+    getInv(){
+
     }
   }
 }
@@ -138,6 +153,9 @@ export default {
     <canvas :style="can_style" width="900" height="900" ref="canvas"></canvas>
     <p style="position:absolute" v-if="loaded">Loading</p>
   </MainLayout>
+  <Inventory v-if="inv_is_open" @changed="prettifyData" @close_inv="close_inv" v-bind:inv="char.inv" v-bind:mouse="mouse">
+
+  </Inventory>
 <!--  <NodeModal v-bind:mouse="mouse" v-bind:over_node="over_node" v-if="over_node"/>-->
 </template>
 <style>

@@ -2,6 +2,8 @@ export default class Input {
     constructor(canvas) {
         this.x = undefined
         this.y = undefined
+        this.window_x = undefined
+        this.window_y = undefined
         this.click = false
         this.canvas = canvas
         this.pressed ={}
@@ -25,6 +27,10 @@ export default class Input {
         })
         window.addEventListener('keyup',(e)=>{
             this.pressed[e.key] = false
+        })
+        window.addEventListener('mousemove',(e)=>{
+            this.window_x = e.pageX
+            this.window_y = e.pageY
         })
     }
 
