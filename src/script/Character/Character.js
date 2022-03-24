@@ -8,7 +8,9 @@ let data = new ImageData()
 export default class Character{
     constructor(template ,items = false) {
         this.parseStats(template)
-        if(items) this.inv = new Inventory(items)
+        if(items) this.inv = new Inventory(items,this)
+        console.log(this)
+
         this.cord_x = 450
         this.cord_y = 450
 
@@ -101,9 +103,8 @@ export default class Character{
 
     parseStats(template){
         for(let elem in template){
-            this[elem] = this.calcStat(template[elem],
-                                    template['increased_' + elem] ? template['increased_' + elem] : 0,
-                                    template['reduced_' + elem] ? template['reduced_' + elem] : 0)
+
+            this[elem] = template[elem]
         }
     }
 

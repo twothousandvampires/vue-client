@@ -90,6 +90,7 @@ export default {
     prettifyData(response){
       console.log(response)
       if(response.char_update){
+        console.log(response)
         this.char = new Character(response.character.character, response.character.items)
       }
       else {

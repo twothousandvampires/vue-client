@@ -15,7 +15,7 @@ export default {
     }
   },
   mounted() {
-
+      console.log(this.inv.pull[1].name)
   },
   methods : {
     listener(e){
@@ -61,9 +61,9 @@ export default {
   <div id="wrap">
     <div id="inv">
       <p @click="close">close</p>
-      <div id="inv_item"  v-for="(item,index) in inv.pull">
+      <div id="inv_item"  v-for="(item,index) in inv.pull" :key="item.id">
         <div @click="clickEmpty(index)" :slot="index" id="empty" v-if="item === 'empty'"></div>
-        <div @click="clickItem(item.inv_slot)" :title="inv.getTitle(item.inv_slot)" class="slot" v-else>
+        <div @click="clickItem(item.inv_slot)" :title="inv.getDiscription(item.inv_slot)" class="slot" v-else>
           <p>{{item.name}}</p>
           <img :src="item.img_path" alt="">
         </div>
