@@ -2,6 +2,7 @@ import Weapon from "../Items/Weapon";
 
 export default class Inventory{
     constructor(items,player) {
+        console.log(items)
         this.equip = {
 
         }

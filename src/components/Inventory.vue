@@ -15,7 +15,7 @@ export default {
     }
   },
   mounted() {
-      console.log(this.inv.pull[1].name)
+      console.log(this.inv.pull)
   },
   methods : {
     listener(e){
