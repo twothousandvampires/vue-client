@@ -88,9 +88,7 @@ export default {
       }
     },
     prettifyData(response){
-      console.log(response)
       if(response.char_update){
-        console.log(response)
         this.char = new Character(response.character.character, response.character.items)
       }
       else {
@@ -154,7 +152,7 @@ export default {
     <canvas :style="can_style" width="900" height="900" ref="canvas"></canvas>
     <p style="position:absolute" v-if="loaded">Loading</p>
   </MainLayout>
-  <Inventory v-if="inv_is_open" @changed="prettifyData" @close_inv="close_inv" v-bind:inv="char.inv" v-bind:mouse="mouse">
+  <Inventory v-if="inv_is_open" @changed="prettifyData" @close_inv="close_inv"  v-bind:char="char" v-bind:mouse="mouse">
 
   </Inventory>
 <!--  <NodeModal v-bind:mouse="mouse" v-bind:over_node="over_node" v-if="over_node"/>-->
