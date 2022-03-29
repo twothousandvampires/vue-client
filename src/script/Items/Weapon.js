@@ -1,8 +1,9 @@
 export default class Weapon{
-    constructor(template,player){
+    constructor(template){
         this.increased_weapon_damage = 0
         this.add_damage = [0,0]
         this.props = []
+        this.prop_stats = []
         for(let prop in template){
             if(!prop.includes('property')){
                 this[prop] = template[prop]
@@ -25,7 +26,7 @@ export default class Weapon{
                     }
                 }
                 else {
-                    player[affect] = +value
+                    this.prop_stats.push([affect,value])
                     this.props.push(affect.replaceAll('_', ' ') + ' - ' + value)
                 }
             }
@@ -35,7 +36,6 @@ export default class Weapon{
 
         this.min_damage = Math.floor(this.min_damage * (1 + this.increased_weapon_damage / 100))
         this.max_damage = Math.floor(this.max_damage * (1 + this.increased_weapon_damage / 100))
-        console.log(this.props)
     }
 
     getDiscription(){
@@ -44,5 +44,24 @@ export default class Weapon{
             result += elem + '\n'
         })
         return result
+    }
+
+    equip(player){
+        this.prop_stats.forEach(elem => {
+            console.log(elem)
+            player[elem[0]] += +elem[1]
+        })
+        player.min_attack_damage += this.min_damage
+        player.max_attack_damage += this.max_damage
+        player.calcStats()
+    }
+
+    unequip(player){
+        this.prop_stats.forEach(elem => {
+            player[elem[0]] -= +elem[1]
+        })
+        player.min_attack_damage -= this.min_damage
+        player.max_attack_damage -= this.max_damage
+        player.calcStats()
     }
 }

@@ -1,8 +1,4 @@
 <script>
-import ImageData from "../script/ImageData";
-import Input from "../script/Input";
-import Render from "../script/Render";
-
 export default {
   name: "Inventory.vue",
   props : {
@@ -18,41 +14,26 @@ export default {
 
   },
   methods : {
-    listener(e){
-      this.$refs.clicked.style.top = e.pageY + 'px'
-      this.$refs.clicked.style.left = e.pageX + 'px'
-    },
     close(){
       this.$emit('close_inv')
     },
-    clickItem(slot){
-      this.clicked = this.char.inv.pull[slot];
-      window.addEventListener('mousemove',this.listener)
-    },
-    clickEmpty(index){
-      if(this.clicked){
-        window.removeEventListener('mousemove',this.listener)
-        let item_id = this.clicked.id
-        let type = this.clicked.subtype
-        this.clicked = undefined;
-        axios({method: 'post',
-          url : '//127.0.0.1:8000/api/item/change/',
-          data : {
-            char_id : localStorage.getItem('char_id'),
-            item_id : item_id,
-            inv_slot : index,
-            type : type
-          },
-          headers : {
-            'Authorization': 'Bearer ' + localStorage.getItem('token'),
-          }
-        }).then(response =>{
-          if(response.data.success){
-            this.$emit('changed',response.data.data)
-          }
-        })
+    clickItem(item, slot, slot_type){
+      if(!this.clicked && item !== 'empty'){
+        this.clicked = item
+        item.clicked = true
       }
-    }
+      else if(this.clicked && this.clicked.slot != slot){
+        this.char.inv.change(this.clicked ,slot ,slot_type,this.char)
+        this.clicked = false
+      }
+      else {
+        this.char.inv.pull[this.clicked.slot].clicked = false
+        this.clicked = false
+      }
+    },
+  },
+  computed:{
+
   }
 }
 </script>
@@ -60,30 +41,73 @@ export default {
   <div id="inv_wrap">
     <div id="stats">
       <p>{{char.name}}</p>
+      <p>{{char.min_attack_damage}}</p>
+      <p>{{char.max_attack_damage}}</p>
+      <p>{{char.increased_life}}</p>
+      <p>Life - {{char.life}} / {{char.max_life}}</p>
     </div>
     <div id="equip_block">
-      <div id="equip">
-        <div id="head">
-
+        <div id="equip">
+        <!-- head -->
+        <div id="head" @click="clickItem(char.inv.equip['0'],0,'equip')" v-if="char.inv.equip['0'] !== 'empty'">
+          <p>{{ char.inv.equip['0'].name }}</p>
+          <img :src="char.inv.equip['0'].img_path" alt="">
         </div>
-        <div id="left_hand">
-
+        <div id="head" @click="clickItem(char.inv.equip['0'],0,'equip')" v-else >
+          <img width="100" height="100" src="/src/assets/img/icons/items/misc/empty_helm.png" alt="">
         </div>
-        <div id="right_hand">
 
-        </div>
-        <div id="body">
+        <!-- left -->
+          <div id="left_hand" @click="clickItem(char.inv.equip['1'],0,'equip')" v-if="char.inv.equip['1'] !== 'empty'">
+            <p>{{ char.inv.equip['1'].name }}</p>
+            <img :src="char.inv.equip['1'].img_path" alt="">
+          </div>
+          <div id="left_hand" @click="clickItem(char.inv.equip['1'],0,'equip')" v-else >
+            <img width="100" height="100" src="/src/assets/img/icons/items/misc/empty_left.png" alt="">
+          </div>
 
-        </div>
-        <div id="first_accessory">
+        <!-- right -->
+          <div id="right_hand" @click="clickItem(char.inv.equip['2'],0,'equip')" v-if="char.inv.equip['2'] !== 'empty'">
+            <p>{{ char.inv.equip['2'].name }}</p>
+            <img :src="char.inv.equip['2'].img_path" alt="">
+          </div>
+          <div id="right_hand" @click="clickItem(char.inv.equip['2'],0,'equip')" v-else >
+            <img width="100" height="100" src="/src/assets/img/icons/items/misc/empty_right.png" alt="">
+          </div>
 
-        </div>
-        <div id="second_accessory">
+        <!-- body -->
+          <div id="body" @click="clickItem(char.inv.equip['3'],0,'equip')" v-if="char.inv.equip['3'] !== 'empty'">
+            <p>{{ char.inv.equip['3'].name }}</p>
+            <img :src="char.inv.equip['3'].img_path" alt="">
+          </div>
+          <div id="body" @click="clickItem(char.inv.equip['3'],0,'equip')" v-else >
+            <img width="100" height="100" src="/src/assets/img/icons/items/misc/empty_body.png" alt="">
+          </div>
 
-        </div>
-        <div id="belt">
+          <div id="first_accessory" @click="clickItem(char.inv.equip['4'],0,'equip')" v-if="char.inv.equip['4'] !== 'empty'">
+            <p>{{ char.inv.equip['4'].name }}</p>
+            <img :src="char.inv.equip['4'].img_path" alt="">
+          </div>
+          <div id="first_accessory" @click="clickItem(char.inv.equip['4'],0,'equip')" v-else >
+            <img width="100" height="100" src="/src/assets/img/icons/items/misc/empty_acess.png" alt="">
+          </div>
 
-        </div>
+          <div id="second_accessory" @click="clickItem(char.inv.equip['5'],0,'equip')" v-if="char.inv.equip['5'] !== 'empty'">
+            <p>{{ char.inv.equip['5'].name }}</p>
+            <img :src="char.inv.equip['5'].img_path" alt="">
+          </div>
+          <div id="second_accessory" @click="clickItem(char.inv.equip['5'],0,'equip')" v-else >
+            <img width="100" height="100" src="/src/assets/img/icons/items/misc/empty_acess.png" alt="">
+          </div>
+
+          <div id="belt" @click="clickItem(char.inv.equip['6'],0,'equip')" v-if="char.inv.equip['6'] !== 'empty'">
+            <p>{{ char.inv.equip['6'].name }}</p>
+            <img :src="char.inv.equip['6'].img_path" alt="">
+          </div>
+          <div id="belt" @click="clickItem(char.inv.equip['6'],0,'equip')" v-else >
+            <img width="100" height="100" src="/src/assets/img/icons/items/misc/empty_belt.png" alt="">
+          </div>
+
       </div>
       <div id="belt_block">
 
@@ -92,8 +116,8 @@ export default {
     <div id="inv">
       <p @click="close">close</p>
       <div id="inv_item"  v-for="(item,index) in char.inv.pull" :key="item.id">
-        <div @click="clickEmpty(index)" :slot="index" id="empty" v-if="item === 'empty'"></div>
-        <div @click="clickItem(item.inv_slot)" :title="char.inv.getDiscription(item.inv_slot)" class="slot" v-else>
+        <div @click="clickItem(item,index,'inv')" :slot="index" id="empty" v-if="item === 'empty'"></div>
+        <div @click="clickItem(item,index,'inv')" :title="char.inv.getDiscription(item.slot)" v-bind:class="{clicked: item.clicked}" class="slot" v-else>
           <p>{{item.name}}</p>
           <img :src="item.img_path" alt="">
         </div>
@@ -174,7 +198,7 @@ export default {
   }
   #stats{
     width: 30%;
-    background-color: blue;
+    background-color: aqua;
   }
   #equip_block{
     width: 35%;
@@ -207,5 +231,8 @@ export default {
     background-image: url("./src/assets/img/border/equip_ring.png");
     background-repeat: no-repeat;
     background-size: 100%
+  }
+  .clicked{
+    border: 2px green solid;
   }
 </style>
