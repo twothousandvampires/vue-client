@@ -140,9 +140,6 @@ export default {
     can_style(){
       return this.loaded ? 'visibility : hidden' : 'visibility : visible'
     },
-    getInv(){
-
-    }
   }
 }
 </script>

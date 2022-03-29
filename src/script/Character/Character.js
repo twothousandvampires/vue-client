@@ -7,9 +7,10 @@ let data = new ImageData()
 
 export default class Character{
     constructor(template ,items = false) {
+        this.template = template
         this.parseStats(template)
         if(items) this.inv = new Inventory(items,this)
-        console.log(this)
+
 
         this.cord_x = 450
         this.cord_y = 450
@@ -98,24 +99,22 @@ export default class Character{
                 tick : ()=> {return Math.floor(500/350)}
             }
         }
-        console.log(this)
+        this.calcStats()
     }
 
     parseStats(template){
         for(let elem in template){
-
             this[elem] = template[elem]
         }
     }
 
-    calcStat(flat, inc , red , recalc = false){
-        if(inc === 0 && red === 0){
-            return flat
-        }
-        else {
-            let total = inc - red
-            return Math.floor(flat * (1 + total / 100))
-        }
+    calcStats(){
+        this.calcLife()
+    }
+
+    calcLife(){
+        this.max_life = Math.floor(this.template.max_life * (1 + ((this.increased_life - this.reduced_life) / 100)))
+        this.life = Math.floor(this.template.life * (1 + ((this.increased_life - this.reduced_life) / 100)))
     }
 
     angleToAttackRect(angle){
