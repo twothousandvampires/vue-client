@@ -1,4 +1,5 @@
 import Weapon from "../Items/Weapon";
+import Armour from "../Items/Armour";
 
 export default class Inventory{
     constructor(items,player) {
@@ -44,7 +45,7 @@ export default class Inventory{
                 item = new Weapon(template)
                 break;
             case 'armour':
-                // item = new Armour(template)
+                item = new Armour(template)
                 break;
         }
         return item;
@@ -54,7 +55,6 @@ export default class Inventory{
         let which = clicked
         let for_what = false;
 
-        console.log(slot)
         switch (slot_type) {
             case 'inv':
                 for_what = this.pull[slot]
@@ -64,7 +64,7 @@ export default class Inventory{
                 break;
         }
 
-        if('empty' === for_what) { for_what =  undefined}
+        if('empty' === for_what) { for_what = false}
 
         axios({method: 'post',
             url : '//127.0.0.1:8000/api/item/change/',
@@ -83,9 +83,9 @@ export default class Inventory{
         }).then(response =>{
             if(response.data.success){
                 //если просто переместили
-                if(!response.data.data['for_what']){
-                    // новый предмет
-                    let one = new Weapon(response.data.data['which'])
+                let one = new Weapon(response.data.data['which'])
+
+                if(!for_what){
                     // если был снят с эквипа
                     if(which.slot_type === 'equip') {
                         which.unequip(player)
@@ -105,10 +105,30 @@ export default class Inventory{
                     }
                 }
                 else {
-                    let one = response.data.data['which']
-                    let two = response.data.data['for_what']
-                    this.pull[one.slot] = new Weapon(one,player)
-                    this.pull[two.slot] = new Weapon(two,player)
+                    let two = new Weapon(response.data.data['for_what'])
+
+                    if(which.slot_type === 'equip') {
+                        which.unequip(player)
+                    }
+                    if(for_what.slot_type === 'equip') {
+                        for_what.unequip(player)
+                    }
+
+                    if(two.slot_type === 'equip'){
+                        two.equip(player)
+                        this.equip[two.slot] = two
+                    }
+                    else {
+                        this.pull[two.slot] = two
+                    }
+
+                    if(one.slot_type === 'equip'){
+                        one.equip(player)
+                        this.equip[one.slot] = one
+                    }
+                    else {
+                        this.pull[one.slot] = one
+                    }
                 }
             }
         })
