@@ -56,11 +56,37 @@ export default {
           'Authorization': 'Bearer ' + localStorage.getItem('token'),
         }
       }).then(response =>{
+        console.log("!")
         if(response.data.success){
           let item = response.data.data.item
           this.char.inv.pull[item.slot] = this.char.inv.createItem(item)
         }
+      }).catch(error => {
+        console.log('!')
       })
+    },
+    deleteItem(){
+      if(this.clicked){
+        axios({method: 'post',
+          url : '//127.0.0.1:8000/api/item/delete/',
+          data : {
+            char_id : localStorage.getItem('char_id'),
+            id : this.clicked.id,
+            type : this.clicked.type
+          },
+          headers : {
+            'Authorization': 'Bearer ' + localStorage.getItem('token'),
+          }
+        }).then(response =>{
+          if(response.data.success){
+            if(this.clicked.slot_type == 'equip'){
+              this.clicked.unequip(this.char)
+            }
+            this.char.inv.deleteItem(this.clicked)
+            this.clicked = false
+          }
+        })
+      }
     }
   },
 }
@@ -142,15 +168,20 @@ export default {
       </div>
     </div>
     <div id="inv">
-      <p @click="close">close</p>
-      <p @click="createItem()">
-        create item
-      </p>
-      <div id="inv_item"  v-for="(item,index) in char.inv.pull" :key="item.id">
-        <div @click="clickItem(item,index,'inv')" :slot="index" id="empty" v-if="item === 'empty'"></div>
-        <div @click="clickItem(item,index,'inv')" :title="char.inv.getDiscription(item.slot)" v-bind:class="{clicked: item.clicked}" class="slot" v-else>
-          <p>{{item.name}}</p>
-          <img :src="item.img_path" alt="">
+      <div id ="utility">
+        <p @click="createItem()">
+          create item
+        </p>
+        <p @click="deleteItem()">Удалить</p>
+        <p>Применить</p>
+      </div>
+      <div id="items">
+        <div id="inv_item"  v-for="(item,index) in char.inv.pull" :key="item.id">
+          <div @click="clickItem(item,index,'inv')" :slot="index" id="empty" v-if="item === 'empty'"></div>
+          <div @click="clickItem(item,index,'inv')" :title="char.inv.getDiscription(item.slot)" v-bind:class="{clicked: item.clicked}" class="slot" v-else>
+            <p>{{item.name}}</p>
+            <img :src="item.img_path" alt="">
+          </div>
         </div>
       </div>
     </div>
@@ -161,6 +192,22 @@ export default {
   </div>
 </template>
 <style scoped>
+  #utility{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    width: 100%;
+  }
+  #utility p{
+    padding: 10px;
+    background-color: #f2f2f2;
+    cursor: pointer;
+  }
+  #items{
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
   #belt, #head, #body, #left_hand, #right_hand, #first_accessory, #second_accessory{
     width: 100px;
     height: 100px;
@@ -242,10 +289,11 @@ export default {
     background-color: red;
     align-items: flex-start;
     display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;
+    flex-direction: column;
+    justify-content: space-around;
   }
   #inv_wrap{
+    top:0;
     border: 6px solid #40c4c8;
     border-image: url("/src/assets/img/border/border_big.png") 3 stretch stretch;
     display: flex;

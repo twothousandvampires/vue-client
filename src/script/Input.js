@@ -1,5 +1,6 @@
 export default class Input {
     constructor(canvas) {
+        this.delay = false
         this.x = undefined
         this.y = undefined
         this.window_x = undefined
@@ -24,6 +25,7 @@ export default class Input {
         window.addEventListener('keydown',(e)=>{
             e.preventDefault()
             this.pressed[e.key] = true
+
         })
         window.addEventListener('keyup',(e)=>{
             this.pressed[e.key] = false

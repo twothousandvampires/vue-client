@@ -133,4 +133,13 @@ export default class Inventory{
             }
         })
     }
+
+    deleteItem(item){
+        if(item.slot_type == 'equip'){
+            this.equip[item.slot] = 'empty'
+        }
+        else {
+            this.pull[this.pull.indexOf(item)] = 'empty'
+        }
+    }
 }

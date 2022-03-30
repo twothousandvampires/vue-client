@@ -12,6 +12,7 @@ import Inventory from "../components/Inventory.vue";
 export default {
   data(){
     return {
+      delay : false,
       img_data : undefined,
       render : undefined,
       ctx : undefined,
@@ -120,9 +121,15 @@ export default {
         setInterval(()=>{
           switch (this.type){
             case 0:
-              if(this.mouse.getInput().i){
-                this.inv_is_open = true
-              }
+              if(this.mouse.getInput().i && !this.delay){
+
+                    this.inv_is_open = !this.inv_is_open
+                    this.delay = true
+                setTimeout(()=>{
+                  this.delay = false
+                },100)
+                }
+
               if(!this.inv_is_open) {
                 this.render.drawWorld(this)
               }
