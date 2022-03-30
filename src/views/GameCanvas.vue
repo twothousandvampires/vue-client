@@ -52,7 +52,6 @@ export default {
           this.render = new Render(this.ctx, this.mouse ,this.img_data)
           this.prettifyData(response.data.data)
           this.loaded = false
-          console.log(response.data.data)
           this.draw()
         }
       })
@@ -143,7 +142,6 @@ export default {
   }
 }
 </script>
-
 <template>
   <MainLayout>
     <canvas :style="can_style" width="900" height="900" ref="canvas"></canvas>
@@ -155,7 +153,6 @@ export default {
 <!--  <NodeModal v-bind:mouse="mouse" v-bind:over_node="over_node" v-if="over_node"/>-->
 </template>
 <style>
-
 canvas{
     image-rendering: -moz-crisp-edges;
     image-rendering: -webkit-crisp-edges;
