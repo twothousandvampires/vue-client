@@ -94,11 +94,26 @@ export default {
 <template>
   <div id="inv_wrap">
     <div id="stats">
-      <p>{{char.name}}</p>
-      <p>{{char.min_attack_damage}}</p>
-      <p>{{char.max_attack_damage}}</p>
-      <p>{{char.increased_life}}</p>
-      <p>Life - {{char.life}} / {{char.max_life}}</p>
+      <div id="attack_stats">
+        <p>{{char.name}}</p>
+        <p>{{char.min_attack_damage}}</p>
+        <p>{{char.max_attack_damage}}</p>
+        <p>{{char.increased_life}}</p>
+        <p>Life - {{char.life}} / {{char.max_life}}</p>
+        <p>Crit - {{char.attack_crit_chance}}</p>
+        <p>Crit Multy- {{char.attack_crit_multy}}</p>
+        <p>Attack speed- {{char.attack_speed}}</p>
+        <p>Attack range - {{char.attack_range}}</p>
+        <p>Life Leech - {{char.attack_life_leech}}</p>
+      </div>
+      <div id="spell_stats">
+        <p>Add spell damage - {{Math.floor(char.add_spell_damage * 0.5)}} - {{Math.floor(char.add_spell_damage * 1.5)}}</p>
+        <p>Incr spell damage - {{char.increased_spell_damage}}</p>
+        <p>Spell Leech - {{char.spell_life_leech}}</p>
+        <p>Inc spell aoe - {{char.increased_spell_aoe}}</p>
+        <p>Spell crit chance - {{char.spell_crit_chance}}(will be add to your active spell crit chance)</p>
+        <p>Spell crit multy - {{char.spell_crit_multy}}</p>
+      </div>
     </div>
     <div id="equip_block">
         <div id="equip">

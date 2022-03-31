@@ -8,10 +8,10 @@ let data = new ImageData()
 export default class Character{
     constructor(template ,items = false) {
         this.template = template
+        if (items) {
+            this.inv = new Inventory(items,this)
+        }
         this.parseStats(template)
-        if(items) this.inv = new Inventory(items,this)
-
-
         this.cord_x = 450
         this.cord_y = 450
 
@@ -109,12 +109,49 @@ export default class Character{
     }
 
     calcStats(){
+        let start = Date.now()
         this.calcLife()
+        this.calcAttack()
+        this.calcSpell()
+        console.log(Date.now() - start)
+    }
+
+    calcSpell(){
+        this.increased_spell_damage = this.increased_spell_damage - this.reduced_spell_damage
+        this.increased_spell_aoe = this.increased_spell_aoe - this.reduced_spell_aoe
+        this.spell_crit_chance = Math.floor(this.spell_crit_chance * (1 + ((this.increased_spell_crit_chance - this.reduced_spell_crit_chance) / 100)))
+        this.increased_spell_crit_multy = this.increased_spell_crit_multy - this.reduced_spell_crit_multy
     }
 
     calcLife(){
         this.max_life = Math.floor(this.template.max_life * (1 + ((this.increased_life - this.reduced_life) / 100)))
         this.life = Math.floor(this.template.life * (1 + ((this.increased_life - this.reduced_life) / 100)))
+    }
+
+    calcAttack(){
+        this.min_attack_damage = this.template.min_attack_damage
+        this.max_attack_damage = this.template.max_attack_damage
+
+        this.min_attack_damage = this.inv && this.inv.equip['1'] != 'empty' ? this.min_attack_damage  + this.inv.equip['1'].min_damage : this.min_attack_damage
+        this.max_attack_damage = this.inv && this.inv.equip['1'] != 'empty' ? this.max_attack_damage  + this.inv.equip['1'].max_damage : this.max_attack_damage
+
+        this.min_attack_damage = this.add_attack_damage ? this.min_attack_damage + Math.floor(this.add_attack_damage * 0.5) : this.min_attack_damage
+        this.max_attack_damage = this.add_attack_damage ? this.max_attack_damage + Math.floor(this.add_attack_damage * 1.5) : this.max_attack_damage
+
+        this.min_attack_damage = Math.floor(this.min_attack_damage * (1 + ((this.increased_attack_damage - this.reduced_attack_damage) / 100)))
+        this.max_attack_damage = Math.floor(this.max_attack_damage * (1 + ((this.increased_attack_damage - this.reduced_attack_damage) / 100)))
+
+
+        this.attack_crit_chance = this.inv && this.inv.equip['1'] != 'empty' ? this.inv.equip['1'].crit_chance : this.template.attack_crit_chance
+        this.attack_crit_chance = Math.floor(this.attack_crit_chance * (1 + ((this.increased_attack_crit_chance - this.reduced_attack_crit_chance) / 100)))
+
+        this.attack_crit_multy = Math.floor(this.template.attack_crit_multy + (this.increased_attack_crit_multy - this.reduced_attack_crit_multy))
+
+        this.attack_speed = this.inv && this.inv.equip['1'] != 'empty' ? this.inv.equip['1'].attack_speed : this.template.attack_speed
+        this.attack_speed = this.attack_speed / (1 + ((this.increased_attack_speed - this.reduced_attack_speed) / 100))
+
+        this.attack_range = this.inv && this.inv.equip['1'] != 'empty' ? this.inv.equip['1'].attack_range : this.template.attack_range
+        this.attack_range = this.attack_range * (1 + ((this.increased_attack_range - this.reduced_attack_range) / 100))
     }
 
     angleToAttackRect(angle){

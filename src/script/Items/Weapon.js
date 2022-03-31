@@ -48,11 +48,8 @@ export default class Weapon{
 
     equip(player){
         this.prop_stats.forEach(elem => {
-            console.log(elem)
             player[elem[0]] += +elem[1]
         })
-        player.min_attack_damage += this.min_damage
-        player.max_attack_damage += this.max_damage
         player.calcStats()
     }
 
@@ -60,8 +57,6 @@ export default class Weapon{
         this.prop_stats.forEach(elem => {
             player[elem[0]] -= +elem[1]
         })
-        player.min_attack_damage -= this.min_damage
-        player.max_attack_damage -= this.max_damage
         player.calcStats()
     }
 }
