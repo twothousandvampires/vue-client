@@ -94,25 +94,30 @@ export default {
 <template>
   <div id="inv_wrap">
     <div id="stats">
+      <div id="char_stats">
+        <p style="font-size: 24px">{{char.name}}</p>
+        <p>Increased life : {{char.increased_life}}</p>
+        <p>Life : {{char.life}} / {{char.max_life}}</p>
+        <p>Energy : {{char.energy}} / {{char.max_energy}}</p>
+        <p>Energy regen : {{char.increased_energy_regen}}</p>
+      </div>
       <div id="attack_stats">
-        <p>{{char.name}}</p>
-        <p>{{char.min_attack_damage}}</p>
-        <p>{{char.max_attack_damage}}</p>
-        <p>{{char.increased_life}}</p>
-        <p>Life - {{char.life}} / {{char.max_life}}</p>
-        <p>Crit - {{char.attack_crit_chance}}</p>
-        <p>Crit Multy- {{char.attack_crit_multy}}</p>
-        <p>Attack speed- {{char.attack_speed}}</p>
-        <p>Attack range - {{char.attack_range}}</p>
-        <p>Life Leech - {{char.attack_life_leech}}</p>
+        <img style="width: 100%" src="/src/assets/img/icons/items/misc/attack_stats_top.gif" alt="">
+        <p style="font-size: 24px">Attack</p>
+        <p>Attack damage : {{char.min_attack_damage}} - {{char.max_attack_damage}}</p>
+        <p>Critical chance : {{char.attack_crit_chance}}%</p>
+        <p>Critical multiplier - {{char.attack_crit_multy}}%</p>
+        <p>Attack speed : {{char.attack_speed}} per second</p>
+        <p>Attack range : {{char.attack_range}}px</p>
+        <p>Life Leech : {{char.attack_life_leech}}%</p>
       </div>
       <div id="spell_stats">
-        <p>Add spell damage - {{Math.floor(char.add_spell_damage * 0.5)}} - {{Math.floor(char.add_spell_damage * 1.5)}}</p>
-        <p>Incr spell damage - {{char.increased_spell_damage}}</p>
-        <p>Spell Leech - {{char.spell_life_leech}}</p>
-        <p>Inc spell aoe - {{char.increased_spell_aoe}}</p>
-        <p>Spell crit chance - {{char.spell_crit_chance}}(will be add to your active spell crit chance)</p>
-        <p>Spell crit multy - {{char.spell_crit_multy}}</p>
+        <p>Add spell damage : {{Math.floor(char.add_spell_damage * 0.5)}} - {{Math.floor(char.add_spell_damage * 1.5)}}</p>
+        <p>Increased spell damage : {{char.increased_spell_damage}}%</p>
+        <p>Spell Leech : {{char.spell_life_leech}}%</p>
+        <p>Increased spell aoe : {{char.increased_spell_aoe}}px</p>
+        <p>Spell critical chance - {{char.spell_crit_chance}}%</p>
+        <p>Spell critical multiplier - {{char.spell_crit_multy}}%</p>
       </div>
     </div>
     <div id="equip_block">
@@ -306,6 +311,33 @@ export default {
     display: flex;
     flex-direction: column;
     justify-content: space-around;
+  }
+  #char_stats{
+    padding: 4px;
+    border: 6px solid #40c4c8;
+    border-image: url("/src/assets/img/border/border_big.png") 3 stretch stretch;
+  }
+  #char_stats p{
+    font-size: 16px;
+    font-weight: bold;
+  }
+  #attack_stats{
+    padding: 4px;
+    border: 6px solid #40c4c8;
+    border-image: url("/src/assets/img/border/border_big.png") 3 stretch stretch;
+  }
+  #attack_stats p{
+    font-size: 16px;
+    font-weight: bold;
+  }
+  #spell_stats{
+    padding: 4px;
+    border: 6px solid #40c4c8;
+    border-image: url("/src/assets/img/border/border_big.png") 3 stretch stretch;
+  }
+  #spell_stats p{
+    font-size: 16px;
+    font-weight: bold;
   }
   #inv_wrap{
     top:0;

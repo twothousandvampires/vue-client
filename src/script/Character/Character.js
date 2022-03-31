@@ -111,15 +111,15 @@ export default class Character{
     calcStats(){
         let start = Date.now()
         this.calcLife()
-        this.calcAttack()
         this.calcSpell()
+        this.calcAttack()
         console.log(Date.now() - start)
     }
 
     calcSpell(){
         this.increased_spell_damage = this.increased_spell_damage - this.reduced_spell_damage
         this.increased_spell_aoe = this.increased_spell_aoe - this.reduced_spell_aoe
-        this.spell_crit_chance = Math.floor(this.spell_crit_chance * (1 + ((this.increased_spell_crit_chance - this.reduced_spell_crit_chance) / 100)))
+        this.spell_crit_chance = Math.floor(this.template.spell_crit_chance * (1 + ((this.increased_spell_crit_chance - this.reduced_spell_crit_chance) / 100)))
         this.increased_spell_crit_multy = this.increased_spell_crit_multy - this.reduced_spell_crit_multy
     }
 
