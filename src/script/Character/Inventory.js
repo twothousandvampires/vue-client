@@ -1,7 +1,7 @@
 import Weapon from "../Items/Weapon";
 import Armour from "../Items/Armour";
-
 export default class Inventory{
+
     constructor(items,player) {
         this.equip = {
             0 : 'empty',
