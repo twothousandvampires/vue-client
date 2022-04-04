@@ -295,7 +295,7 @@ export default {
     background-color: dimgrey;
   }
   #stats{
-    width: 30%;
+    width: 25%;
     background-color: aqua;
   }
   #equip_block{

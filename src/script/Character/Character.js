@@ -109,11 +109,9 @@ export default class Character{
     }
 
     calcStats(){
-        let start = Date.now()
         this.calcLife()
         this.calcSpell()
         this.calcAttack()
-        console.log(Date.now() - start)
     }
 
     calcSpell(){
@@ -204,7 +202,7 @@ export default class Character{
     }
 
     act(game){
-
+        console.log(this.image.frame)
         // get pressed keys
         let input = game.mouse.getInput()
         let mouse_cord = game.mouse.getСoord()
@@ -231,6 +229,28 @@ export default class Character{
         else {
             if(input.e){
                 this.setDefend()
+            }
+            else if(input.q){
+                let limit = 3
+                let distance = Functions.distance(mouse_cord, this)
+                let angle = Functions.angle(mouse_cord, this)
+                EffectCreator.createChainLight(this.cord_x,this.cord_y,distance,angle,game)
+                let hited = []
+                function chain(from){
+                    hited.push(from)
+                    for(let i =0 ; i < game.enemy.length; i++){
+                        let elem = game.enemy[i]
+                        let distance = Functions.distance(elem, from)
+                        if(distance < 200 && !hited.includes(elem) && limit){
+                            let angle = Functions.angle(elem, from)
+                            EffectCreator.createChainLight(from.cord_x,from.cord_y,distance,angle,game)
+                            hited.push(elem)
+                            limit--
+                            chain(elem)
+                        }
+                    }
+                }
+                chain(mouse_cord)
             }
             else if(input.click){
                 this.setAttack(input,mouse_cord,game)
@@ -346,7 +366,7 @@ export default class Character{
 
     attack(game){
         if(this.image.frame === 5 && !this.deal_hit){
-            console.log('!')
+
             this.deal_hit = true
             EffectCreator.createWeaponSwing(this.attack_rect , this.attack_angle , game)
         }

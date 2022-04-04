@@ -40,6 +40,9 @@ export default class ImageData{
 
         this.tile = new Image()
         this.tile.src = './src/assets/img/strites/tiles.png'
+
+        this.chain_light = new Image()
+        this.chain_light.src = './src/assets/img/effects/chain_light.png'
     }
 
     getImage(name){
