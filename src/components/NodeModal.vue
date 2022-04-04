@@ -27,7 +27,10 @@ export default {
 
   <div :style="cssVars">
 
-    <p>Node {{this.over_node.id}}</p>
+    <p>s - {{this.over_node.s_link}}</p>
+    <p>n - {{this.over_node.n_link}}</p>
+    <p>e - {{this.over_node.e_link}}</p>
+    <p>w - {{this.over_node.w_link}}</p>
 
   </div>
 

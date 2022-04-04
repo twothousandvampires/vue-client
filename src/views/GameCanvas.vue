@@ -103,12 +103,13 @@ export default {
             elem.frame_timer = 0
             elem.frame = Math.floor(Math.random() * 8)
             elem.img = this.img_data.getImage(elem.solar_system_image + (elem.visited ? '_visited': '_not_visited'))
-            elem.pretti_x = elem.x - this.char.x + 5
-            elem.pretti_y = elem.y - this.char.y + 5
+            elem.pretti_x = elem.x - this.char.x + 7
+            elem.pretti_y = elem.y - this.char.y + 7
             return elem
           })
-          this.char.pretti_x = 5
-          this.char.pretti_y = 5
+            console.log(this.data)
+          this.char.pretti_x = 7
+          this.char.pretti_y = 7
           break;
         case 1:
           this.type = 1
@@ -151,13 +152,13 @@ export default {
 </script>
 <template>
   <MainLayout>
-    <canvas :style="can_style" width="900" height="900" ref="canvas"></canvas>
+    <canvas :style="can_style" width="2000" height="2000" ref="canvas"></canvas>
     <p style="position:absolute" v-if="loaded">Loading</p>
   </MainLayout>
   <Inventory v-if="inv_is_open" @changed="prettifyData" @close_inv="close_inv"  v-bind:char="char" v-bind:mouse="mouse">
 
   </Inventory>
-<!--  <NodeModal v-bind:mouse="mouse" v-bind:over_node="over_node" v-if="over_node"/>-->
+  <NodeModal v-bind:mouse="mouse" v-bind:over_node="over_node" v-if="over_node"/>
 </template>
 <style>
 canvas{

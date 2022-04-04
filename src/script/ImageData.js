@@ -37,6 +37,9 @@ export default class ImageData{
 
         this.weapon_swing = new Image()
         this.weapon_swing.src = './src/assets/img/effects/weapon_swing.png'
+
+        this.tile = new Image()
+        this.tile.src = './src/assets/img/strites/tiles.png'
     }
 
     getImage(name){
