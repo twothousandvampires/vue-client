@@ -40,6 +40,8 @@ export default class Input {
         return this.pressed
     }
 
+
+
     getСoord(){
         if(this.x && this.y){
             return {

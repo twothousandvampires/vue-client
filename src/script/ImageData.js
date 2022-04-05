@@ -43,6 +43,9 @@ export default class ImageData{
 
         this.chain_light = new Image()
         this.chain_light.src = './src/assets/img/effects/chain_light.png'
+
+        this.chel = new Image()
+        this.chel.src = './src/assets/img/characters/chel.png'
     }
 
     getImage(name){

@@ -29,7 +29,6 @@ export default class Render{
         this.ctx.drawImage(this.image_data.getImage('background'),this.bg_frame * 300,0,300,300,0,0,this.can_w,this.can_h)
     }
 
-
     getTile(node){
         let x,y
         if(node.n_link && node.s_link && node.w_link && node.e_link){
@@ -96,7 +95,6 @@ export default class Render{
         return[x,y]
     }
 
-
     drawWorld(game){
         this.ctx.fillStyle = 'black'
         this.ctx.clearRect(0,0,2000,2000)
@@ -145,6 +143,7 @@ export default class Render{
                 let x = this.getTile(elem)
                 this.ctx.drawImage(game.img_data.getImage('tile'),x[0]*2,x[1]*2,100,100,elem.pretti_x * this.cell_size,elem.pretti_y * this.cell_size, this.cell_size,this.cell_size)
             }
+            // this.ctx.strokeRect(elem.pretti_x * this.cell_size,elem.pretti_y * this.cell_size,this.cell_size,this.cell_size)
         })
 
         this.character_timer += 1
@@ -156,7 +155,7 @@ export default class Render{
             }
         }
 
-        this.ctx.drawImage(game.img_data.getImage('young'),this.character_frame * 92,0,92,120,game.char.pretti_x * this.cell_size - 23,game.char.pretti_y * this.cell_size - 30,92,120)
+        this.ctx.drawImage(game.img_data.getImage('chel'),0,0,90,93,game.char.pretti_x * this.cell_size+20,game.char.pretti_y * this.cell_size,60,62)
 
         // if(game.over_node){
         //     let frame = game.over_node.type != 1 ? game.img_data.getImage('green_frame') : game.img_data.getImage('red_frame')

@@ -61,11 +61,21 @@ export default {
     close_inv(){
       this.inv_is_open = false
     },
-    goTo(node){
-      axios({method: 'post',
+    goTo(node, xy, sign){
+      let add = 0
+      let move = setInterval(()=>{
+        add += sign
+        if(xy){
+          this.char.pretti_y += sign
+        }else {
+          this.char.pretti_x += sign
+        }
+        if(Math.abs(add) >= 1){
+          clearInterval(move)
+          axios({method: 'post',
             url: '//127.0.0.1:8000/api/character/move/',
             headers: {
-            'Authorization': 'Bearer ' + localStorage.getItem('token')
+              'Authorization': 'Bearer ' + localStorage.getItem('token')
             },
             data :{
               x : node.x,
@@ -73,11 +83,14 @@ export default {
               user_id : localStorage.getItem('user_id'),
               char_id : this.char_id
             }
-      }).then(response =>{
+          }).then(response =>{
             if(response.data.success){
               this.prettifyData(response.data.data)
+              this.delay = false
             }
-      })
+          })
+        }
+      },50)
     },
     createEnemy(dist, count){
       for(let i = 0; i < 10; i++){
@@ -107,7 +120,6 @@ export default {
             elem.pretti_y = elem.y - this.char.y + 7
             return elem
           })
-            console.log(this.data)
           this.char.pretti_x = 7
           this.char.pretti_y = 7
           break;
@@ -122,15 +134,49 @@ export default {
         setInterval(()=>{
           switch (this.type){
             case 0:
-              if(this.mouse.getInput().i && !this.delay){
-
+              if(this.mouse.getInput().w && !this.delay){
+                let items = this.data.filter( elem => {
+                  return elem.pretti_y === this.char.pretti_y - 1 && elem.pretti_x === this.char.pretti_x
+                })
+                if(items[0]){
+                  this.delay = true
+                  this.goTo(items[0], 1, -0.1)
+                }
+              }
+              if(this.mouse.getInput().s && !this.delay){
+                let items = this.data.filter( elem => {
+                  return elem.pretti_y === this.char.pretti_y + 1 && elem.pretti_x === this.char.pretti_x
+                })
+                if(items[0]){
+                  this.delay = true
+                  this.goTo(items[0], 1, 0.1)
+                }
+              }
+              if(this.mouse.getInput().a && !this.delay){
+                let items = this.data.filter( elem => {
+                  return elem.pretti_y === this.char.pretti_y && elem.pretti_x === this.char.pretti_x - 1
+                })
+                if(items[0]){
+                  this.delay = true
+                  this.goTo(items[0], 0, -0.1)
+                }
+              }
+              if(this.mouse.getInput().d && !this.delay){
+                let items = this.data.filter( elem => {
+                  return elem.pretti_y === this.char.pretti_y && elem.pretti_x === this.char.pretti_x + 1
+                })
+                if(items[0]){
+                  this.delay = true
+                  this.goTo(items[0], 0, 0.1)
+                }
+              }
+              else if(this.mouse.getInput().i && !this.delay){
                     this.inv_is_open = !this.inv_is_open
                     this.delay = true
                 setTimeout(()=>{
                   this.delay = false
                 },100)
                 }
-
               if(!this.inv_is_open) {
                 this.render.drawWorld(this)
               }
