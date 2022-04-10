@@ -5,9 +5,9 @@ let data = new ImageData()
 
 export default class Shadow extends Enemy{
     constructor(x, y, dist) {
-        super(x, y ,dist);
-        this.size_x = 50
-        this.size_y = 50
+        super(x, y ,dist)
+        this.size_x = 90
+        this.size_y = 99
         this.box_size_x = 50
         this.box_size_y = 25
         this.can_charge = true
@@ -19,51 +19,51 @@ export default class Shadow extends Enemy{
         this.attack_speed = 1800
         this.image = {
             default_sprite_size_x : 90,
-            default_sprite_size_y : 90,
+            default_sprite_size_y : 99,
             frame_timer : 0,
             frame : 0,
             src : data.getImage('shadow_enemy'),
             'idle' : {
                 sprite_size_w : 90,
-                sprite_size_h : 90,
+                sprite_size_h : 99,
                 y_offset : 0,
-                max_frame : 6,
-                tick : ()=> {return  4 }
+                max_frame : 7,
+                tick : ()=> {return  7 }
             },
             'charge' : {
                 sprite_size_w : 90,
-                sprite_size_h : 90,
+                sprite_size_h : 99,
                 y_offset : 0,
-                max_frame : 6,
-                tick : ()=> {return  5 }
+                max_frame : 7,
+                tick : ()=> {return  7 }
             },
             'move' : {
                 sprite_size_w : 90,
-                sprite_size_h : 90,
-                y_offset : 90,
-                max_frame : 5,
-                tick : ()=> {return  4 }
+                sprite_size_h : 99,
+                y_offset : 100,
+                max_frame : 4,
+                tick : ()=> {return  5 }
             },
             'retreat' : {
                 sprite_size_w : 90,
-                sprite_size_h : 90,
-                y_offset : 90,
-                max_frame : 5,
-                tick : ()=> {return  4 }
+                sprite_size_h : 99,
+                y_offset : 0,
+                max_frame : 7,
+                tick : ()=> {return  7 }
             },
             'around' : {
                 sprite_size_w : 90,
-                sprite_size_h : 90,
-                y_offset : 90,
-                max_frame : 5,
-                tick : ()=> {return  4 }
+                sprite_size_h : 99,
+                y_offset : 0,
+                max_frame : 7,
+                tick : ()=> {return  7 }
             },
             'attack' : {
-                sprite_size_w : 120,
-                sprite_size_h : 120,
-                y_offset : 180,
+                sprite_size_w : 90,
+                sprite_size_h : 99,
+                y_offset : 0,
                 max_frame : 7,
-                tick : ()=> {return Math.floor(this.attack_speed/350)}
+                tick : ()=> {return  7 }
             }
         }
     }
@@ -157,16 +157,11 @@ export default class Shadow extends Enemy{
                     this.setBehavior('charge')
                 }
                 else if (distance_to_player > this.charge_distance){
-                    this.move_offset = (Math.random() * (0.3)).toFixed(2)
                     this.setBehavior('move',2000)
                 }
                 else if(distance_to_player <= 300 && distance_to_player > 50){
-                    if(rng > 0.7){
-                        this.setBehavior('around',2000)
-                    }
-                    else {
-                        this.setBehavior('move',2000)
-                    }
+                    this.setBehavior('move',2000)
+
                 }
                 else {
                     this.setBehavior('attack',this.attack_speed)

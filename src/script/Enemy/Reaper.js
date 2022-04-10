@@ -6,8 +6,8 @@ let data = new ImageData()
 export default class Reaper extends Enemy{
     constructor(x, y, dist) {
         super(x, y ,dist);
-        this.size_x = 90
-        this.size_y = 90
+        this.size_x = 90 + 200
+        this.size_y = 90 + 400
         this.box_size_x = 70
         this.box_size_y = 35
         this.attack_speed = 3000;

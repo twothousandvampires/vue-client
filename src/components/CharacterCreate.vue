@@ -22,11 +22,10 @@ export default {
             user_id : localStorage.getItem('user_id'),
             name : this.character_name,
             class_name : this.character_class
-          }})
-            .then( (response)=>{
-              console.log(response)
+          }
+        }).then( ()=>{
               location.href = '/'
-            })
+        })
       }
     }
   },
@@ -55,7 +54,6 @@ export default {
 </template>
 
 <style scoped>
-
   .btn{
     background-color: snow;
     border: 2px solid aqua;
@@ -87,5 +85,4 @@ export default {
     border: none;
     padding: 6px;
   }
-
 </style>

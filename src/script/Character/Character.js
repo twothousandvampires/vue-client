@@ -2,6 +2,7 @@ import Functions from "../GameFunctions";
 import ImageData from "../ImageData";
 import EffectCreator from "../Effects/EffectCreator.js";
 import Inventory from "./Inventory";
+import {effect} from "vue";
 
 let data = new ImageData()
 
@@ -12,8 +13,8 @@ export default class Character{
             this.inv = new Inventory(items,this)
         }
         this.parseStats(template)
-        this.cord_x = 450
-        this.cord_y = 450
+        this.cord_x = 400 + 200
+        this.cord_y = 400 + 400
 
         this.fliped = false
 
@@ -30,8 +31,8 @@ export default class Character{
 
         this.move_angle = 0
 
-        this.size_x = 92
-        this.size_y = 120
+        this.size_x = 90
+        this.size_y = 93
 
         this.is_attack = false
         this.charged = false
@@ -46,16 +47,16 @@ export default class Character{
         }
         this.speed = 2
         this.image = {
-            y_draw_offset : 30,
+            y_draw_offset : 0,
             frame_timer : 0,
             frame : 0,
-            src : data.getImage('young'),
+            src : data.getImage('grim'),
             'idle' : {
-                sprite_size_w : 92,
-                sprite_size_h : 120,
+                sprite_size_w : 90,
+                sprite_size_h : 93,
                 y_offset : 0,
-                max_frame : 6,
-                tick : ()=> {return 6}
+                max_frame : 9,
+                tick : ()=> {return 10}
             },
             'defend' : {
                 sprite_size_w : 92,
@@ -65,11 +66,18 @@ export default class Character{
                 tick : ()=> {return 6}
             },
             'move' : {
-                sprite_size_w : 92,
-                sprite_size_h : 120,
-                y_offset : 120,
-                max_frame : 6,
+                sprite_size_w : 90,
+                sprite_size_h : 93,
+                y_offset : 94,
+                max_frame : 4,
                 tick : ()=> {return 6}
+            },
+            'run' : {
+                sprite_size_w : 90,
+                sprite_size_h : 93,
+                y_offset : 94,
+                max_frame : 4,
+                tick : ()=> {return 2}
             },
             'retreat' : {
                 sprite_size_w : 90,
@@ -85,11 +93,11 @@ export default class Character{
 
             },
             'attack' : {
-                sprite_size_w : 152,
+                sprite_size_w : 120,
                 sprite_size_h : 120,
-                y_offset : 240,
-                max_frame : 8,
-                tick : ()=> {return Math.floor(this.attack_speed/350)}
+                y_offset : 187,
+                max_frame : 9,
+                tick : ()=> {return Math.floor(1500/350)}
             },
             'charge' : {
                 sprite_size_w : 92,
@@ -161,9 +169,13 @@ export default class Character{
         }
     }
 
-    setCord(x ,y){
-        this.cord_x += x * this.speed
-        this.cord_y += y * this.speed
+    setCord(x ,y, m = 1){
+        if(!(this.cord_x + x * this.speed * m >= 1000) && !(this.cord_x + x * this.speed * m <= 200)){
+            this.cord_x += x * this.speed * m
+        }
+        if(!(this.cord_y + y * this.speed * m >= 1200) && !(this.cord_y + y * this.speed * m <= 400)){
+            this.cord_y += y * this.speed * m
+        }
     }
 
     getMoveAngle(input){
@@ -201,11 +213,10 @@ export default class Character{
         return input.w || input.s || input.a || input.d
     }
 
-    act(game){
-        console.log(this.image.frame)
-        // get pressed keys
-        let input = game.mouse.getInput()
-        let mouse_cord = game.mouse.getСoord()
+    act(mouse, effect, enemy){
+        let input = mouse.getInput()
+        let mouse_cord = {cord_x: input.canvas_x, cord_y: input.canvas_y}
+
         if(this.immobilized){
             //
         }
@@ -221,7 +232,7 @@ export default class Character{
             }
         }
         else if(this.is_attack){
-            this.attack(game)
+            this.attack(effect)
         }
         else if(this.charged){
             this.charge()
@@ -234,16 +245,16 @@ export default class Character{
                 let limit = 3
                 let distance = Functions.distance(mouse_cord, this)
                 let angle = Functions.angle(mouse_cord, this)
-                EffectCreator.createChainLight(this.cord_x,this.cord_y,distance,angle,game)
+                EffectCreator.createChainLight(this.cord_x,this.cord_y,distance,angle,effect)
                 let hited = []
                 function chain(from){
                     hited.push(from)
-                    for(let i =0 ; i < game.enemy.length; i++){
-                        let elem = game.enemy[i]
+                    for(let i =0 ; i < enemy.length; i++){
+                        let elem = enemy[i]
                         let distance = Functions.distance(elem, from)
                         if(distance < 200 && !hited.includes(elem) && limit){
                             let angle = Functions.angle(elem, from)
-                            EffectCreator.createChainLight(from.cord_x,from.cord_y,distance,angle,game)
+                            EffectCreator.createChainLight(from.cord_x,from.cord_y,distance,angle,effect)
                             hited.push(elem)
                             limit--
                             chain(elem)
@@ -252,12 +263,12 @@ export default class Character{
                 }
                 chain(mouse_cord)
             }
-            else if(input.click){
-                this.setAttack(input,mouse_cord,game)
+            else if(input.l_click){
+                this.setAttack(mouse_cord)
             }
             else if(this.moveInputIsPressed(input)){
                 if(input[' ']){
-                    this.setCharge(input)
+                    this.setRun(input)
                 }
                 else {
                     this.setMove(input)
@@ -267,35 +278,34 @@ export default class Character{
                 this.state = 'idle'
             }
         }
-        this.draw(game)
     }
 
-    draw(game){
+    draw(ctx){
         let sheet = this.image[this.state]
         this.image.frame_timer ++
         if(this.image.frame_timer >= sheet.tick()){
             this.image.frame_timer = 0
             this.image.frame += 1
-            if(this.image.frame === sheet.max_frame && this.state !== 'attack'){
+            if(this.image.frame >= sheet.max_frame && this.state !== 'attack'){
                 this.image.frame = 0
             }
-            else if(this.image.frame === sheet.max_frame && this.state === 'attack'){
+            else if(this.image.frame >= sheet.max_frame && this.state === 'attack'){
                 this.image.frame = sheet.max_frame - 1
             }
         }
 
-        let f_x = ((this.size_x * sheet.sprite_size_w) / 92) - this.size_x
-        let f_y = ((this.size_y * sheet.sprite_size_h) / 120) - this.size_y
+        let f_x = ((this.size_x * sheet.sprite_size_w) / 90) - this.size_x
+        let f_y = ((this.size_y * sheet.sprite_size_h) / 93) - this.size_y
 
         if(this.fliped){
-            game.ctx.save()
-            Functions.flipHorizontally(game.ctx, this.cord_x)
+            ctx.save()
+            Functions.flipHorizontally(ctx, this.cord_x)
         }
 
-        game.ctx.drawImage(this.image.src, sheet.sprite_size_w * this.image.frame,sheet.y_offset,sheet.sprite_size_w - 2,sheet.sprite_size_h,this.cord_x - this.size_x/2 - f_x/2,this.cord_y - (this.size_y/2 + (this.size_y/2 - this.box_size_y/2)) - f_y/2 + this.image.y_draw_offset,this.size_x + f_x,this.size_y + f_y)
+        ctx.drawImage(this.image.src, sheet.sprite_size_w * this.image.frame,sheet.y_offset,sheet.sprite_size_w - 2,sheet.sprite_size_h,this.cord_x - this.size_x/2 - f_x/2,this.cord_y - (this.size_y/2 + (this.size_y/2 - this.box_size_y/2)) - f_y/2 + this.image.y_draw_offset,this.size_x + f_x,this.size_y + f_y)
 
         if(this.fliped){
-            game.ctx.restore()
+            ctx.restore()
         }
 
         // //show attack rect
@@ -305,11 +315,11 @@ export default class Character{
         // }
 
 
-        // game.ctx.fillStyle = 'blue'
-        // game.ctx.fillRect(this.cord_x - this.box_size_x/2,this.cord_y - this.box_size_y/2,this.box_size_x,this.box_size_y)
+        // ctx.fillStyle = 'blue'
+        // ctx.fillRect(this.cord_x - this.box_size_x/2,this.cord_y - this.box_size_y/2,this.box_size_x,this.box_size_y)
     }
 
-    setAttack(input, mouse, game){
+    setAttack(mouse){
         this.attack_angle  = Functions.angle(this,mouse)
         this.attack_rect = this.angleToAttackRect(this.attack_angle)
         this.image.frame = 0
@@ -322,23 +332,16 @@ export default class Character{
             this.state = 'idle'
             this.image.frame = 0
             this.image.frame_timer = 0
-        },this.attack_speed)
+        },1500)
     }
 
-    setCharge(input){
-        this.image.frame = 0
-        this.image.frame_timer = 0
-        this.state = 'charge'
-        this.speed = 8
-        this.charged = true
+    setRun(input){
+        this.state = 'run'
         this.getMoveAngle(input)
-        setTimeout(()=>{
-            this.charged = false
-            this.state = 'idle'
-            this.speed = 2
-            this.image.frame = 0
-            this.image.frame_timer = 0
-        },500)
+        let move_x = Math.sin(this.move_angle)
+        this.fliped = move_x <= 0;
+        let move_y = Math.cos(this.move_angle)
+        this.setCord(move_x, move_y, 2)
     }
 
     setDefend(){
@@ -364,11 +367,10 @@ export default class Character{
         this.setCord(move_x, move_y)
     }
 
-    attack(game){
+    attack(effect){
         if(this.image.frame === 5 && !this.deal_hit){
-
             this.deal_hit = true
-            EffectCreator.createWeaponSwing(this.attack_rect , this.attack_angle , game)
+            EffectCreator.createWeaponSwing(this.attack_rect , this.attack_angle , effect)
         }
     }
 }

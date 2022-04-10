@@ -1,7 +1,7 @@
 import Functions from "../GameFunctions";
 export default class Effect{
 
-    constructor(img_src , size , angle , y_offset) {
+    constructor(img_src , size , angle) {
         this.cord_x = size.cord_x
         this.cord_y = size.cord_y
         this.image = img_src
@@ -10,16 +10,16 @@ export default class Effect{
         this.angle = angle
         this.frame = 0
         this.frame_timer = 0
-        this.y_offset = y_offset * 100
+        this.y_offset = 0
         this.deal_hit = false
     }
 
-    act(game){
+    act(effect,ctx,enemy){
         if(this.frame < 2 && !this.deal_hit){
-            game.enemy.forEach(enemy =>{
+            enemy.forEach(enemy =>{
                 if(Functions.rectCollision(this,enemy) && !this.deal_hit){
                     this.deal_hit = true
-                    game.enemy.splice(game.enemy.indexOf(enemy),1)
+                    enemy.splice(enemy.indexOf(enemy),1)
                 }
             })
         }
@@ -28,14 +28,13 @@ export default class Effect{
             this.frame_timer = 0
             this.frame ++
             if(this.frame === 5){
-                game.effects.splice(game.effects.indexOf(this),1)
+                effect.splice(effect.indexOf(this),1)
             }
         }
-        this.draw(game)
+        this.draw(ctx)
     }
 
-    draw(game){
-        let ctx = game.ctx
+    draw(ctx){
         if(this.angle){
             ctx.translate(this.cord_x, this.cord_y);
             ctx.rotate(-this.angle);

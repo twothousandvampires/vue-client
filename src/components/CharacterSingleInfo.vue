@@ -3,15 +3,12 @@ import Character from "../script/Character/Character.js";
 export default {
   name: "CharacterSingleInfo",
   props : {
-    character : Object
+    char : Object
   },
   data(){
     return{
-      char : new Character(this.character)
-    }
-  },
-  mounted() {
 
+    }
   },
   methods : {
     classImage(str){
@@ -47,13 +44,13 @@ export default {
 </script>
 
 <template>
-  <div>
+  <div style="color:#c8c8c8;">
     <div id="info-head">
       <p class="stat-elem">{{ char.name }}</p>
       <p>Level<span class="stat-elem">{{ char.level }}</span></p>
     </div>
     <div id="info-body">
-      <img width="180" height="240" :src="classImage(char.class)" alt="">
+      <img width="90" height=93 src="src/assets/img/characters/chel_preview.gif" alt="">
       <div id="info-stats">
         <p>
           <img title="life" src="@/assets/img/icons/life_icon.png" alt="life">
@@ -77,6 +74,13 @@ export default {
 </template>
 
 <style scoped>
+  button{
+    cursor: pointer;
+    border: 10px solid #40c4c8;
+    border-image: url("/src/assets/img/border/border_long.png") 95 stretch stretch;
+    font-family: o;
+    font-size: 18px;
+  }
   .stat-elem{
     font-weight: bold;
     font-size: 24px;
@@ -111,7 +115,6 @@ export default {
   }
   #info-bottom button{
     padding: 6px;
-    border: none;
     cursor: pointer;
     width: 100px;
     background-color: #f8f8f8;

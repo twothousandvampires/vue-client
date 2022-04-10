@@ -38,17 +38,13 @@ export default {
 }
 </script>
 
-
 <template>
-  <MainLayout>
     <p v-if="!user">Loading...</p>
     <div class="profile-wrap" v-else>
       <AccountInfo v-bind:user="user"/>
       <CharactersInfo v-bind:characters="user.characters"/>
     </div>
-  </MainLayout>
 </template>
-
 
 <style scoped>
 

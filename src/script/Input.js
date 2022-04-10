@@ -1,56 +1,46 @@
 export default class Input {
     constructor(canvas) {
-        this.delay = false
-        this.x = undefined
+        canvas.addEventListener('contextmenu', e => e.preventDefault())
         this.y = undefined
-        this.window_x = undefined
-        this.window_y = undefined
         this.click = false
         this.canvas = canvas
         this.pressed ={}
         this.canvas.addEventListener('mousemove',(e)=>{
-            this.x = e.offsetX
-            this.y = e.offsetY
+            this.pressed.canvas_x = e.offsetX
+            this.pressed.canvas_y = e.offsetY
         })
         this.canvas.addEventListener('mouseleave',(e)=>{
-            this.x = undefined
-            this.y = undefined
+            this.pressed.canvas_x = undefined
+            this.pressed.canvas_y = undefined
         })
-        this.canvas.addEventListener('click',(e)=>{
-            this.pressed.click = true
-            setTimeout(()=>{
-                this.pressed.click = false
-            },50)
+        this.canvas.addEventListener('mousedown',(e)=>{
+            if(e.which === 1){
+                this.pressed.l_click = true
+                setTimeout(()=>{
+                    this.pressed.l_click = false
+                },50)
+            }
+            else{
+                this.pressed.r_click = true
+                setTimeout(()=>{
+                    this.pressed.r_click = false
+                },50)
+            }
         })
         window.addEventListener('keydown',(e)=>{
             e.preventDefault()
             this.pressed[e.key] = true
-
         })
         window.addEventListener('keyup',(e)=>{
             this.pressed[e.key] = false
         })
         window.addEventListener('mousemove',(e)=>{
-            this.window_x = e.pageX
-            this.window_y = e.pageY
+            this.pressed.window_x = e.pageX
+            this.pressed.window_y = e.pageY
         })
     }
 
     getInput(){
         return this.pressed
-    }
-
-
-
-    getСoord(){
-        if(this.x && this.y){
-            return {
-                cord_x : this.x,
-                cord_y : this.y
-            }
-        }
-        else{
-            return false
-        }
     }
 }

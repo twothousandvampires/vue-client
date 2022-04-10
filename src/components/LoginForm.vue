@@ -25,6 +25,7 @@
           }}).then((response)=>{
           if(response.data.success) {
             localStorage.setItem('auth' , 'true')
+            localStorage.setItem('acc_name' , response.data.data.name)
             localStorage.setItem('token' , response.data.data.token)
             localStorage.setItem('user_id', response.data.data.id)
             location.href = '/'

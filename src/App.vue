@@ -3,16 +3,20 @@ import { RouterLink, RouterView } from 'vue-router'
 import { useCounterStore} from "./stores/counter";
 import test from "./components/test.vue";
 
-
 export default {
   data(){
     return{
       auth : localStorage.getItem('auth') === 'true',
-      num : 145
+      acc_name : localStorage.getItem('acc_name')
     }
   },
   components:{
-    test
+    test,
+  },
+  mounted() {
+    if(this.auth){
+
+    }
   },
   methods:{
     logout(){
@@ -34,7 +38,6 @@ export default {
       </nav>
     </div>
   </header>
-
   <RouterView @logout="logout" />
 
 </template>
@@ -42,11 +45,16 @@ export default {
 <style>
 @import '@/assets/base.css';
 
+@font-face {
+  font-family: o;
+  src: url("@/fonts/manaspc.ttf");
+}
 #app {
+  font-family: o;
+  font-size: 20px;
   height: 100%;
   width: 100%;
   margin: 0 auto;
-  padding: 2rem;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -54,8 +62,16 @@ export default {
 }
 
 header {
+  top: 40px;
+  align-items: center;
+  height: 50px;
+  display: flex;
+  flex-direction: row;
+  justify-content:center;
+  position: fixed;
   line-height: 1.5;
-  max-height: 100vh;
+  width: 100%;
+  z-index: 9999;
 }
 
 .logo {
@@ -66,13 +82,13 @@ header {
 a,
 .green {
   text-decoration: none;
-  color: hsla(160, 100%, 37%, 1);
   transition: 0.4s;
+  color: #c8c8c8;
 }
 
 @media (hover: hover) {
   a:hover {
-    background-color: hsla(160, 100%, 37%, 0.2);
+    background-color: #969696;
   }
 }
 
@@ -84,10 +100,6 @@ nav {
   font-size: 12px;
   text-align: center;
   margin-top: 2rem;
-}
-
-nav a.router-link-exact-active {
-  color: var(--color-text);
 }
 
 nav a.router-link-exact-active:hover {
@@ -111,7 +123,6 @@ nav a:first-of-type {
   header {
     display: flex;
     place-items: center;
-    padding-right: calc(var(--section-gap) / 2);
   }
 
   header .wrapper {

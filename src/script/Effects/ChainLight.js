@@ -3,7 +3,7 @@ export default class ChainLight{
 
     constructor(img_src , x, y, distance, angle) {
         this.cord_x = x
-        this.cord_y = y
+        this.cord_y = y - 40
         this.image = img_src
         this.box_size_x =  (40 * distance)/240
         this.box_size_y = distance
@@ -12,20 +12,19 @@ export default class ChainLight{
         this.frame_timer = 0
     }q
 
-    act(game){
+    act(effect ,ctx){
         this.frame_timer ++
         if(this.frame_timer === 1){
             this.frame_timer = 0
             this.frame ++
             if(this.frame === 16){
-                game.effects.splice(game.effects.indexOf(this),1)
+                effect.splice(effects.indexOf(this),1)
             }
         }
-        this.draw(game)
+        this.draw(ctx)
     }
 
-    draw(game){
-        let ctx = game.ctx
+    draw(ctx){
         if(this.angle){
             ctx.translate(this.cord_x, this.cord_y);
             ctx.rotate(-this.angle);

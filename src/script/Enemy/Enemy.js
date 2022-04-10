@@ -3,8 +3,8 @@ import Functions from '/src/script/GameFunctions.js'
 export default class Enemy{
 
     constructor(x, y, dist) {
-        this.cord_x = x
-        this.cord_y = y
+        this.cord_x = x + 200
+        this.cord_y = y + 400
         this.state = 'idle'
         this.deal_hit = false
         this.move_offset = 0
@@ -32,34 +32,34 @@ export default class Enemy{
         }
     }
 
-    act(game){
+    act(char){
         this.behaviorTimer()
         switch (this.state){
             case 'idle':
-                this.idleBehavior(game.char)
+                this.idleBehavior(char)
                 break;
             case 'move':
-                this.moveBehavior(game.char)
+                this.moveBehavior(char)
                 break;
             case 'around':
-                this.aroundBehavior(game.char)
+                this.aroundBehavior(char)
                 break;
             case 'attack':
-                this.attackBehavior(game.char)
+                this.attackBehavior(char)
                 break;
             case 'retreat':
-                this.retreatBehavior(game.char)
+                this.retreatBehavior(char)
                 break;
             case 'charge':
-                this.chargeBehavior(game.char)
+                this.chargeBehavior(char)
                 break;
             default :
-                this.idleBehavior(game.char);
+                this.idleBehavior(char);
                 break;
         }
     }
 
-    draw(game){
+    draw(ctx){
         let sheet = this.image[this.state]
         this.image.frame_timer ++
         if(this.image.frame_timer >= sheet.tick()){
@@ -80,9 +80,19 @@ export default class Enemy{
         let f_x = ((this.size_x * sheet.sprite_size_w) / this.image.default_sprite_size_x) - this.size_x
         let f_y = ((this.size_y * sheet.sprite_size_h) / this.image.default_sprite_size_y) - this.size_y
 
-        game.ctx.drawImage(this.image.src, sheet.sprite_size_w * this.image.frame,sheet.y_offset,sheet.sprite_size_w - 2,sheet.sprite_size_h,
+
+        if(this.fliped){
+            ctx.save()
+            Functions.flipHorizontally(ctx, this.cord_x)
+        }
+
+        ctx.drawImage(this.image.src, sheet.sprite_size_w * this.image.frame,sheet.y_offset,sheet.sprite_size_w - 2,sheet.sprite_size_h,
             this.cord_x - this.size_x/2 - f_x/2,this.cord_y - (this.size_y/2 + (this.size_y/2 - this.box_size_y/2)) - f_y/2,this.size_x + f_x,
             this.size_y + f_y)
+
+        if(this.fliped){
+            ctx.restore()
+        }
 
         // show box
         // game.ctx.fillStyle = 'blue'
@@ -195,6 +205,8 @@ export default class Enemy{
     moveBehavior(char){
 
         let angle = Functions.angle(this, char) + Number(this.move_offset)
+        let move_x = Math.sin(angle)
+        this.fliped = move_x <= 0;
         this.setCord(Math.sin(angle),Math.cos(angle))
 
         let distance = Functions.distance(this,char)

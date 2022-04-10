@@ -229,9 +229,11 @@ export default {
     flex-wrap: wrap;
   }
   #belt, #head, #body, #left_hand, #right_hand, #first_accessory, #second_accessory{
-    width: 100px;
-    height: 100px;
+    width: 120px;
+    height: 120px;
     background-color: blue;
+    border: 9px solid #40c4c8;
+    border-image: url("/src/assets/img/border/border_long.png") 19 stretch stretch;
   }
 
   #head{
@@ -305,7 +307,7 @@ export default {
     justify-content: center;
   }
   #inv{
-    width: 35%;
+    width: 40%;
     background-color: red;
     align-items: flex-start;
     display: flex;
@@ -340,14 +342,15 @@ export default {
     font-weight: bold;
   }
   #inv_wrap{
+    left: 0;
     top:0;
-    border: 6px solid #40c4c8;
-    border-image: url("/src/assets/img/border/border_big.png") 3 stretch stretch;
+    border: 25px solid #40c4c8;
+    border-image: url('/src/assets/img/border/border_long.png') 0 stretch stretch;
     display: flex;
     flex-direction: row;
     width: 100%;
     height: 100%;
-    z-index: 100;
+    z-index: 10000;
     position: fixed;
   }
   #equip{

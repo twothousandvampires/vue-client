@@ -1,36 +1,55 @@
 <script>
+import CharacterCreate from "./CharacterCreate.vue";
+
 export default {
+  data(){
+    return{
+      character_creating : false
+    }
+  },
   name: "AccountInfo.vue",
   props:{
     user : Object
+  },
+  methods:{
+    create(){
+      this.character_creating = true
+    },
+  },
+  components:{
+    CharacterCreate,
   }
 }
 </script>
 
-
 <template>
 
-  <div class="acc-info-wrap">
-
+    <div class="acc-info-wrap">
       <h1 class="acc-name">{{ user.name }}</h1>
-      <p class="acc-email">{{ user.email }}</p>
+      <button @click="create">Create character</button>
+    </div>
 
-  </div>
+  <CharacterCreate v-if="character_creating"/>
 
 </template>
 
-
 <style scoped>
-  .acc-name{
-    color: hsla(160, 100%, 37%, 1);
+
+  button{
+    margin-left: 10px;
+    cursor: pointer;
+    border: 10px solid #40c4c8;
+    border-image: url("/src/assets/img/border/border_long.png") 95 stretch stretch;
+    font-family: o;
+    font-size: 18px;
   }
+
   .acc-info-wrap{
-    padding: 10px;
-    border: hsla(160,100%,37%,1) 2px solid;
-    min-height: 200px;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    padding: 4px;
+    color: #c8c8c8;
   }
-  .acc-email{
-    font-size: 26px;
-    color:darkblue;
-  }
+
 </style>

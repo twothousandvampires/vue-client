@@ -1,43 +1,25 @@
 <script>
 import GameCanvas from "../views/GameCanvas.vue";
-import CharacterCreate from "./CharacterCreate.vue";
 import CharacterSingleInfo from "./CharacterSingleInfo.vue";
 export default {
-  data(){
-    return{
-      character_creating : false
-    }
-  },
   props:{
     characters : Array
   },
   name: "CharactersInfo.vue",
   components:{
     GameCanvas,
-    CharacterCreate,
     CharacterSingleInfo
   },
-  mounted() {
-  },
-  methods:{
-    create(){
-      this.character_creating = true
-    },
-  }
 }
 </script>
-
 
 <template>
   <div class="characters-wrap">
     <div class="character" v-for="character in characters">
-        <CharacterSingleInfo v-bind:character="character"/>
+        <CharacterSingleInfo v-bind:char="character"/>
     </div>
   </div>
-  <button @click="create">Create</button>
-  <CharacterCreate v-if="character_creating"/>
 </template>
-
 
 <style scoped>
 
@@ -50,7 +32,8 @@ export default {
     padding: 10px;
     min-width: 200px;
     min-height: 320px;
-    border: 2px solid darkblue;
+    border: 25px solid #2c3e50;
+    border-image: url("/src/assets/img/border/border_big.png") 95 stretch stretch;
   }
 
 </style>
