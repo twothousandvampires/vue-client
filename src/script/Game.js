@@ -119,7 +119,6 @@ export default class Game{
     }
 
     act(){
-        console.log(this.enemy.length)
         this.char.act(this.mouse ,this.effects, this.enemy)
         this.enemy.forEach(elem => {
             elem.act(this.char)

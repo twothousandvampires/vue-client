@@ -31,8 +31,8 @@ export default class Render{
 
     drawWorld(game){
         this.ctx.fillStyle = 'black'
-        this.ctx.clearRect(0,0,2000,2000)
-        this.ctx.fillRect(0,0,2000,2000)
+        this.ctx.clearRect(0,0,1300,1300)
+        this.ctx.fillRect(0,0,1300,1300)
 
         game.nodes.forEach(elem => {
             // animation
