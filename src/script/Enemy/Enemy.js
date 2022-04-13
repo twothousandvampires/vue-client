@@ -5,13 +5,34 @@ export default class Enemy{
     constructor(x, y, dist) {
         this.cord_x = x + 200
         this.cord_y = y + 400
-        this.state = 'idle'
         this.deal_hit = false
-        this.move_offset = 0
         this.fliped = false
         this.direct_move_vector = undefined
         // 20 = 1c
-        this.change_behavior_time = Math.floor(Math.random() * (40 - 20) + 20)
+
+        this.y_frame_offset = 0
+        this.max_frame = 9
+        this.frame_change_tick = 7 // 7 * 50(game_tick) = 350 ms
+
+        this.can_move = true
+        this.frozen = false
+        this.stunned = false
+
+        this.is_cast = false
+        this.is_poution = false
+        this.is_scroll = false
+        this.is_idle = true
+        this.is_move = false
+        this.is_attack = false
+        this.deal_hit = false
+
+        this.box_size_x = 46
+        this.box_size_y = 30
+
+        this.frame = 0
+        this.frame_timer = 0
+
+        this.speed = 2
     }
 
     setCord(x,y){
@@ -57,49 +78,6 @@ export default class Enemy{
                 this.idleBehavior(char);
                 break;
         }
-    }
-
-    draw(ctx){
-        let sheet = this.image[this.state]
-        this.image.frame_timer ++
-        if(this.image.frame_timer >= sheet.tick()){
-            this.image.frame_timer = 0
-            this.image.frame += 1
-            if(this.image.frame === sheet.max_frame && this.state !== 'attack'){
-                this.image.frame = 0
-            }
-            else if(this.image.frame === sheet.max_frame && this.state === 'attack'){
-                this.image.frame = sheet.max_frame - 1
-            }
-        }
-
-        // show state
-        // game.ctx.fillStyle = ' yellow'
-        // game.ctx.fillText(this.state, this.cord_x - this.box_size_x/2 , this.cord_y - (this.size_y - this.box_size_y/2) - 10)
-
-        let f_x = ((this.size_x * sheet.sprite_size_w) / this.image.default_sprite_size_x) - this.size_x
-        let f_y = ((this.size_y * sheet.sprite_size_h) / this.image.default_sprite_size_y) - this.size_y
-
-
-        if(this.fliped){
-            ctx.save()
-            Functions.flipHorizontally(ctx, this.cord_x)
-        }
-
-        ctx.drawImage(this.image.src, sheet.sprite_size_w * this.image.frame,sheet.y_offset,sheet.sprite_size_w - 2,sheet.sprite_size_h,
-            this.cord_x - this.size_x/2 - f_x/2,this.cord_y - (this.size_y/2 + (this.size_y/2 - this.box_size_y/2)) - f_y/2,this.size_x + f_x,
-            this.size_y + f_y)
-
-        if(this.fliped){
-            ctx.restore()
-        }
-
-        // show box
-        // game.ctx.fillStyle = 'blue'
-        // game.ctx.fillRect(this.cord_x - this.box_size_x/2,this.cord_y - this.box_size_y/2,this.box_size_x,this.box_size_y)
-        // show attack rect
-        // game.ctx.fillStyle = 'yellow'
-        // game.ctx.fillRect(this.attack_rect.cord_x,this.attack_rect.cord_y,this.attack_rect.box_size_x,this.attack_rect.box_size_y)
     }
 
     angleToAttackRect(angle){

@@ -1,4 +1,3 @@
-import ImageData from "./ImageData.js";
 import Character from "./Character/Character.js";
 import Node from "./Node";
 import Render from "./Render.js";
@@ -15,7 +14,6 @@ export default class Game{
         this.scene = 'world'
         this.enemy = []
         this.effects = []
-        this.img_data = new ImageData()
         this.mouse = new Input(game_context.$refs.canvas)
         this.render = new Render(game_context.$refs.canvas.getContext('2d'))
     }

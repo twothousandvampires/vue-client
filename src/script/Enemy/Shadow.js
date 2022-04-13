@@ -10,163 +10,187 @@ export default class Shadow extends Enemy{
         this.size_y = 99
         this.box_size_x = 50
         this.box_size_y = 25
+        this.sprite_w = 90
+        this.sprite_h = 99
+
         this.can_charge = true
+        this.can_behavior = true
+
         this.speed = 2
-        this.attack_range = 20
+
+        this.name = 'skeleton warrior'
+
+        this.attack_range = 40
         this.looking_range = 200
         this.charge_distance = 500
+
+        this.y_frame_offset = 0
+        this.max_frame = 7
+        this.frame_change_tick = 7 // 7 * 50(game_tick) = 350 ms
+
+        this.can_move = true
+        this.frozen = false
+        this.stunned = false
+
+        this.is_idle = true
+        this.is_move = false
+        this.deal_hit = false
+        this.is_attack = false
+        this.is_charge = false
+        this.is_damaged = false
+
+        this.frame = 0
+        this.frame_timer = 0
+
+        this.speed = 2
+
         //ms
         this.attack_speed = 1800
-        this.image = {
-            default_sprite_size_x : 90,
-            default_sprite_size_y : 99,
-            frame_timer : 0,
-            frame : 0,
-            src : data.getImage('shadow_enemy'),
-            'idle' : {
-                sprite_size_w : 90,
-                sprite_size_h : 99,
-                y_offset : 0,
-                max_frame : 7,
-                tick : ()=> {return  7 }
-            },
-            'charge' : {
-                sprite_size_w : 90,
-                sprite_size_h : 99,
-                y_offset : 0,
-                max_frame : 7,
-                tick : ()=> {return  7 }
-            },
-            'move' : {
-                sprite_size_w : 90,
-                sprite_size_h : 99,
-                y_offset : 100,
-                max_frame : 4,
-                tick : ()=> {return  5 }
-            },
-            'retreat' : {
-                sprite_size_w : 90,
-                sprite_size_h : 99,
-                y_offset : 0,
-                max_frame : 7,
-                tick : ()=> {return  7 }
-            },
-            'around' : {
-                sprite_size_w : 90,
-                sprite_size_h : 99,
-                y_offset : 0,
-                max_frame : 7,
-                tick : ()=> {return  7 }
-            },
-            'attack' : {
-                sprite_size_w : 90,
-                sprite_size_h : 99,
-                y_offset : 0,
-                max_frame : 7,
-                tick : ()=> {return  7 }
-            }
-        }
     }
 
     angleToAttackRect(angle){
-        if(angle < 0.39 || angle > 5.85){
-            return {
-                cord_x : this.cord_x - this.box_size_x/2,
-                cord_y : this.cord_y + this.box_size_y/2,
-                box_size_x : this.box_size_x,
-                box_size_y : this.attack_range
+        return {
+            cord_x : this.cord_x + Math.sin(angle) * this.attack_range/2,
+            cord_y : this.cord_y + Math.cos(angle) * this.attack_range/2,
+            box_size_x : this.attack_range,
+            box_size_y : this.attack_range
+        }
+    }
+
+    setCord(x ,y, m = 1){
+        if(!(this.cord_x + x * this.speed * m >= 1000) && !(this.cord_x + x * this.speed * m <= 200)){
+            this.cord_x += x * this.speed * m
+        }
+        if(!(this.cord_y + y * this.speed * m >= 1200) && !(this.cord_y + y * this.speed * m <= 400)){
+            this.cord_y += y * this.speed * m
+        }
+    }
+
+    getMoveAngle(input){
+        if(input.w){
+            if(input.d){
+                this.move_angle = 2.36
+            }
+            else if(input.a){
+                this.move_angle = 3.93
+            }
+            else {
+                this.move_angle = 3.14
             }
         }
-        if(angle > 0.39 && angle < 1.18){
-            return {
-                cord_x : this.cord_x + this.box_size_x/2,
-                cord_y : this.cord_y + this.box_size_y/2,
-                box_size_x : this.attack_range,
-                box_size_y : this.attack_range
+        else if(input.s){
+            if(input.d){
+                this.move_angle = 0.76
+            }
+            else if(input.a){
+                this.move_angle = 5.5
+            }
+            else {
+                this.move_angle = 0
             }
         }
-        if(angle > 1.18 && angle < 1.97){
-            return {
-                cord_x : this.cord_x + this.box_size_x/2,
-                cord_y : this.cord_y - this.box_size_y/2,
-                box_size_x : this.attack_range,
-                box_size_y : this.box_size_y
+        else if(input.a){
+            this.move_angle = 4.71
+        }
+        else if(input.d){
+            this.move_angle = 1.57
+        }
+    }
+
+    moveInputIsPressed(input){
+        return input.w || input.s || input.a || input.d
+    }
+
+    resetFrame(){
+        this.frame = 0
+        this.frame_timer = 0
+    }
+
+    setSize(x, y){
+        this.size_x = x
+        this.size_y = y
+        this.sprite_w = x
+        this.sprite_h = y
+    }
+
+    idle(){
+        this.resetFrame()
+        this.setSize(90, 99)
+        this.is_idle = true
+        this.is_move = false
+        this.is_attack = false
+        this.is_charge = false
+        this.y_frame_offset = 0
+        this.max_frame = 7
+        this.frame_change_tick = 7
+    }
+
+    act(char){
+        let distance_to_char = Functions.distance(this, char)
+
+        if(this.frozen || this.stunned){
+            //
+        }
+        else if(this.damaged){
+            //
+        }
+        else if(this.is_attack){
+
+        }
+        else if(this.is_move){
+
+        }
+        else {
+            if(distance_to_char < 500 && distance_to_char > 100 && this.can_charge){
+                this.charge()
+            }
+            else if(distance_to_char > 500){
+                this.move_angle = Math.random() * 6.14
+                this.idleMove()
+                setTimeout(()=>{
+                    this.idle()
+                },3000)
+            }
+            else if(distance_to_char < 500 && distance_to_char > 40){
+                this.move(char)
+            }
+            else {
+                this.attack()
             }
         }
-        if(angle > 1.97 && angle < 2.76){
-            return {
-                cord_x : this.cord_x + this.box_size_x/2,
-                cord_y : this.cord_y - this.box_size_y/2 - this.attack_range/2,
-                box_size_x : this.attack_range,
-                box_size_y : this.attack_range/2
-            }
-        }
-        if(angle > 2.76 && angle < 3.55){
-            return {
-                cord_x : this.cord_x - this.box_size_x/2,
-                cord_y : this.cord_y - this.box_size_y/2 - this.attack_range/2,
-                box_size_x : this.box_size_x,
-                box_size_y : this.attack_range/2
-            }
-        }
-        if(angle > 3.55 && angle < 4.34){
-            return {
-                cord_x : this.cord_x - this.box_size_x/2 - this.attack_range,
-                cord_y : this.cord_y - this.box_size_y/2 - this.attack_range/2,
-                box_size_x : this.attack_range,
-                box_size_y : this.attack_range/2
-            }
-        }
-        if(angle > 4.43 && angle < 5.13){
-            return {
-                cord_x : this.cord_x - this.box_size_x/2 - this.attack_range,
-                cord_y : this.cord_y - this.box_size_y/2,
-                box_size_x : this.attack_range,
-                box_size_y : this.box_size_y
-            }
-        }
-        if(angle > 5.13 && angle < 5.85){
-            return {
-                cord_x : this.cord_x - this.box_size_x/2 - this.attack_range,
-                cord_y : this.cord_y + this.box_size_y/2,
-                box_size_x : this.attack_range,
-                box_size_y : this.attack_range
+
+        this.frame_timer ++
+        if(this.frame_timer >= this.frame_change_tick){
+            this.frame_timer = 0
+            this.frame ++
+            if(this.frame >= this.max_frame){
+                this.frame = 0
             }
         }
     }
 
-    idleBehavior(char){
-        if(this.direct_move_vector){
-            this.setCord(Math.sin(this.direct_move_vector),Math.cos(this.direct_move_vector))
-        }
-        if(!this.change_behavior_time){
-            let rng = (Math.random()).toFixed(1);
-            let distance_to_player = Functions.distance(this,char)
-            if(Functions.distance(this,char) > this.looking_range){
-                this.setBehavior('idle',2000)
-                if(rng > 0.5) this.direct_move_vector = (Math.random() * 6.24).toFixed(2)
-                else this.direct_move_vector = undefined
-            }
-            else{
-                if(distance_to_player <= this.charge_distance && distance_to_player > 300 && this.can_charge){
-                    let angle = Functions.angle(this, char)
-                    this.start_point_x = this.cord_x
-                    this.start_point_y = this.cord_y
-                    this.charge_angle = angle
-                    this.speed = 4
-                    this.setBehavior('charge')
-                }
-                else if (distance_to_player > this.charge_distance){
-                    this.setBehavior('move',2000)
-                }
-                else if(distance_to_player <= 300 && distance_to_player > 50){
-                    this.setBehavior('move',2000)
+    attack(){
+        this.resetFrame()
+        this.is_attack = true
+        this.y_frame_offset = 200
+        this.max_frame = 6
+        this.frame_change_tick = 2000/350
+        setTimeout(()=>{
+            this.deal_hit = false
+            this.idle()
+        },2000)
+    }
 
-                }
-                else {
-                    this.setBehavior('attack',this.attack_speed)
-                }
-            }
-        }
+    move(char){
+        this.is_idle = false
+        this.y_frame_offset = 100
+        this.max_frame = 4
+        this.frame_change_tick = 6
+        this.is_move = true
+        this.move_angle = Functions.angle(this, char)
+        let move_x = Math.sin(this.move_angle)
+        this.fliped = move_x <= 0;
+        let move_y = Math.cos(this.move_angle)
+        this.setCord(move_x, move_y)
     }
 }

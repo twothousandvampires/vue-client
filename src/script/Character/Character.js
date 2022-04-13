@@ -11,7 +11,7 @@ export default class Character{
             this.inv = new Inventory(items,this)
         }
 
-        this.name = 'grim traveler'
+        this.img_name = 'grim traveler'
         this.parseStats(template)
 
         this.cord_x = 400 + 200
@@ -187,6 +187,9 @@ export default class Character{
         this.is_idle = true
         this.is_move = false
         this.is_run = false
+        this.is_attack = false
+        this.is_poution = false
+        this.is_scroll = false
         this.y_frame_offset = 0
         this.max_frame = 9
         this.frame_change_tick = 7
@@ -233,7 +236,8 @@ export default class Character{
                     this.move(input)
                 }
             }
-            else {
+            else if(!this.is_idle){
+                this.is_idle = true
                 this.idle()
             }
         }
@@ -248,59 +252,27 @@ export default class Character{
         }
     }
 
-    // draw(ctx){
-    //     let sheet = this.image[this.state]
-    //     this.image.frame_timer ++
-    //     if(this.image.frame_timer >= sheet.tick()){
-    //         this.image.frame_timer = 0
-    //         this.image.frame += 1
-    //         if(this.image.frame >= sheet.max_frame && this.state !== 'attack'){
-    //             this.image.frame = 0
-    //         }
-    //         else if(this.image.frame >= sheet.max_frame && this.state === 'attack'){
-    //             this.image.frame = sheet.max_frame - 1
-    //         }
-    //     }
-    //
-    //     let f_x = ((this.size_x * sheet.sprite_size_w) / 90) - this.size_x
-    //     let f_y = ((this.size_y * sheet.sprite_size_h) / 93) - this.size_y
-    //
-    //     if(this.fliped){
-    //         ctx.save()
-    //         Functions.flipHorizontally(ctx, this.cord_x)
-    //     }
-    //
-    //     ctx.drawImage(this.image.src, sheet.sprite_size_w * this.image.frame,sheet.y_offset,sheet.sprite_size_w - 2,sheet.sprite_size_h,this.cord_x - this.size_x/2 - f_x/2,this.cord_y - (this.size_y/2 + (this.size_y/2 - this.box_size_y/2)) - f_y/2 + this.image.y_draw_offset,this.size_x + f_x,this.size_y + f_y)
-    //
-    //     if(this.fliped){
-    //         ctx.restore()
-    //     }
-    //
-    //     // //show attack rect
-    //     // if(this.attack_rect){
-    //     //     game.ctx.fillStyle = 'yellow'
-    //     //     game.ctx.fillRect(this.attack_rect.cord_x - this.attack_rect.box_size_x/2,this.attack_rect.cord_y - this.attack_rect.box_size_y/2,this.attack_rect.box_size_x,this.attack_rect.box_size_y)
-    //     // }
-    //
-    //
-    //     // ctx.fillStyle = 'blue'
-    //     // ctx.fillRect(this.cord_x - this.box_size_x/2,this.cord_y - this.box_size_y/2,this.box_size_x,this.box_size_y)
-    // }
-
     attack(mouse){
         this.resetFrame()
+        this.is_attack = true
+        this.y_frame_offset = 188
+        this.max_frame = 8
+        this.frame_change_tick = 1500/350
+        this.setSize(120,120)
         this.attack_angle  = Functions.angle(this,mouse)
         this.attack_rect = this.angleToAttackRect(this.attack_angle)
-        this.is_attack = true
         setTimeout(()=>{
             this.deal_hit = false
-            this.is_attack = false
             this.idle()
         },1500)
     }
 
     run(input){
+        this.is_idle = false
         this.is_run = true
+        this.y_frame_offset = 94
+        this.max_frame = 4
+        this.frame_change_tick = 3
         this.getMoveAngle(input)
         let move_x = Math.sin(this.move_angle)
         this.fliped = move_x <= 0;
@@ -312,9 +284,16 @@ export default class Character{
     defend(){
         this.resetFrame()
         this.defended = true
+        this.y_frame_offset = 309
+        this.max_frame = 2
+        this.frame_change_tick = 12
     }
 
     move(input){
+        this.is_idle = false
+        this.y_frame_offset = 94
+        this.max_frame = 4
+        this.frame_change_tick = 6
         this.is_move = true
         this.getMoveAngle(input)
         let move_x = Math.sin(this.move_angle)
