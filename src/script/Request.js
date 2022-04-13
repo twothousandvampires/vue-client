@@ -1,6 +1,5 @@
 export default class Request{
 
-
     static url = '//127.0.0.1:8000/api/'
 
     static move(x, y, char_id){

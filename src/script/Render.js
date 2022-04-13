@@ -69,10 +69,8 @@ export default class Render{
         all.sort(function(a,b){
             return a.cord_y - b.cord_y
         })
-
         all.forEach(elem =>{
             elem.draw(this.ctx)
         })
-
     }
 }

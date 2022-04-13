@@ -11,13 +11,13 @@ export default class ImageData{
         this['skeleton warrior'].src = './src/assets/img/enemy/skeleton_warrior.png'
 
         this['undying squad'] = new Image()
-        this['undying_squad'].src = './src/assets/img/enemy/undying_squad.png'
+        this['undying squad'].src = './src/assets/img/enemy/undying_squad.png'
 
         this['reaper enemy'] = new Image()
-        this['reaper_enemy'].src = './src/assets/img/enemy/reaper.png'
+        this['reaper enemy'].src = './src/assets/img/enemy/reaper.png'
 
         this['weapon swing'] = new Image()
-        this['weapon_swing'].src = './src/assets/img/effects/weapon_swing.png'
+        this['weapon swing'].src = './src/assets/img/effects/weapon_swing.png'
 
         this['tile'] = new Image()
         this['tile'].src = './src/assets/img/strites/tiles.png'
