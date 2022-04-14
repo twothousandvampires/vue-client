@@ -37,6 +37,9 @@ export default class Character{
         this.sprite_w = 90
         this.sprite_h = 93
 
+        this.def_w = this.sprite_w
+        this.def_h = this.sprite_h
+
         this.y_frame_offset = 0
         this.max_frame = 9
         this.frame_change_tick = 7 // 7 * 50(game_tick) = 350 ms
@@ -125,6 +128,27 @@ export default class Character{
         }
     }
 
+    getState(){
+        if(this.is_idle){
+            return 'idle';
+        }
+        else if(this.is_attack){
+            return 'attack'
+        }
+        else if(this.is_move){
+            return 'move'
+        }
+        else if(this.is_run){
+            return 'run'
+        }
+        else if(this.damaged){
+            return 'damaged'
+        }
+        else if(this.defended){
+            return 'defend'
+        }
+    }
+
     setCord(x ,y, m = 1){
         if(!(this.cord_x + x * this.speed * m >= 1000) && !(this.cord_x + x * this.speed * m <= 200)){
             this.cord_x += x * this.speed * m
@@ -172,6 +196,15 @@ export default class Character{
     resetFrame(){
         this.frame = 0
         this.frame_timer = 0
+        this.is_move = false
+        this.is_run = false
+        this.is_attack = false
+        this.is_poution = false
+        this.is_scroll = false
+        this.is_cast = false
+        this.is_idle = false
+        this.damaged = false
+        this.defended = false
     }
 
     setSize(x, y){
@@ -185,14 +218,23 @@ export default class Character{
         this.resetFrame()
         this.setSize(90, 93)
         this.is_idle = true
-        this.is_move = false
-        this.is_run = false
-        this.is_attack = false
-        this.is_poution = false
-        this.is_scroll = false
         this.y_frame_offset = 0
         this.max_frame = 9
         this.frame_change_tick = 7
+    }
+
+    damage(angle){
+        this.resetFrame()
+        this.setSize(90,93)
+        this.damaged = true
+        this.direction_angle = angle
+        this.y_frame_offset = 399
+        this.max_frame = 2
+        this.frame_change_tick = 1
+        setTimeout(()=>{
+            this.damaged = false
+            this.idle()
+        },1000)
     }
 
     act(mouse, effect, enemy){
@@ -204,17 +246,22 @@ export default class Character{
             //
         }
         else if(this.damaged){
-            //
+            let move_x = Math.sin(this.direction_angle)
+            let move_y = Math.cos(this.direction_angle)
+            this.setCord(move_x, move_y)
         }
         else if(this.is_attack){
-
+            enemy.forEach(elem => {
+                if(Functions.rectCollision(this.attack_box, elem) && this.frame >= 5 && !elem.damaged){
+                    elem.damage(Functions.angle(this, elem))
+                }
+            })
         }
         else if(this.is_cast || this.is_scroll || this.is_poution){
 
         }
         else if(this.defended){
             if(!input.e){
-                this.defended = false
                 this.idle()
             }
         }
@@ -237,7 +284,6 @@ export default class Character{
                 }
             }
             else if(!this.is_idle){
-                this.is_idle = true
                 this.idle()
             }
         }
@@ -254,35 +300,40 @@ export default class Character{
 
     attack(mouse){
         this.resetFrame()
+        this.setSize(120,120)
         this.is_attack = true
-        this.y_frame_offset = 188
+        this.y_frame_offset = 186
         this.max_frame = 8
         this.frame_change_tick = 1500/350
-        this.setSize(120,120)
-        this.attack_angle  = Functions.angle(this,mouse)
-        this.attack_rect = this.angleToAttackRect(this.attack_angle)
+        this.attack_box = this.angleToAttackRect(Functions.angle(this,mouse))
         setTimeout(()=>{
+            this.attack_box = false
             this.deal_hit = false
             this.idle()
         },1500)
     }
 
     run(input){
-        this.is_idle = false
-        this.is_run = true
-        this.y_frame_offset = 94
-        this.max_frame = 4
-        this.frame_change_tick = 3
-        this.getMoveAngle(input)
-        let move_x = Math.sin(this.move_angle)
-        this.fliped = move_x <= 0;
-        let move_y = Math.cos(this.move_angle)
-
-        this.setCord(move_x, move_y, 2)
+        if(!this.is_run){
+            this.resetFrame()
+            this.setSize(90, 93)
+            this.is_run = true
+            this.y_frame_offset = 94
+            this.max_frame = 4
+            this.frame_change_tick = 3
+        }
+        else{
+            this.getMoveAngle(input)
+            let move_x = Math.sin(this.move_angle)
+            this.fliped = move_x <= 0;
+            let move_y = Math.cos(this.move_angle)
+            this.setCord(move_x, move_y, 2)
+        }
     }
 
     defend(){
         this.resetFrame()
+        this.setSize(90, 93)
         this.defended = true
         this.y_frame_offset = 309
         this.max_frame = 2
@@ -290,15 +341,20 @@ export default class Character{
     }
 
     move(input){
-        this.is_idle = false
-        this.y_frame_offset = 94
-        this.max_frame = 4
-        this.frame_change_tick = 6
-        this.is_move = true
-        this.getMoveAngle(input)
-        let move_x = Math.sin(this.move_angle)
-        this.fliped = move_x <= 0;
-        let move_y = Math.cos(this.move_angle)
-        this.setCord(move_x, move_y)
+        if(!this.is_move){
+            this.resetFrame()
+            this.setSize(90, 93)
+            this.is_move = true
+            this.y_frame_offset = 94
+            this.max_frame = 4
+            this.frame_change_tick = 6
+        }
+        else{
+            this.getMoveAngle(input)
+            let move_x = Math.sin(this.move_angle)
+            this.fliped = move_x <= 0;
+            let move_y = Math.cos(this.move_angle)
+            this.setCord(move_x, move_y)
+        }
     }
 }

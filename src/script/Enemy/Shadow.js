@@ -13,12 +13,17 @@ export default class Shadow extends Enemy{
         this.sprite_w = 90
         this.sprite_h = 99
 
+        this.def_w = this.sprite_w
+        this.def_h = this.sprite_h
+
         this.can_charge = true
-        this.can_behavior = true
+        this.can_change_behavior = false
+        this.wait_between_attack = false
+        this.change_behavior_timeout = false
 
         this.speed = 2
 
-        this.name = 'skeleton warrior'
+        this.img_name = 'skeleton warrior'
 
         this.attack_range = 40
         this.looking_range = 200
@@ -37,7 +42,10 @@ export default class Shadow extends Enemy{
         this.deal_hit = false
         this.is_attack = false
         this.is_charge = false
+        this.is_idle_move = false
         this.is_damaged = false
+
+        this.attack_box = false
 
         this.frame = 0
         this.frame_timer = 0
@@ -46,6 +54,26 @@ export default class Shadow extends Enemy{
 
         //ms
         this.attack_speed = 1800
+        this.idle()
+    }
+
+    getState(){
+        if(this.is_idle){
+            return 'idle'
+        }
+        if(this.is_move){
+            return 'move'
+        }
+        if(this.is_attack){
+            return 'attack'
+        }
+        if(this.damaged){
+            return 'damage'
+        }
+        if(this.is_idle_move){
+            return 'idle move'
+        }
+        return 'yo';
     }
 
     angleToAttackRect(angle){
@@ -66,44 +94,15 @@ export default class Shadow extends Enemy{
         }
     }
 
-    getMoveAngle(input){
-        if(input.w){
-            if(input.d){
-                this.move_angle = 2.36
-            }
-            else if(input.a){
-                this.move_angle = 3.93
-            }
-            else {
-                this.move_angle = 3.14
-            }
-        }
-        else if(input.s){
-            if(input.d){
-                this.move_angle = 0.76
-            }
-            else if(input.a){
-                this.move_angle = 5.5
-            }
-            else {
-                this.move_angle = 0
-            }
-        }
-        else if(input.a){
-            this.move_angle = 4.71
-        }
-        else if(input.d){
-            this.move_angle = 1.57
-        }
-    }
-
-    moveInputIsPressed(input){
-        return input.w || input.s || input.a || input.d
-    }
-
     resetFrame(){
         this.frame = 0
         this.frame_timer = 0
+        this.is_idle = false
+        this.is_move = false
+        this.is_idle_move = false
+        this.is_attack = false
+        this.is_charge = false
+        this.damaged = false
     }
 
     setSize(x, y){
@@ -113,50 +112,92 @@ export default class Shadow extends Enemy{
         this.sprite_h = y
     }
 
-    idle(){
+    damage(angle){
+        clearTimeout(this.change_behavior_timeout)
+        this.resetFrame()
+        this.damaged = true
+        this.direction_angle = angle
+        this.y_frame_offset = 300
+        this.max_frame = 2
+        this.frame_change_tick = 1
+        setTimeout(()=>{
+            this.idle(500)
+        },1000)
+    }
+
+
+    idle(ms = Math.random() * (2500 - 1000) + 1000){
         this.resetFrame()
         this.setSize(90, 99)
         this.is_idle = true
-        this.is_move = false
-        this.is_attack = false
-        this.is_charge = false
         this.y_frame_offset = 0
         this.max_frame = 7
         this.frame_change_tick = 7
+        this.change_behavior_timeout = setTimeout(()=>{
+            this.can_change_behavior = true
+        },ms)
     }
 
     act(char){
         let distance_to_char = Functions.distance(this, char)
+        if(this.can_change_behavior){
 
-        if(this.frozen || this.stunned){
-            //
-        }
-        else if(this.damaged){
-            //
-        }
-        else if(this.is_attack){
-
-        }
-        else if(this.is_move){
-
-        }
-        else {
-            if(distance_to_char < 500 && distance_to_char > 100 && this.can_charge){
+            if(distance_to_char < 50 && !this.wait_between_attack){
+                this.attack(char)
+            }
+            else if(distance_to_char >= 50 && distance_to_char < 300){
+                this.move()
+            }
+            else if(distance_to_char > 200 && distance_to_char < 400 && this.can_charge){
+                this.deriction_angle = Functions.angle(this, char)
                 this.charge()
             }
-            else if(distance_to_char > 500){
-                this.move_angle = Math.random() * 6.14
-                this.idleMove()
-                setTimeout(()=>{
-                    this.idle()
-                },3000)
-            }
-            else if(distance_to_char < 500 && distance_to_char > 40){
-                this.move(char)
+            else if(distance_to_char >= 300 && distance_to_char < 400){
+                this.move()
             }
             else {
-                this.attack()
+                this.deriction_angle = Math.random() * 6.14
+                this.idleMove()
             }
+            this.can_change_behavior = false
+        }
+
+        else if(this.frozen || this.stunned){
+
+        }
+        else if(this.damaged){
+            let move_x = Math.sin(this.direction_angle)
+            let move_y = Math.cos(this.direction_angle)
+            this.setCord(move_x, move_y)
+        }
+        else if(this.is_attack){
+            if(Functions.rectCollision(this.attack_box, char) && this.frame >= 4 && !char.damaged){
+                char.damage(Functions.angle(this, char))
+            }
+        }
+        else if(this.is_move){
+            if(distance_to_char < 50){
+                this.attack(char)
+            }
+            else {
+                this.move_angle = Functions.angle(this, char)
+                let move_x = Math.sin(this.move_angle)
+                this.fliped = move_x <= 0;
+                let move_y = Math.cos(this.move_angle)
+                this.setCord(move_x, move_y)
+            }
+        }
+        else if(this.is_charge){
+            let move_x = Math.sin(this.deriction_angle)
+            this.fliped = move_x <= 0;
+            let move_y = Math.cos(this.deriction_angle)
+            this.setCord(move_x, move_y, 3)
+        }
+        else if(this.is_idle_move){
+            let move_x = Math.sin(this.deriction_angle)
+            this.fliped = move_x <= 0;
+            let move_y = Math.cos(this.deriction_angle)
+            this.setCord(move_x, move_y)
         }
 
         this.frame_timer ++
@@ -169,28 +210,53 @@ export default class Shadow extends Enemy{
         }
     }
 
-    attack(){
+    attack(char){
+        clearTimeout(this.change_behavior_timeout)
         this.resetFrame()
         this.is_attack = true
-        this.y_frame_offset = 200
+        this.y_frame_offset = 199
         this.max_frame = 6
+        this.attack_box = this.angleToAttackRect(Functions.angle(this, char))
         this.frame_change_tick = 2000/350
+        this.wait_between_attack = true
         setTimeout(()=>{
             this.deal_hit = false
+            this.wait_between_attack = false
+            this.attack_box = false
             this.idle()
         },2000)
     }
 
-    move(char){
-        this.is_idle = false
+    move(){
+        this.resetFrame()
+        this.is_move = true
         this.y_frame_offset = 100
         this.max_frame = 4
         this.frame_change_tick = 6
-        this.is_move = true
-        this.move_angle = Functions.angle(this, char)
-        let move_x = Math.sin(this.move_angle)
-        this.fliped = move_x <= 0;
-        let move_y = Math.cos(this.move_angle)
-        this.setCord(move_x, move_y)
+        this.change_behavior_timeout = setTimeout(()=>{
+            this.idle()
+        },3000)
+    }
+
+    idleMove(){
+        this.resetFrame()
+        this.is_idle_move = true
+        this.y_frame_offset = 100
+        this.max_frame = 4
+        this.frame_change_tick = 6
+        this.change_behavior_timeout = setTimeout(()=>{
+            this.idle()
+        },3000)
+    }
+
+    charge(){
+        this.resetFrame()
+        this.is_charge = true
+        this.y_frame_offset = 400
+        this.max_frame = 2
+        this.frame_change_tick = 3
+        this.change_behavior_timeout = setTimeout(()=>{
+            this.idle()
+        },3000)
     }
 }

@@ -5,6 +5,7 @@ import MainLayout from "../layouts/MainLayout.vue";
 import Inventory from "../components/Inventory.vue";
 import Game from "../script/Game.js";
 import Request from "../script/Request.js";
+import RenderSettings from "../components/RenderSettings.vue";
 
 export default {
   data(){
@@ -14,9 +15,10 @@ export default {
     }
   },
   components:{
+    RenderSettings,
     NodeModal,
     MainLayout,
-    Inventory
+    Inventory,
   },
   props:{
     char_id : String
@@ -43,9 +45,10 @@ export default {
       <canvas id='game-canvas' :style="can_style" width="1300" height="1300" ref="canvas"></canvas>
     </div>
     <p style="position:absolute" v-if="loaded">Loading</p>
-  <Inventory v-if="game && game.inv_is_open" @close_inv="close_inv"  v-bind:char="game.char" v-bind:mouse="game.mouse">
+  <Inventory v-if="game && game.inv_is_open" @close_inv="close_inv" v-bind:char="game.char" v-bind:mouse="game.mouse">
 
   </Inventory>
+  <RenderSettings v-if="game" v-bind:render="game.render"></RenderSettings>
 </template>
 <style scoped>
 

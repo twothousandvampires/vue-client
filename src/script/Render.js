@@ -16,6 +16,10 @@ export default class Render{
         this.character_timer = 0
         // ms
         this.bg_aniamtion_speed = 4000
+
+        this.show_box = false
+        this.show_state = false
+        this.show_attack_box = false
     }
 
     drawBg(){
@@ -78,7 +82,7 @@ export default class Render{
         this.ctx.clearRect(0,0,1300,1300)
         this.drawBg()
         // let all = [char].concat(enemy).concat(effects)
-        let all = [char]
+        let all = [char].concat(enemy)
         all.sort(function(a,b){
             return a.cord_y - b.cord_y
         })
@@ -87,10 +91,22 @@ export default class Render{
                 this.ctx.save()
                 Functions.flipHorizontally(this.ctx, elem.cord_x)
             }
-            this.ctx.drawImage(this.img_data.getImage(elem.img_name), elem.sprite_w * elem.frame, elem.y_frame_offset ,elem.sprite_w, elem.sprite_h, elem.cord_x - elem.size_x/2, elem.cord_y - elem.size_y/2, elem.size_x, elem.size_y)
+            this.ctx.drawImage(this.img_data.getImage(elem.img_name), elem.sprite_w * elem.frame, elem.y_frame_offset ,elem.sprite_w, elem.sprite_h, elem.cord_x - elem.size_x/2, elem.cord_y - elem.size_y + elem.box_size_y/2 + (elem.size_y - elem.def_h)/2, elem.size_x, elem.size_y)
 
             if(elem.fliped){
                 this.ctx.restore()
+            }
+            if(this.show_box){
+                this.ctx.fillRect(elem.cord_x - elem.box_size_x/2,elem.cord_y - elem.box_size_y/2, elem.box_size_x, elem.box_size_y)
+            }
+            if(this.show_attack_box){
+                if(elem.is_attack){
+                    this.ctx.fillRect(elem.attack_box.cord_x - elem.attack_box.box_size_x/2,elem.attack_box.cord_y - elem.attack_box.box_size_y/2, elem.attack_box.box_size_x, elem.attack_box.box_size_y)
+                }
+            }
+            if(this.show_state){
+                this.ctx.fillStyle = 'yellow'
+                this.ctx.fillText(elem.getState(),elem.cord_x,elem.cord_y - elem.box_size_y/2 -100,)
             }
         })
     }

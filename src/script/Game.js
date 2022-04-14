@@ -44,10 +44,9 @@ export default class Game{
     }
 
     createEnemy(){
-        let count = 5
-        while(count != 0){
-            this.enemy.push(new Shadow(100,100,100))
-            count -= 1
+
+        for(let i = 0; i < 5; i++){
+            this.enemy.push(new Shadow(100 + i * 50,100 + i * 50,100))
         }
     }
 
