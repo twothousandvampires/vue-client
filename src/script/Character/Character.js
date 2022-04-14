@@ -31,6 +31,7 @@ export default class Character{
         this.move_angle = 0
         this.direction_angle = false
 
+
         this.size_x = 90
         this.size_y = 93
 
@@ -39,6 +40,8 @@ export default class Character{
 
         this.def_w = this.sprite_w
         this.def_h = this.sprite_h
+
+        this.recovery_timeout = undefined
 
         this.y_frame_offset = 0
         this.max_frame = 9
@@ -205,6 +208,8 @@ export default class Character{
         this.is_idle = false
         this.damaged = false
         this.defended = false
+        this.attack_box = false
+        this.deal_hit = false
     }
 
     setSize(x, y){
@@ -223,6 +228,13 @@ export default class Character{
         this.frame_change_tick = 7
     }
 
+    setRecoveryTimeOut(ms){
+        clearTimeout(this.recovery_timeout)
+        this.recovery_timeout = setTimeout(()=>{
+            this.idle()
+        },ms)
+    }
+
     damage(angle){
         this.resetFrame()
         this.setSize(90,93)
@@ -231,10 +243,7 @@ export default class Character{
         this.y_frame_offset = 399
         this.max_frame = 2
         this.frame_change_tick = 1
-        setTimeout(()=>{
-            this.damaged = false
-            this.idle()
-        },1000)
+        this.setRecoveryTimeOut(1000)
     }
 
     act(mouse, effect, enemy){
@@ -252,7 +261,7 @@ export default class Character{
         }
         else if(this.is_attack){
             enemy.forEach(elem => {
-                if(Functions.rectCollision(this.attack_box, elem) && this.frame >= 5 && !elem.damaged){
+                if(Functions.rectCollision(this.attack_box, elem) && this.frame === 5 && !elem.damaged && !elem.is_dead){
                     elem.damage(Functions.angle(this, elem))
                 }
             })
@@ -302,15 +311,11 @@ export default class Character{
         this.resetFrame()
         this.setSize(120,120)
         this.is_attack = true
-        this.y_frame_offset = 186
+        this.y_frame_offset = 187
         this.max_frame = 8
-        this.frame_change_tick = 1500/350
+        this.frame_change_tick = 1000/350
         this.attack_box = this.angleToAttackRect(Functions.angle(this,mouse))
-        setTimeout(()=>{
-            this.attack_box = false
-            this.deal_hit = false
-            this.idle()
-        },1500)
+        this.setRecoveryTimeOut(1000)
     }
 
     run(input){

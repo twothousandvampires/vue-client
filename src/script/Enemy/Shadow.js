@@ -44,6 +44,9 @@ export default class Shadow extends Enemy{
         this.is_charge = false
         this.is_idle_move = false
         this.is_damaged = false
+        this.is_dead = false
+
+        this.life = 2
 
         this.attack_box = false
 
@@ -72,6 +75,9 @@ export default class Shadow extends Enemy{
         }
         if(this.is_idle_move){
             return 'idle move'
+        }
+        if(this.is_dead){
+            return 'dead'
         }
         return 'yo';
     }
@@ -103,6 +109,9 @@ export default class Shadow extends Enemy{
         this.is_attack = false
         this.is_charge = false
         this.damaged = false
+        this.deal_hit = false
+        this.wait_between_attack = false
+        this.attack_box = false
     }
 
     setSize(x, y){
@@ -112,19 +121,37 @@ export default class Shadow extends Enemy{
         this.sprite_h = y
     }
 
+    dead(){
+        this.resetFrame()
+        this.setSize(90, 99)
+        this.is_dead = true
+        this.y_frame_offset = 500
+        this.max_frame = 7
+        this.frame_change_tick = 4
+    }
+
     damage(angle){
-        clearTimeout(this.change_behavior_timeout)
         this.resetFrame()
         this.damaged = true
+        this.life--
+        if(this.life <= 0 ){
+            clearTimeout(this.change_behavior_timeout)
+            this.dead()
+            return
+        }
         this.direction_angle = angle
         this.y_frame_offset = 300
         this.max_frame = 2
         this.frame_change_tick = 1
-        setTimeout(()=>{
-            this.idle(500)
-        },1000)
+        this.setBehaviorTimer(1000, 500)
     }
 
+    setBehaviorTimer(ms, idle_ms){
+        clearTimeout(this.change_behavior_timeout)
+        this.change_behavior_timeout = setTimeout(()=>{
+            this.idle(idle_ms)
+        }, ms)
+    }
 
     idle(ms = Math.random() * (2500 - 1000) + 1000){
         this.resetFrame()
@@ -140,7 +167,10 @@ export default class Shadow extends Enemy{
 
     act(char){
         let distance_to_char = Functions.distance(this, char)
-        if(this.can_change_behavior){
+        if(this.is_dead){
+
+        }
+        else if(this.can_change_behavior){
 
             if(distance_to_char < 50 && !this.wait_between_attack){
                 this.attack(char)
@@ -171,7 +201,7 @@ export default class Shadow extends Enemy{
             this.setCord(move_x, move_y)
         }
         else if(this.is_attack){
-            if(Functions.rectCollision(this.attack_box, char) && this.frame >= 4 && !char.damaged){
+            if(Functions.rectCollision(this.attack_box, char) && this.frame === 4 && !char.damaged){
                 char.damage(Functions.angle(this, char))
             }
         }
@@ -205,13 +235,17 @@ export default class Shadow extends Enemy{
             this.frame_timer = 0
             this.frame ++
             if(this.frame >= this.max_frame){
-                this.frame = 0
+                if(this.is_dead){
+                    this.frame = this.max_frame - 1
+                }
+                else {
+                    this.frame = 0
+                }
             }
         }
     }
 
     attack(char){
-        clearTimeout(this.change_behavior_timeout)
         this.resetFrame()
         this.is_attack = true
         this.y_frame_offset = 199
@@ -219,12 +253,7 @@ export default class Shadow extends Enemy{
         this.attack_box = this.angleToAttackRect(Functions.angle(this, char))
         this.frame_change_tick = 2000/350
         this.wait_between_attack = true
-        setTimeout(()=>{
-            this.deal_hit = false
-            this.wait_between_attack = false
-            this.attack_box = false
-            this.idle()
-        },2000)
+        this.setBehaviorTimer(2000)
     }
 
     move(){
@@ -233,9 +262,7 @@ export default class Shadow extends Enemy{
         this.y_frame_offset = 100
         this.max_frame = 4
         this.frame_change_tick = 6
-        this.change_behavior_timeout = setTimeout(()=>{
-            this.idle()
-        },3000)
+        this.setBehaviorTimer(3000)
     }
 
     idleMove(){
@@ -244,9 +271,7 @@ export default class Shadow extends Enemy{
         this.y_frame_offset = 100
         this.max_frame = 4
         this.frame_change_tick = 6
-        this.change_behavior_timeout = setTimeout(()=>{
-            this.idle()
-        },3000)
+        this.setBehaviorTimer(3000)
     }
 
     charge(){
@@ -255,8 +280,6 @@ export default class Shadow extends Enemy{
         this.y_frame_offset = 400
         this.max_frame = 2
         this.frame_change_tick = 3
-        this.change_behavior_timeout = setTimeout(()=>{
-            this.idle()
-        },3000)
+        this.setBehaviorTimer(3000)
     }
 }

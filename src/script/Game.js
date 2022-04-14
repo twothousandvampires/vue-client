@@ -107,8 +107,10 @@ export default class Game{
                         }
                         break;
                     case 'fight':
+                        let start = Date.now()
                         this.act()
                         this.render.drawFight(this.char, this.enemy, this.effects)
+                        console.log(Date.now() - start)
                         break;
                 }
             },50)
