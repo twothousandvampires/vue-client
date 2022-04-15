@@ -1,5 +1,6 @@
 import ImageData from "./ImageData.js";
 import Functions from "./GameFunctions";
+import Unit from "./scr/Unit";
 export default class Render{
 
     constructor(ctx){
@@ -31,7 +32,7 @@ export default class Render{
                 this.bg_frame = 0
             }
         }
-        this.ctx.drawImage(this.img_data.getImage('background'),0,0,800,800,200,400,800,800)
+        this.ctx.drawImage(this.img_data.getImage('background'),0,0,850,850,150,350,850,850)
     }
 
     drawWorld(game){
@@ -81,17 +82,35 @@ export default class Render{
     drawFight(char, enemy, effects){
         this.ctx.clearRect(0,0,1300,1300)
         this.drawBg()
-        // let all = [char].concat(enemy).concat(effects)
-        let all = [char].concat(enemy)
+        let all = [char].concat(enemy).concat(effects)
+
         all.sort(function(a,b){
             return a.cord_y - b.cord_y
         })
+
         all.forEach(elem =>{
             if(elem.fliped){
                 this.ctx.save()
                 Functions.flipHorizontally(this.ctx, elem.cord_x)
             }
-            this.ctx.drawImage(this.img_data.getImage(elem.img_name), elem.sprite_w * elem.frame, elem.y_frame_offset ,elem.sprite_w, elem.sprite_h, elem.cord_x - elem.size_x/2, elem.cord_y - elem.size_y + elem.box_size_y/2 + (elem.size_y - elem.def_h)/2, elem.size_x, elem.size_y)
+            if(elem.angle){
+                this.ctx.translate(elem.cord_x, elem.cord_y);
+                this.ctx.rotate(-elem.angle);
+                this.ctx.drawImage(this.img_data.getImage(elem.img_name), elem.sprite_w * elem.frame, 0 ,elem.sprite_w ,elem.sprite_h,- elem.size_x/2 , - elem.size_y/2 , elem.size_x  , elem.size_y );
+                this.ctx.rotate(elem.angle);
+                this.ctx.translate(-elem.cord_x, -elem.cord_y);
+            }
+            else {
+                this.ctx.drawImage(this.img_data.getImage(elem.img_name),
+                    elem.sprite_w * elem.frame,
+                    elem.y_frame_offset,
+                    elem.sprite_w,
+                    elem.sprite_h,
+                    elem.cord_x - elem.size_x/2,
+                    elem.cord_y - elem.size_y + elem.box_size_y/2 + (elem.size_y - elem.def_h)/2,
+                    elem.size_x,
+                    elem.size_y)
+            }
 
             if(elem.fliped){
                 this.ctx.restore()

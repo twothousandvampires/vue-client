@@ -4,7 +4,7 @@ import Render from "./Render.js";
 import Input from "./Input.js";
 import Request from "./Request.js";
 
-import Shadow from "./Enemy/Shadow";
+import SkeletonWarrior from "./Enemy/SkeletonWarrior";
 
 export default class Game{
 
@@ -16,11 +16,12 @@ export default class Game{
         this.effects = []
         this.mouse = new Input(game_context.$refs.canvas)
         this.render = new Render(game_context.$refs.canvas.getContext('2d'))
+        this.win = false
     }
 
     prettifyData(response){
         if(response.char_update){
-            this.char = new Character(response.character.character, response.character.items)
+            this.char = new Character(650, 850, response.character.character, response.character.items)
         }
         else {
             this.char.x = response.char.x
@@ -44,9 +45,8 @@ export default class Game{
     }
 
     createEnemy(){
-
         for(let i = 0; i < 5; i++){
-            this.enemy.push(new Shadow(100 + i * 50,100 + i * 50,100))
+            this.enemy.push(new SkeletonWarrior(300 + i * 50,500 + i * 50))
         }
     }
 
@@ -107,10 +107,8 @@ export default class Game{
                         }
                         break;
                     case 'fight':
-                        let start = Date.now()
                         this.act()
                         this.render.drawFight(this.char, this.enemy, this.effects)
-                        console.log(Date.now() - start)
                         break;
                 }
             },50)
@@ -118,9 +116,25 @@ export default class Game{
     }
 
     act(){
+
+        // if(this.enemy.every(elem => {
+        //     return elem.is_dead
+        // }) && !this.win){
+        //     this.win = true
+        //     setTimeout(()=>{
+        //         Request.win(this.char.id).then(r => {
+        //             this.prettifyData(r.data.data)
+        //             this.win = false
+        //         })
+        //     },3000)
+        // }
+
         this.char.act(this.mouse ,this.effects, this.enemy)
         this.enemy.forEach(elem => {
-            elem.act(this.char)
+            elem.act(this.char, this.effects, this.enemy)
+        })
+        this.effects.forEach(elem => {
+            elem.act(this.effects)
         })
     }
 

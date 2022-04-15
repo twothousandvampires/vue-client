@@ -1,7 +1,6 @@
 import ImageData from "../ImageData";
 import WeaponSwing from "./WeaponSwing.js";
 import ChainLight from "./ChainLight";
-let imageData = new ImageData()
 export default class EffectCreator{
 
     static createEffect(name, x, y, w, h ,angle){

@@ -1,10 +1,12 @@
 import Functions from "../GameFunctions";
-import ImageData from "../ImageData";
-import EffectCreator from "../Effects/EffectCreator.js";
 import Inventory from "./Inventory";
+import Unit from "../scr/Unit";
+import EffectCreator from "../Effects/EffectCreator";
 
-export default class Character{
-    constructor(template ,items = false) {
+export default class Character extends Unit{
+
+    constructor(x, y, template, items = false) {
+        super(x, y)
 
         this.template = template
         if (items) {
@@ -13,30 +15,23 @@ export default class Character{
 
         this.img_name = 'grim traveler'
         this.parseStats(template)
-
-        this.cord_x = 400 + 200
-        this.cord_y = 400 + 400
-
-        this.fliped = false
-
-        this.immobilized = false
-        this.damaged = false
-
         //ms
         this.attack_speed = 1200
         this.attack_range = 60
 
-        this.attack_rect = undefined
+        this.attack_box = undefined
 
-        this.move_angle = 0
-        this.direction_angle = false
-
-
+        // size on canvas
         this.size_x = 90
         this.size_y = 93
 
+        // sprite size
         this.sprite_w = 90
         this.sprite_h = 93
+
+        // coll box size
+        this.box_size_x = 46
+        this.box_size_y = 30
 
         this.def_w = this.sprite_w
         this.def_h = this.sprite_h
@@ -47,28 +42,13 @@ export default class Character{
         this.max_frame = 9
         this.frame_change_tick = 7 // 7 * 50(game_tick) = 350 ms
 
-        this.can_move = true
-        this.frozen = false
-        this.stunned = false
-
         this.is_cast = false
         this.is_poution = false
         this.is_scroll = false
-        this.is_idle = true
-        this.is_move = false
         this.is_run = false
-        this.is_attack = false
         this.defended = false
-        this.deal_hit = false
-
-        this.box_size_x = 46
-        this.box_size_y = 30
-
-        this.frame = 0
-        this.frame_timer = 0
 
         this.speed = 2
-
         this.calcStats()
     }
 
@@ -122,15 +102,6 @@ export default class Character{
         this.attack_range = this.attack_range * (1 + ((this.increased_attack_range - this.reduced_attack_range) / 100))
     }
 
-    angleToAttackRect(angle){
-        return {
-            cord_x : this.cord_x + Math.sin(angle) * this.attack_range/2,
-            cord_y : this.cord_y + Math.cos(angle) * this.attack_range/2,
-            box_size_x : this.attack_range,
-            box_size_y : this.attack_range
-        }
-    }
-
     getState(){
         if(this.is_idle){
             return 'idle';
@@ -149,15 +120,6 @@ export default class Character{
         }
         else if(this.defended){
             return 'defend'
-        }
-    }
-
-    setCord(x ,y, m = 1){
-        if(!(this.cord_x + x * this.speed * m >= 1000) && !(this.cord_x + x * this.speed * m <= 200)){
-            this.cord_x += x * this.speed * m
-        }
-        if(!(this.cord_y + y * this.speed * m >= 1200) && !(this.cord_y + y * this.speed * m <= 400)){
-            this.cord_y += y * this.speed * m
         }
     }
 
@@ -212,38 +174,11 @@ export default class Character{
         this.deal_hit = false
     }
 
-    setSize(x, y){
-        this.size_x = x
-        this.size_y = y
-        this.sprite_w = x
-        this.sprite_h = y
-    }
-
-    idle(){
-        this.resetFrame()
-        this.setSize(90, 93)
-        this.is_idle = true
-        this.y_frame_offset = 0
-        this.max_frame = 9
-        this.frame_change_tick = 7
-    }
-
     setRecoveryTimeOut(ms){
         clearTimeout(this.recovery_timeout)
         this.recovery_timeout = setTimeout(()=>{
             this.idle()
         },ms)
-    }
-
-    damage(angle){
-        this.resetFrame()
-        this.setSize(90,93)
-        this.damaged = true
-        this.direction_angle = angle
-        this.y_frame_offset = 399
-        this.max_frame = 2
-        this.frame_change_tick = 1
-        this.setRecoveryTimeOut(1000)
     }
 
     act(mouse, effect, enemy){
@@ -260,11 +195,15 @@ export default class Character{
             this.setCord(move_x, move_y)
         }
         else if(this.is_attack){
-            enemy.forEach(elem => {
-                if(Functions.rectCollision(this.attack_box, elem) && this.frame === 5 && !elem.damaged && !elem.is_dead){
-                    elem.damage(Functions.angle(this, elem))
-                }
-            })
+            if(!this.deal_hit && this.frame === 5){
+                this.deal_hit = true
+                effect.push(EffectCreator.createEffect('weapon swing', this.attack_box.cord_x, this.attack_box.cord_y, this.attack_box.box_size_x, this.attack_box.box_size_y, this.attack_box.angle))
+                enemy.forEach(elem => {
+                    if(Functions.rectCollision(this.attack_box, elem) && !elem.damaged && !elem.is_dead){
+                        elem.damage(Functions.angle(this, elem))
+                    }
+                })
+            }
         }
         else if(this.is_cast || this.is_scroll || this.is_poution){
 
@@ -305,6 +244,26 @@ export default class Character{
                 this.frame = 0
             }
         }
+    }
+
+    idle(){
+        this.resetFrame()
+        this.setSize(90, 93)
+        this.is_idle = true
+        this.y_frame_offset = 0
+        this.max_frame = 9
+        this.frame_change_tick = 7
+    }
+
+    damage(angle){
+        this.resetFrame()
+        this.setSize(90,93)
+        this.damaged = true
+        this.direction_angle = angle
+        this.y_frame_offset = 399
+        this.max_frame = 2
+        this.frame_change_tick = 1
+        this.setRecoveryTimeOut(1000)
     }
 
     attack(mouse){

@@ -30,6 +30,9 @@ export default class ImageData{
 
         this['grim traveler'] = new Image()
         this['grim traveler'].src = './src/assets/img/characters/grim.png'
+
+        this['skeleton skull'] = new Image()
+        this['skeleton skull'].src = './src/assets/img/enemy/SkeletonSkull.png'
     }
 
     getImage(name){

@@ -1,22 +1,15 @@
-export default class WeaponSwing {
+import Effect from "../scr/Effect";
+
+export default class WeaponSwing extends Effect{
 
     constructor(x, y, w, h, angle) {
-        this.name = 'weapon swing'
-        this.cord_x = x
-        this.cord_y = y
-        this.box_size_x = w
-        this.box_size_y = h
-        this.angle = angle
-        this.frame = 0
-        this.frame_timer = 0
+        super(x, y, w, h, angle)
+        this.img_name = 'weapon swing'
         this.max_frame = 5
+        this.frame_change_tick = 2
+
+        this.sprite_w = 100
+        this.sprite_h = 100
     }
 
-    act(){
-        this.frame_timer ++
-        if(this.frame_timer === 2){
-            this.frame_timer = 0
-            this.frame ++
-        }
-    }
 }

@@ -29,4 +29,17 @@ export default class Request{
             }
         })
     }
+
+    static win(char_id){
+        return axios({method: 'post',
+            url : Request.url + 'character/win/',
+            data : {
+                user_id : localStorage.getItem('user_id'),
+                char_id : char_id
+            },
+            headers : {
+                'Authorization': 'Bearer ' + localStorage.getItem('token'),
+            }
+        })
+    }
 }
