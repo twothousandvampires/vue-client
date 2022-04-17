@@ -49,6 +49,13 @@ export default {
   font-family: o;
   src: url("@/fonts/manaspc.ttf");
 }
+.modal{
+  position: fixed;
+  color: white;
+  font-size: 18px;
+  padding: 4px;
+  z-index: 100;
+}
 #app {
   font-family: o;
   font-size: 20px;

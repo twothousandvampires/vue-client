@@ -6,6 +6,7 @@ import Inventory from "../components/Inventory.vue";
 import Game from "../script/Game.js";
 import Request from "../script/Request.js";
 import RenderSettings from "../components/RenderSettings.vue";
+import PlayerHUD from "../components/PlayerHUD.vue";
 
 export default {
   data(){
@@ -19,6 +20,7 @@ export default {
     NodeModal,
     MainLayout,
     Inventory,
+    PlayerHUD
   },
   props:{
     char_id : String
@@ -49,6 +51,7 @@ export default {
 
   </Inventory>
   <RenderSettings v-if="game" v-bind:render="game.render"></RenderSettings>
+  <PlayerHUD v-if="game && game.scene === 'fight'" v-bind:char="game.char"></PlayerHUD>
 </template>
 <style scoped>
 
@@ -57,7 +60,6 @@ export default {
 }
 
 canvas{
-  overflow: hidden;
     image-rendering: -moz-crisp-edges;
     image-rendering: -webkit-crisp-edges;
     image-rendering: pixelated;

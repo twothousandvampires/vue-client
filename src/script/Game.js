@@ -14,9 +14,11 @@ export default class Game{
         this.scene = 'world'
         this.enemy = []
         this.effects = []
+        this.text = []
         this.mouse = new Input(game_context.$refs.canvas)
         this.render = new Render(game_context.$refs.canvas.getContext('2d'))
         this.win = false
+        this.game_tick = 0
     }
 
     prettifyData(response){
@@ -45,8 +47,8 @@ export default class Game{
     }
 
     createEnemy(){
-        for(let i = 0; i < 5; i++){
-            this.enemy.push(new SkeletonWarrior(300 + i * 50,500 + i * 50))
+        for(let i = 0; i < 15; i++){
+            this.enemy.push(new SkeletonWarrior(300 + i*5,500 + i*5))
         }
     }
 
@@ -111,6 +113,7 @@ export default class Game{
                         this.render.drawFight(this.char, this.enemy, this.effects)
                         break;
                 }
+                this.game_tick ++
             },50)
         }
     }
@@ -129,7 +132,7 @@ export default class Game{
         //     },3000)
         // }
 
-        this.char.act(this.mouse ,this.effects, this.enemy)
+        this.char.act(this.mouse ,this.effects, this.enemy, this.game_tick, this.text)
         this.enemy.forEach(elem => {
             elem.act(this.char, this.effects, this.enemy)
         })

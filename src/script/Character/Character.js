@@ -2,12 +2,13 @@ import Functions from "../GameFunctions";
 import Inventory from "./Inventory";
 import Unit from "../scr/Unit";
 import EffectCreator from "../Effects/EffectCreator";
+import Modal from "../Modal.js";
 
 export default class Character extends Unit{
 
     constructor(x, y, template, items = false) {
         super(x, y)
-
+        console.log(Modal.PARRENT)
         this.template = template
         if (items) {
             this.inv = new Inventory(items,this)
@@ -50,6 +51,8 @@ export default class Character extends Unit{
 
         this.speed = 2
         this.calcStats()
+        console.log(this.getStat('spell_crit_chance'))
+        console.log(this.getStat('spell_crit_chance', true))
     }
 
     parseStats(template){
@@ -59,47 +62,48 @@ export default class Character extends Unit{
     }
 
     calcStats(){
-        this.calcLife()
-        this.calcSpell()
-        this.calcAttack()
+        this.max_life = Functions.increasedByPercent(this.template.max_life, this.getIncreased('life'))
+        this.life = Functions.increasedByPercent(this.template.life, this.getIncreased('life'))
+        this.energy = Functions.increasedByPercent(this.template.energy, this.getIncreased('energy'))
+        this.max_energy = Functions.increasedByPercent(this.template.max_energy, this.getIncreased('energy'))
     }
 
-    calcSpell(){
-        this.increased_spell_damage = this.increased_spell_damage - this.reduced_spell_damage
-        this.increased_spell_aoe = this.increased_spell_aoe - this.reduced_spell_aoe
-        this.spell_crit_chance = Math.floor(this.template.spell_crit_chance * (1 + ((this.increased_spell_crit_chance - this.reduced_spell_crit_chance) / 100)))
-        this.increased_spell_crit_multy = this.increased_spell_crit_multy - this.reduced_spell_crit_multy
+    getMinAttackDamage(){
+        if(this.inv.weaponIsEquip()){
+            return this.inv.getWeapon().min_damage + this.add_attack_damage * 0.5
+        }
+        else {
+            return this.min_attack_damage + this.add_attack_damage * 0.5
+        }
     }
 
-    calcLife(){
-        this.max_life = Math.floor(this.template.max_life * (1 + ((this.increased_life - this.reduced_life) / 100)))
-        this.life = Math.floor(this.template.life * (1 + ((this.increased_life - this.reduced_life) / 100)))
+    getMaxAttackDamage(){
+        if(this.inv.weaponIsEquip()){
+            return this.inv.getWeapon().max_damage + this.add_attack_damage * 1.5
+        }
+        else {
+            return this.max_attack_damage + this.add_attack_damage * 1.5
+        }
     }
 
-    calcAttack(){
-        this.min_attack_damage = this.template.min_attack_damage
-        this.max_attack_damage = this.template.max_attack_damage
+    getTotalMinAttackDamage(){
+        return Functions.increasedByPercent(this.getMinAttackDamage(), this.getIncreased('attack_damage'))
+    }
 
-        this.min_attack_damage = this.inv && this.inv.equip['1'] != 'empty' ? this.min_attack_damage  + this.inv.equip['1'].min_damage : this.min_attack_damage
-        this.max_attack_damage = this.inv && this.inv.equip['1'] != 'empty' ? this.max_attack_damage  + this.inv.equip['1'].max_damage : this.max_attack_damage
+    getTotalMaxAttackDamage(){
+        return Functions.increasedByPercent(this.getMaxAttackDamage(), this.getIncreased('attack_damage'))
+    }
 
-        this.min_attack_damage = this.add_attack_damage ? this.min_attack_damage + Math.floor(this.add_attack_damage * 0.5) : this.min_attack_damage
-        this.max_attack_damage = this.add_attack_damage ? this.max_attack_damage + Math.floor(this.add_attack_damage * 1.5) : this.max_attack_damage
+    getAttackDamage(){
+        return +((Math.random() * (this.getTotalMaxAttackDamage() - this.getTotalMinAttackDamage()) + this.getTotalMinAttackDamage()).toFixed(1))
+    }
 
-        this.min_attack_damage = Math.floor(this.min_attack_damage * (1 + ((this.increased_attack_damage - this.reduced_attack_damage) / 100)))
-        this.max_attack_damage = Math.floor(this.max_attack_damage * (1 + ((this.increased_attack_damage - this.reduced_attack_damage) / 100)))
+    getIncreased(stat){
+        return this['increased_'+stat] - this['reduced_'+stat]
+    }
 
-
-        this.attack_crit_chance = this.inv && this.inv.equip['1'] != 'empty' ? this.inv.equip['1'].crit_chance : this.template.attack_crit_chance
-        this.attack_crit_chance = Math.floor(this.attack_crit_chance * (1 + ((this.increased_attack_crit_chance - this.reduced_attack_crit_chance) / 100)))
-
-        this.attack_crit_multy = Math.floor(this.template.attack_crit_multy + (this.increased_attack_crit_multy - this.reduced_attack_crit_multy))
-
-        this.attack_speed = this.inv && this.inv.equip['1'] != 'empty' ? this.inv.equip['1'].attack_speed : this.template.attack_speed
-        this.attack_speed = this.attack_speed / (1 + ((this.increased_attack_speed - this.reduced_attack_speed) / 100))
-
-        this.attack_range = this.inv && this.inv.equip['1'] != 'empty' ? this.inv.equip['1'].attack_range : this.template.attack_range
-        this.attack_range = this.attack_range * (1 + ((this.increased_attack_range - this.reduced_attack_range) / 100))
+    getStat(stat ,total = false){
+        return total ? Functions.increasedByPercent(this[stat], this.getIncreased(stat)) : this[stat]
     }
 
     getState(){
@@ -181,7 +185,21 @@ export default class Character extends Unit{
         },ms)
     }
 
-    act(mouse, effect, enemy){
+    regen(tick){
+        if( (this.is_run ) && tick%10 === 0){
+            this.energy -= 0.5
+        }
+
+        if(!this.is_run && !this.is_attack && tick%20 === 0 && this.energy < this.max_energy){
+            this.energy += this.energy_regeneration
+            if(this.energy > this.max_energy){
+                this.energy = this.max_energy
+            }
+        }
+    }
+
+    act(mouse, effect, enemy, tick, text){
+        this.regen(tick)
 
         let input = mouse.getInput()
         let mouse_cord = {cord_x: input.canvas_x, cord_y: input.canvas_y}
@@ -197,12 +215,16 @@ export default class Character extends Unit{
         else if(this.is_attack){
             if(!this.deal_hit && this.frame === 5){
                 this.deal_hit = true
+                let hit = false
                 effect.push(EffectCreator.createEffect('weapon swing', this.attack_box.cord_x, this.attack_box.cord_y, this.attack_box.box_size_x, this.attack_box.box_size_y, this.attack_box.angle))
-                enemy.forEach(elem => {
-                    if(Functions.rectCollision(this.attack_box, elem) && !elem.damaged && !elem.is_dead){
-                        elem.damage(Functions.angle(this, elem))
+                for(let i = 0; i < enemy.length;i ++){
+                    let target = enemy[i]
+                    if(Functions.rectCollision(this.attack_box, target) && !target.damaged && !target.is_dead){
+                        target.damage(Functions.angle(this, target))
+                        Modal.createModal(this.getAttackDamage() ,target.cord_x, target.cord_y)
+                        // return;
                     }
-                })
+                }
             }
         }
         else if(this.is_cast || this.is_scroll || this.is_poution){
@@ -220,12 +242,12 @@ export default class Character extends Unit{
             else if(input.r_click){
                 this.cast()
             }
-            else if(input.l_click){
+            else if(input.l_click && this.energy > 2){
                 this.attack(mouse_cord)
             }
             else if(this.moveInputIsPressed(input)){
-                if(input[' ']){
-                    this.run(input)
+                if(input[' '] && this.energy > 0.5){
+                    this.run(input, tick)
                 }
                 else{
                     this.move(input)
@@ -267,6 +289,7 @@ export default class Character extends Unit{
     }
 
     attack(mouse){
+        this.energy -= 2
         this.resetFrame()
         this.setSize(120,120)
         this.is_attack = true
@@ -277,7 +300,7 @@ export default class Character extends Unit{
         this.setRecoveryTimeOut(1000)
     }
 
-    run(input){
+    run(input, tick){
         if(!this.is_run){
             this.resetFrame()
             this.setSize(90, 93)

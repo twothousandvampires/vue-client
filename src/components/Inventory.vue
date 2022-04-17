@@ -104,7 +104,7 @@ export default {
       <div id="attack_stats">
         <img style="width: 100%" src="/src/assets/img/icons/items/misc/attack_stats_top.gif" alt="">
         <p style="font-size: 24px">Attack</p>
-        <p>Attack damage : {{char.min_attack_damage}} - {{char.max_attack_damage}}</p>
+        <p>Attack damage : {{char.getTotalMinAttackDamage()}} - {{char.getTotalMaxAttackDamage()}}</p>
         <p>Critical chance : {{char.attack_crit_chance}}%</p>
         <p>Critical multiplier - {{char.attack_crit_multy}}%</p>
         <p>Attack speed : {{char.attack_speed}} per second</p>

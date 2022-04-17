@@ -28,16 +28,25 @@ export default class Input {
             }
         })
         window.addEventListener('keydown',(e)=>{
-
+            console.log(e.key)
+            // e.preventDefault()
             this.pressed[e.key] = true
         })
         window.addEventListener('keyup',(e)=>{
             this.pressed[e.key] = false
         })
         window.addEventListener('mousemove',(e)=>{
+
             this.pressed.window_x = e.pageX
             this.pressed.window_y = e.pageY
         })
+        this.canvas.addEventListener("mousewheel", (e)=>{
+            if(this.pressed.Control){
+                e.preventDefault();
+                return
+            }
+        });
+
     }
 
     getInput(){

@@ -213,9 +213,13 @@ export default class SkeletonWarrior extends Enemy{
     charge(){
         this.resetFrame()
         this.is_charge = true
+        this.can_charge = false
         this.y_frame_offset = 400
         this.max_frame = 2
         this.frame_change_tick = 3
+        setTimeout(()=>{
+            this.can_charge  = true
+        },10000)
         this.setBehaviorTimer(3000)
     }
 }

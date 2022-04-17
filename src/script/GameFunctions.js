@@ -25,6 +25,10 @@ export default class Functions{
         return false;
     }
 
+    static increasedByPercent(flat, percent){
+        return +((flat * (1 + percent / 100)).toFixed(1))
+    }
+
     static colWithWallsOne(target , walls){
         let box_x = Math.floor(target.cords.x - (target.box_size_w/2) + 1)
         let box_y = Math.floor(target.cords.y + 1)

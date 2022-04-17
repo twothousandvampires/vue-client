@@ -62,7 +62,7 @@ export default class SkeletonSkull extends Enemy{
             }
         }
         else{
-            if(distance_to_char > 50){
+            if(distance_to_char > 20){
                 if(!this.is_move){
                     this.move()
                 }

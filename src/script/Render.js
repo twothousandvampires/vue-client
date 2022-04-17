@@ -32,7 +32,7 @@ export default class Render{
                 this.bg_frame = 0
             }
         }
-        this.ctx.drawImage(this.img_data.getImage('background'),0,0,850,850,150,350,850,850)
+        this.ctx.drawImage(this.img_data.getImage('background'),0,0,850,850,225,350,850,850)
     }
 
     drawWorld(game){

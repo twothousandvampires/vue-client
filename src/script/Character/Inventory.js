@@ -32,6 +32,14 @@ export default class Inventory{
         }
     }
 
+    weaponIsEquip(){
+        return this.equip[1] !== 'empty'
+    }
+
+    getWeapon(){
+        return this.equip[1]
+    }
+
     getDiscription(slot){
        return  this.pull[slot].getDiscription()
     }
