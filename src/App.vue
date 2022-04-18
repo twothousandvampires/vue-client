@@ -49,7 +49,20 @@ export default {
   font-family: o;
   src: url("@/fonts/manaspc.ttf");
 }
+.item-context{
+  font-family: o;
+  z-index: 100000;
+  position: fixed;
+  padding: 10px;
+  background-color: white;
+  color:#181818;
+}
+.item-context p{
+  cursor: pointer;
+}
+
 .modal{
+  font-family: o;
   position: fixed;
   color: white;
   font-size: 18px;

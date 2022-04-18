@@ -42,4 +42,30 @@ export default class Request{
             }
         })
     }
+
+    static createItem(){
+        return axios({method: 'post',
+            url : Request.url + 'item/create/',
+            data : {
+                char_id : localStorage.getItem('char_id'),
+            },
+            headers : {
+                'Authorization': 'Bearer ' + localStorage.getItem('token'),
+            }
+        })
+    }
+
+    static deleteItem(id, type){
+        return axios({method: 'post',
+            url : '//127.0.0.1:8000/api/item/delete/',
+            data : {
+                char_id : localStorage.getItem('char_id'),
+                id : id,
+                type : type
+            },
+            headers : {
+                'Authorization': 'Bearer ' + localStorage.getItem('token'),
+            }
+        })
+    }
 }

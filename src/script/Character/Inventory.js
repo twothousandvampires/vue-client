@@ -1,8 +1,10 @@
 import Weapon from "../Items/Weapon";
 import Armour from "../Items/Armour";
+import Used from "../Items/Used";
 export default class Inventory{
 
     constructor(items,player) {
+        this.player = player
         this.equip = {
             0 : 'empty',
             1 : 'empty',
@@ -50,10 +52,12 @@ export default class Inventory{
                 return new Weapon(template)
             case 'armour':
                 return new Armour(template)
+            case 'used':
+                return new Used(template)
         }
     }
 
-    change(clicked, slot, slot_type, player){
+    change(clicked, slot, slot_type){
         let which = clicked
         let for_what = false;
 
@@ -91,7 +95,7 @@ export default class Inventory{
                     // если был снят с эквипа
                     if(which.slot_type === 'equip') {
                         this.equip[which.slot] = 'empty'
-                        which.unequip(player)
+                        which.unequip(this.player)
                     }
                     else {
                         this.pull[which.slot] = 'empty'
@@ -100,7 +104,7 @@ export default class Inventory{
                     // если новый слот эквип
                     if(one.slot_type === 'equip'){
                         this.equip[one.slot] = one
-                        one.equip(player)
+                        one.equip(this.player)
                     }
                     else {
                         this.pull[one.slot] = one
@@ -110,15 +114,15 @@ export default class Inventory{
                     let two = new Weapon(response.data.data['for_what'])
 
                     if(which.slot_type === 'equip') {
-                        which.unequip(player)
+                        which.unequip(this.player)
                     }
                     if(for_what.slot_type === 'equip') {
-                        for_what.unequip(player)
+                        for_what.unequip(this.player)
                     }
 
                     if(two.slot_type === 'equip'){
                         this.equip[two.slot] = two
-                        two.equip(player)
+                        two.equip(this.player)
                     }
                     else {
                         this.pull[two.slot] = two
@@ -126,7 +130,7 @@ export default class Inventory{
 
                     if(one.slot_type === 'equip'){
                         this.equip[one.slot] = one
-                        one.equip(player)
+                        one.equip(this.player)
                     }
                     else {
                         this.pull[one.slot] = one
