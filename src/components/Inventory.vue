@@ -99,7 +99,7 @@ export default {
     <div id="stats">
       <div id="char_stats">
         <p style="font-size: 24px">{{char.name}}</p>
-        <p>Increased life : {{char.increased_life}}</p>
+        <p>Increased life : {{char.getIncreased('life')}}</p>
         <p>Life : {{char.life}} / {{char.max_life}}</p>
         <p>Energy : {{char.energy}} / {{char.max_energy}}</p>
         <p>Energy regen : {{char.increased_energy_regen}}</p>
@@ -108,19 +108,19 @@ export default {
         <img style="width: 100%" src="/src/assets/img/icons/items/misc/attack_stats_top.gif" alt="">
         <p style="font-size: 24px">Attack</p>
         <p>Attack damage : {{char.getTotalMinAttackDamage()}} - {{char.getTotalMaxAttackDamage()}}</p>
-        <p>Critical chance : {{char.attack_crit_chance}}%</p>
-        <p>Critical multiplier - {{char.attack_crit_multy}}%</p>
-        <p>Attack speed : {{char.attack_speed}} per second</p>
-        <p>Attack range : {{char.attack_range}}px</p>
-        <p>Life Leech : {{char.attack_life_leech}}%</p>
+        <p>Critical chance : {{char.getStat('attack_crit_chance', true)}}%</p>
+        <p>Critical multiplier - {{char.getStat('attack_crit_multy', true)}}%</p>
+        <p>Attack speed : {{char.getAttackSpeed()/1000}} per second</p>
+        <p>Attack range : {{char.getStat('attack_range', true)}}px</p>
+        <p>Life Leech : {{char.getStat('attack_life_leech')}}%</p>
       </div>
       <div id="spell_stats">
-        <p>Add spell damage : {{Math.floor(char.add_spell_damage * 0.5)}} - {{Math.floor(char.add_spell_damage * 1.5)}}</p>
-        <p>Increased spell damage : {{char.increased_spell_damage}}%</p>
-        <p>Spell Leech : {{char.spell_life_leech}}%</p>
-        <p>Increased spell aoe : {{char.increased_spell_aoe}}px</p>
-        <p>Spell critical chance - {{char.spell_crit_chance}}%</p>
-        <p>Spell critical multiplier - {{char.spell_crit_multy}}%</p>
+        <p>Add spell damage : {{char.getMinSpellDamage()}} - {{char.getMaxSpellDamage()}}</p>
+        <p>Increased spell damage : {{char.getIncreased('spell_damage')}}%</p>
+        <p>Spell Leech : {{char.getStat('spell_life_leech')}}%</p>
+        <p>Increased spell aoe : {{char.getIncreased('spell_aoe')}}px</p>
+        <p>Spell critical chance - {{char.getStat('spell_crit_chance', true)}}%</p>
+        <p>Spell critical multiplier - {{char.getStat('spell_crit_multy', true)}}%</p>
       </div>
     </div>
     <div id="equip_block">

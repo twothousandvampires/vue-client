@@ -86,6 +86,14 @@ export default class Character extends Unit{
         }
     }
 
+    getMinSpellDamage(){
+        return this.add_spell_damage * 0.5
+    }
+
+    getMaxSpellDamage(){
+        return this.add_spell_damage * 1.5
+    }
+
     getTotalMinAttackDamage(){
         return Functions.increasedByPercent(this.getMinAttackDamage(), this.getIncreased('attack_damage'))
     }
@@ -104,6 +112,12 @@ export default class Character extends Unit{
 
     getStat(stat ,total = false){
         return total ? Functions.increasedByPercent(this[stat], this.getIncreased(stat)) : this[stat]
+    }
+
+    getAttackSpeed(){
+        let base = this.inv.weaponIsEquip() ? this.inv.getWeapon().attack_speed : this.attack_speed
+        let increased = this.getIncreased('attack_speed')
+        return Functions.reducedByPercent(base, increased)
     }
 
     getState(){

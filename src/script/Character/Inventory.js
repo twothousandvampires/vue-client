@@ -1,6 +1,6 @@
-import Weapon from "../Items/Weapon";
-import Armour from "../Items/Armour";
-import Used from "../Items/Used";
+import Weapon from "../Items/Weapon/Weapon";
+import Armour from "../Items/Armour/Armour";
+import Used from "../Items/Used/Used";
 export default class Inventory{
 
     constructor(items,player) {
@@ -43,7 +43,7 @@ export default class Inventory{
     }
 
     getDiscription(slot){
-       return  this.pull[slot].getDiscription()
+       return  this.pull[slot].discription
     }
 
     createItem(template){

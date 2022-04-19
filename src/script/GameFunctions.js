@@ -25,8 +25,15 @@ export default class Functions{
         return false;
     }
 
-    static increasedByPercent(flat, percent){
+    static increasedByPercent(flat, percent, reverse = false){
         return +((flat * (1 + percent / 100)).toFixed(1))
+    }
+
+    static reducedByPercent(flat ,percent){
+        if(percent >= 100){
+            return 0
+        }
+        return +((flat * (1 - percent/100)).toFixed(1))
     }
 
     static colWithWallsOne(target , walls){
