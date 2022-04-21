@@ -3,6 +3,7 @@
 import NodeModal from "../components/NodeModal.vue";
 import MainLayout from "../layouts/MainLayout.vue";
 import Inventory from "../components/Inventory.vue";
+import SkillTree from "../components/SkillTree.vue";
 import Game from "../script/Game.js";
 import Request from "../script/Request.js";
 import RenderSettings from "../components/RenderSettings.vue";
@@ -20,7 +21,8 @@ export default {
     NodeModal,
     MainLayout,
     Inventory,
-    PlayerHUD
+    PlayerHUD,
+    SkillTree
   },
   props:{
     char_id : String
@@ -47,9 +49,8 @@ export default {
       <canvas id='game-canvas' :style="can_style" width="1300" height="1300" ref="canvas"></canvas>
     </div>
     <p style="position:absolute" v-if="loaded">Loading</p>
-  <Inventory v-if="game && game.inv_is_open" @close_inv="close_inv" v-bind:char="game.char" v-bind:mouse="game.mouse">
-
-  </Inventory>
+  <Inventory v-if="game && game.inv_is_open" @close_inv="close_inv" v-bind:char="game.char" v-bind:mouse="game.mouse"></Inventory>
+  <SkillTree v-if="game && game.tree_is_open" @close_inv="close_inv" v-bind:char="game.char"></SkillTree>
   <RenderSettings v-if="game" v-bind:render="game.render"></RenderSettings>
   <PlayerHUD v-if="game && game.scene === 'fight'" v-bind:char="game.char"></PlayerHUD>
 </template>

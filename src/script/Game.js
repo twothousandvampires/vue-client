@@ -11,6 +11,7 @@ export default class Game{
     constructor(game_context) {
         this.delay = false
         this.inv_is_open = false
+        this.tree_is_open = false
         this.scene = 'world'
         this.enemy = []
         this.effects = []
@@ -23,7 +24,7 @@ export default class Game{
 
     prettifyData(response){
         if(response.char_update){
-            this.char = new Character(650, 850, response.character.character, response.character.items)
+            this.char = new Character(response.character)
         }
         else {
             this.char.x = response.char.x
@@ -89,8 +90,17 @@ export default class Game{
                 this.worldMove(items[0], 0, 0.1)
             }
         }
-        else if(this.mouse.getInput().v && !this.delay){
+        if(this.mouse.getInput().v && !this.delay){
+            this.tree_is_open = false
             this.inv_is_open = !this.inv_is_open
+            this.delay = true
+            setTimeout(()=>{
+                this.delay = false
+            },100)
+        }
+        if(this.mouse.getInput().b && !this.delay){
+            this.inv_is_open = false
+            this.tree_is_open = !this.tree_is_open
             this.delay = true
             setTimeout(()=>{
                 this.delay = false
@@ -104,7 +114,7 @@ export default class Game{
                 switch (this.scene){
                     case 'world':
                         this.checkInput()
-                        if(!this.inv_is_open) {
+                        if(!this.inv_is_open && !this.tree_is_open) {
                             this.render.drawWorld(this)
                         }
                         break;
