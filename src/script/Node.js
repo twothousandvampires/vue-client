@@ -1,5 +1,3 @@
-import ImageData from "./ImageData";
-let img_data = new ImageData();
 export default class Node{
 
     constructor(template, char_x, char_y){
@@ -10,7 +8,7 @@ export default class Node{
         this.tile = this.getTile(template)
         this.visited = template.visited
         this.type = template.type
-        if(this.type != 0 && this.type != 4){
+        if(template.content_img){
             this.content_name = template.content_img
             this.frame_timer = 0
             this.frame = 0
