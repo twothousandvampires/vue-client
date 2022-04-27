@@ -1,4 +1,4 @@
-import Enemy from "./Enemy";
+import Enemy from "./src/Enemy";
 import Functions from "../GameFunctions";
 import EffectCreator from "../Effects/EffectCreator";
 
@@ -30,6 +30,7 @@ export default class SkeletonSkull extends Enemy{
 
     resetFrame(){
         if(!this.is_dead){
+            this.is_idle = false
             this.frame = 0
             this.frame_timer = 0
             this.is_move = false

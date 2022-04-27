@@ -24,15 +24,18 @@ export default class Render{
     }
 
     drawBg(){
-        this.bg_timer += 1
-        if(this.bg_timer >= this.bg_aniamtion_speed / 50){
-            this.bg_timer = 0
-            this.bg_frame += 1
-            if(this.bg_frame === 8){
-                this.bg_frame = 0
-            }
-        }
+        // this.bg_timer += 1
+        // if(this.bg_timer >= this.bg_aniamtion_speed / 50){
+        //     this.bg_timer = 0
+        //     this.bg_frame += 1
+        //     if(this.bg_frame === 8){
+        //         this.bg_frame = 0
+        //     }
+        // }
         this.ctx.drawImage(this.img_data.getImage('background'),0,0,850,850,225,350,850,850)
+        this.ctx.strokeStyle = 'yellow'
+        this.ctx.strokeRect(250,375,800,800)
+        this.ctx.fillStyle = 'black'
     }
 
     drawWorld(game){
@@ -40,16 +43,8 @@ export default class Render{
         this.ctx.clearRect(0,0,1300,1300)
         this.ctx.fillRect(0,0,1300,1300)
 
+
         game.nodes.forEach(elem => {
-            // animation
-            // elem.frame_timer += 1
-            //     elem.frame_timer = 0
-            //     elem.frame += 1
-            //     if(elem.frame === 8){
-            //         elem.frame = 0
-            //         elem.frame = 0
-            //     }
-            // }
             if(elem.visited){
                 this.ctx.drawImage(this.img_data.getImage('tile'),elem.tile[0],elem.tile[1],100,100,elem.pretti_x * this.cell_size,elem.pretti_y * this.cell_size, this.cell_size, this.cell_size)
                 if(elem.content_name){
@@ -57,32 +52,30 @@ export default class Render{
                     if(elem.frame_timer > 10){
                         elem.frame_timer = 0
                         elem.frame ++
-                        if(elem.frame > 6){
+                        if(elem.frame >= elem.max_frame){
                             elem.frame = 0
                         }
                     }
-                    this.ctx.drawImage(this.img_data.getImage(elem.content_name),elem.frame * 90,0,90,90,elem.pretti_x * this.cell_size + 20,elem.pretti_y * this.cell_size, 60, 60)
+                    this.ctx.drawImage(this.img_data.getImage(elem.content_name),
+                                        elem.frame * elem.content_sprite_w,
+                                        0,
+                                        elem.content_sprite_w,
+                                        elem.content_sprite_h,
+                                        elem.pretti_x * this.cell_size + elem.content_img_offset_x,
+                                        elem.pretti_y * this.cell_size + elem.content_img_offset_y,
+                                        elem.size_w,
+                                        elem.size_h)
                 }
             }
-            // this.ctx.strokeRect(elem.pretti_x * this.cell_size,elem.pretti_y * this.cell_size,this.cell_size,this.cell_size)
         })
-
-        this.character_timer += 1
-        if(this.character_timer === 2){
-            this.character_timer = 0
-            this.character_frame += 1
-            if(this.character_frame === 6){
-                this.character_frame = 0
-            }
-        }
 
         this.ctx.drawImage(this.img_data.getImage('chel'),0,0,90,93,game.char.pretti_x * this.cell_size+20,game.char.pretti_y * this.cell_size,60,62)
     }
 
-    drawFight(char, enemy, effects){
+    drawFight(char, enemy, effects, proj){
         this.ctx.clearRect(0,0,1300,1300)
         this.drawBg()
-        let all = [char].concat(enemy).concat(effects)
+        let all = [char].concat(enemy).concat(effects).concat(proj)
 
         all.sort(function(a,b){
             return a.cord_y - b.cord_y

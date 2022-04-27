@@ -1,4 +1,4 @@
-import Enemy from "./Enemy.js";
+import Enemy from "./src/Enemy.js";
 import ImageData from "../ImageData.js";
 import Functions from "../GameFunctions";
 let data = new ImageData()

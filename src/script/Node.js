@@ -1,5 +1,3 @@
-import ImageData from "./ImageData";
-let img_data = new ImageData();
 export default class Node{
 
     constructor(template, char_x, char_y){
@@ -10,10 +8,40 @@ export default class Node{
         this.tile = this.getTile(template)
         this.visited = template.visited
         this.type = template.type
-        if(this.type != 0 && this.type != 4){
-            this.content_name = template.content_img
+        if(template.content_img){
             this.frame_timer = 0
             this.frame = 0
+            this.content_name = template.content_img
+            switch (this.content_name){
+                case 'undying squad':
+                    this.content_img_offset_x = 20
+                    this.content_img_offset_y = -15
+                    this.content_sprite_w = 90
+                    this.content_sprite_h = 90
+                    this.size_w = 70
+                    this.size_h = 70
+                    this.max_frame = 7
+                    break;
+                case 'city':
+                    this.content_img_offset_x = 0
+                    this.content_img_offset_y = -20
+                    this.content_sprite_w = 100
+                    this.content_sprite_h = 100
+                    this.size_w = 100
+                    this.size_h = 100
+                    this.max_frame = 11
+                    break;
+                case 'treasure':
+                    this.content_img_offset_x = 25
+                    this.content_img_offset_y = 20
+                    this.content_sprite_w = 90
+                    this.content_sprite_h = 90
+                    this.size_w = 45
+                    this.size_h = 45
+                    this.max_frame = 11
+                    break;
+            }
+
         }
     }
 

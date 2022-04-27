@@ -12,10 +12,10 @@ export default class GameObject{
     }
 
     setCord(x ,y, m = 1){
-        if(!(this.cord_x + x * this.speed * m >= 980) && !(this.cord_x + x * this.speed * m <= 180)){
+        if(!(this.cord_x + x * this.speed * m >= 1050) && !(this.cord_x + x * this.speed * m <= 250)){
             this.cord_x += x * this.speed * m
         }
-        if(!(this.cord_y + y * this.speed * m >= 1180) && !(this.cord_y + y * this.speed * m <= 380)){
+        if(!(this.cord_y + y * this.speed * m >= 1175) && !(this.cord_y + y * this.speed * m <= 375)){
             this.cord_y += y * this.speed * m
         }
     }

@@ -1,21 +1,21 @@
-import Functions from "../GameFunctions";
-import Inventory from "./Inventory";
-import Unit from "../scr/Unit";
-import EffectCreator from "../Effects/EffectCreator";
-import Modal from "../Modal.js";
+import Functions from "../GameFunctions"
+import Inventory from "./Inventory"
+import SkillTree from "./SkillTree"
+import Unit from "../scr/Unit"
+import EffectCreator from "../Effects/EffectCreator"
+import Modal from "../Modal.js"
 
 export default class Character extends Unit{
 
-    constructor(x, y, template, items = false) {
-        super(x, y)
-        console.log(Modal.PARRENT)
-        this.template = template
-        if (items) {
-            this.inv = new Inventory(items,this)
-        }
+    constructor(template) {
+        super(650, 850)
+        this.template = template.character
+        this.parseStats(template.character)
+        this.inv = new Inventory(template.items, this)
+        this.skill_tree = new SkillTree(JSON.parse(template.skill_tree), this)
 
         this.img_name = 'grim traveler'
-        this.parseStats(template)
+
         //ms
         this.attack_speed = 1200
         this.attack_range = 60
@@ -51,8 +51,7 @@ export default class Character extends Unit{
 
         this.speed = 2
         this.calcStats()
-        console.log(this.getStat('spell_crit_chance'))
-        console.log(this.getStat('spell_crit_chance', true))
+
     }
 
     parseStats(template){

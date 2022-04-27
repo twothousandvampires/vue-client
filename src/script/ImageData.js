@@ -7,11 +7,26 @@ export default class ImageData{
 
         //enemy
 
+        this['arrow'] = new Image()
+        this['arrow'].src = './src/assets/img/projectiles/arrow.png'
+
         this['skeleton warrior'] = new Image()
         this['skeleton warrior'].src = './src/assets/img/enemy/skeleton_warrior.png'
 
+        this['skeleton archer'] = new Image()
+        this['skeleton archer'].src = './src/assets/img/enemy/skeleton_archer.png'
+
+        this['skeleton wizard'] = new Image()
+        this['skeleton wizard'].src = './src/assets/img/enemy/skeleton_wizard.png'
+
         this['undying squad'] = new Image()
-        this['undying squad'].src = './src/assets/img/enemy/undying_squad.png'
+        this['undying squad'].src = './src/assets/img/world/undying_squad.png'
+
+        this['treasure'] = new Image()
+        this['treasure'].src = './src/assets/img/world/treasure.png'
+
+        this['city'] = new Image()
+        this['city'].src = './src/assets/img/world/city.png'
 
         this['reaper enemy'] = new Image()
         this['reaper enemy'].src = './src/assets/img/enemy/reaper.png'

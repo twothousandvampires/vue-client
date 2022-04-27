@@ -1,38 +1,33 @@
 import Enemy from "./src/Enemy.js";
 import Functions from "../GameFunctions";
-import EffectCreator from "../Effects/EffectCreator";
 import SkeletonSkull from "./SkeletonSkull";
+import Arrow from "../projectiles/arrow";
 
-export default class SkeletonWarrior extends Enemy{
+export default class SkeletonArcher extends Enemy{
+
     constructor(x, y) {
-        super(x, y)
+        super(x, y);
         this.skull_spawned = Math.random() > 0.5
-        this.size_x = 90
+        this.is_resurected = false
         this.size_y = 99
         this.box_size_x = 50
         this.box_size_y = 25
-        this.is_resurected = false
         this.sprite_w = 90
         this.sprite_h = 99
         this.def_w = this.sprite_w
         this.def_h = this.sprite_h
-        this.can_charge = true
         this.wait_between_attack = false
-        this.speed = 2
-        this.img_name = 'skeleton warrior'
-        this.attack_range = 40
-        this.looking_range = 200
-        this.charge_distance = 500
+        this.img_name = 'skeleton archer'
+        this.looking_range = 500
         this.y_frame_offset = 0
+        this.attack_speed = 2500
         this.max_frame = 7
         this.frame_change_tick = 7 // 7 * 50(game_tick) = 350 ms
         this.is_charge = false
         this.life = 2
-        this.attack_box = false
         this.speed = 2
 
         //ms
-        this.attack_speed = 1800
         this.idle()
     }
 
@@ -44,11 +39,9 @@ export default class SkeletonWarrior extends Enemy{
         this.is_move = false
         this.is_idle_move = false
         this.is_attack = false
-        this.is_charge = false
         this.damaged = false
         this.deal_hit = false
         this.wait_between_attack = false
-        this.attack_box = false
     }
 
     setBehaviorTimer(ms, idle_ms){
@@ -58,7 +51,7 @@ export default class SkeletonWarrior extends Enemy{
         }, ms)
     }
 
-    act(char, effects, enemy){
+    act(char, effects, enemy, proj){
         let distance_to_char = Functions.distance(this, char)
         if(this.is_resurected){
 
@@ -67,19 +60,8 @@ export default class SkeletonWarrior extends Enemy{
 
         }
         else if(this.can_change_behavior){
-
-            if(distance_to_char < 50 && !this.wait_between_attack){
+            if(distance_to_char < this.looking_range && !this.wait_between_attack){
                 this.attack(char)
-            }
-            else if(distance_to_char >= 50 && distance_to_char < 300){
-                this.move()
-            }
-            else if(distance_to_char > 200 && distance_to_char < 400 && this.can_charge){
-                this.deriction_angle = Functions.angle(this, char)
-                this.charge()
-            }
-            else if(distance_to_char >= 300 && distance_to_char < 400){
-                this.move()
             }
             else {
                 this.deriction_angle = Math.random() * 6.14
@@ -97,31 +79,10 @@ export default class SkeletonWarrior extends Enemy{
             this.setCord(move_x, move_y)
         }
         else if(this.is_attack){
-            if(!this.deal_hit && this.frame === 4){
+            if(!this.deal_hit && this.frame === 6){
                 this.deal_hit = true
-                effects.push(EffectCreator.createEffect('weapon swing', this.attack_box.cord_x, this.attack_box.cord_y, this.attack_box.box_size_x, this.attack_box.box_size_y, this.attack_box.angle))
-                if(Functions.rectCollision(this.attack_box, char) && !char.damaged){
-                    char.damage(Functions.angle(this, char))
-                }
+                proj.push(new Arrow(this.cord_x+5, this.cord_y-50, Functions.angle({cord_x : this.cord_x,cord_y : this.cord_y-50}, char)))
             }
-        }
-        else if(this.is_move){
-            if(distance_to_char < 50){
-                this.attack(char)
-            }
-            else {
-                this.move_angle = Functions.angle(this, char)
-                let move_x = Math.sin(this.move_angle)
-                this.fliped = move_x <= 0;
-                let move_y = Math.cos(this.move_angle)
-                this.setCord(move_x, move_y)
-            }
-        }
-        else if(this.is_charge){
-            let move_x = Math.sin(this.deriction_angle)
-            this.fliped = move_x <= 0;
-            let move_y = Math.cos(this.deriction_angle)
-            this.setCord(move_x, move_y, 3)
         }
         else if(this.is_idle_move){
             let move_x = Math.sin(this.deriction_angle)
@@ -163,8 +124,8 @@ export default class SkeletonWarrior extends Enemy{
         this.resetFrame()
         this.setSize(90, 99)
         this.is_dead = true
-        this.y_frame_offset = 500
-        this.max_frame = this.skull_spawned ? 8 : 7
+        this.y_frame_offset = 400
+        this.max_frame = this.skull_spawned ? 9 : 8
         this.frame_change_tick = 3
     }
 
@@ -189,7 +150,7 @@ export default class SkeletonWarrior extends Enemy{
         this.setSize(90, 99)
         this.is_idle = true
         this.y_frame_offset = 0
-        this.max_frame = 7
+        this.max_frame = 5
         this.frame_change_tick = 7
         this.change_behavior_timeout = setTimeout(()=>{
             this.can_change_behavior = true
@@ -200,20 +161,15 @@ export default class SkeletonWarrior extends Enemy{
         this.resetFrame()
         this.is_attack = true
         this.y_frame_offset = 199
-        this.max_frame = 6
-        this.attack_box = this.angleToAttackRect(Functions.angle(this, char))
-        this.frame_change_tick = 2000/350
+        this.max_frame = 9
+        this.frame_change_tick = this.attack_speed/350
         this.wait_between_attack = true
-        this.setBehaviorTimer(2000)
+        this.setBehaviorTimer(this.attack_speed,3000)
     }
 
-    move(){
-        this.resetFrame()
-        this.is_move = true
-        this.y_frame_offset = 100
-        this.max_frame = 4
-        this.frame_change_tick = 6
-        this.setBehaviorTimer(3000)
+    resurect(){
+        this.is_resurected = true
+        this.frame = 8
     }
 
     idleMove(){
@@ -223,23 +179,5 @@ export default class SkeletonWarrior extends Enemy{
         this.max_frame = 4
         this.frame_change_tick = 6
         this.setBehaviorTimer(3000)
-    }
-
-    charge(){
-        this.resetFrame()
-        this.is_charge = true
-        this.can_charge = false
-        this.y_frame_offset = 400
-        this.max_frame = 2
-        this.frame_change_tick = 3
-        setTimeout(()=>{
-            this.can_charge  = true
-        },10000)
-        this.setBehaviorTimer(3000)
-    }
-
-    resurect(){
-        this.is_resurected = true
-        this.frame = 8
     }
 }

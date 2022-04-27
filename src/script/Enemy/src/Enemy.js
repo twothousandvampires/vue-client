@@ -1,5 +1,4 @@
-
-import Unit from "../scr/Unit";
+import Unit from "../../scr/Unit";
 
 export default class Enemy extends Unit{
 
