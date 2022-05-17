@@ -1,24 +1,32 @@
+import Passive from "../Skills/passive/Passive";
+
 export default class SkillTree{
 
     constructor(template, player) {
-        this.passives = [];
+
+        this.combat_passives = [];
+        this.sorcery_passives = [];
+        this.travel_passives = [];
+        this.active = [];
+
         for(let skill in template){
-            if(template[skill].type === 'passive'){
-                this.passives.push(template[skill])
-                if(template[skill].level){
-                    template[skill].affect.forEach((elem, index) => {
-                        player[elem] += template[skill].value[index]
-                    })
-                }
+            switch (template.type){
+                case 'passive':
+                    switch (template.class){
+                        case 'combat':
+                            this.combat_passives.push(new Passive(template))
+                            break;
+                        case 'sorcery':
+                            this.sorcery_passives.push(new Passive(template))
+                            break;
+                        case 'travel':
+                            this.travel_passives.push(new Passive(template))
+                            break;
+                    }
+                    break;
+                case 'active':
+                    break;
             }
         }
     }
-S
-    getPassives(page){
-        let result = this.passives.filter(elem => {
-            return elem.class === page
-        })
-        return result
-    }
-
 }
