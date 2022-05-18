@@ -9,6 +9,11 @@ export default {
       page : 'combat'
     }
   },
+  methods:{
+    setPage(page){
+      this.page = page
+    }
+  }
 
 }
 </script>
@@ -16,7 +21,13 @@ export default {
 <template>
   <div id="tree_wrap">
     <div id="page">
-      <div v-if="this.page === 'combat'">
+      <div id="menu">
+        <p @click="setPage('combat')">Fight</p>
+        <p @click="setPage('sorcery')">Sorcery</p>
+        <p @click="setPage('travel')">Travel</p>
+        <p @click="setPage('active')">Active</p>
+      </div>
+      <div>
         <div v-for="(item) in char.skill_tree.getPassives(this.page)">
           <p>{{item.name}}</p>
           <img :src=item.img_path alt="">
