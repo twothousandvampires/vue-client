@@ -24,8 +24,8 @@ export default {
 
 <template>
   <div v-if="this.clicked_skill" id="skill_modal">
-    <div id="skill_main">
-      <div id="skill_main_info">
+    <div class="skill_main">
+      <div class="skill_main_info">
         <div id="skill_img">
           <img :src=this.clicked_skill.img_path alt="">
         </div>
@@ -35,12 +35,29 @@ export default {
 
         </div>
       </div>
-      <div id="skill_main_level_status">
+      <div class="skill_main_level_status">
         <p>Текущий уровень {{this.clicked_skill.level}}</p>
+        <p>{{this.clicked_skill.getLevelProgress()}}</p>
       </div>
     </div>
     <div id="skill_childs">
-
+      <div v-for="(item) in this.clicked_skill.childs">
+        <div class="skill_main">
+          <div class="skill_main_info">
+            <div class="skill_img">
+              <img :src=item.img_path alt="">
+            </div>
+            <div class="skill_info">
+              <p>{{item.name}}</p>
+              <p>{{item.description}}</p>
+            </div>
+          </div>
+          <div id="skill_main_level_status">
+            <p>Текущий уровень {{item.level}}</p>
+            <p>{{item.getLevelProgress()}}</p>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
   <div id="tree_wrap">
@@ -62,6 +79,9 @@ export default {
 </template>
 
 <style scoped>
+  p{
+    white-space: pre-line
+  }
   #skill_main{
     display: flex;
     flex-direction: row;
