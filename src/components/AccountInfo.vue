@@ -15,6 +15,9 @@ export default {
     create(){
       this.character_creating = true
     },
+    stopCreating(){
+      this.character_creating = false
+    }
   },
   components:{
     CharacterCreate,
@@ -26,10 +29,10 @@ export default {
 
     <div class="acc-info-wrap">
       <h1 class="acc-name">{{ user.name }}</h1>
-      <button @click="create">Create character</button>
+      <button @click="create" >Create character</button>
     </div>
 
-  <CharacterCreate v-if="character_creating"/>
+  <CharacterCreate @stopCreating="stopCreating" v-if="character_creating"/>
 
 </template>
 

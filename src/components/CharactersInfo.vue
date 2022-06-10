@@ -10,13 +10,18 @@ export default {
     GameCanvas,
     CharacterSingleInfo
   },
+  methods :{
+    deleteCharacter(id){
+      this.$emit('delete_char', id)
+    }
+  }
 }
 </script>
 
 <template>
   <div class="characters-wrap">
     <div class="character" v-for="character in characters">
-        <CharacterSingleInfo v-bind:char="character"/>
+        <CharacterSingleInfo @delete_char="deleteCharacter" v-bind:char="character"/>
     </div>
   </div>
 </template>

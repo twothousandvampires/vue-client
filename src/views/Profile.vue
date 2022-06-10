@@ -2,6 +2,7 @@
 import AccountInfo from "../components/AccountInfo.vue";
 import CharactersInfo from "../components/CharactersInfo.vue";
 import MainLayout from '@/layouts/MainLayout.vue';
+import Request from "../script/Request";
 
 export default {
   data(){
@@ -16,23 +17,15 @@ export default {
     MainLayout
   },
   mounted() {
-    this.getUser()
+    Request.getUser().then( r =>{
+      this.user = r.data.data
+    })
   }
   ,methods:{
-    async getUser(){
-      try{
-        await axios({method:'get', url : '//127.0.0.1:8000/api/user/' + localStorage.getItem('user_id'),
-          headers: {
-            'Authorization': 'Bearer ' + localStorage.getItem('token'),
-          }
-        }).then((response) => {
-          this.user = response.data.data
-        })
-      }
-      catch(e){
-        localStorage.clear()
-        window.location = '/'
-      }
+    deleteCharacter(id){
+      this.user.characters = this.user.characters.filter( elem => {
+        return elem.id !== id
+      })
     }
   }
 }
@@ -42,7 +35,7 @@ export default {
     <p v-if="!user">Loading...</p>
     <div class="profile-wrap" v-else>
       <AccountInfo v-bind:user="user"/>
-      <CharactersInfo v-bind:characters="user.characters"/>
+      <CharactersInfo @delete_char="deleteCharacter" v-bind:characters="user.characters"/>
     </div>
 </template>
 

@@ -10,6 +10,9 @@ export default class ImageData{
         this['arrow'] = new Image()
         this['arrow'].src = './src/assets/img/projectiles/arrow.png'
 
+        this['fire_ball'] = new Image()
+        this['fire_ball'].src = './src/assets/img/projectiles/fireball.png'
+
         this['skeleton warrior'] = new Image()
         this['skeleton warrior'].src = './src/assets/img/enemy/skeleton_warrior.png'
 

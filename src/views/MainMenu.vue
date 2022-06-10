@@ -5,10 +5,8 @@
   import Profile from "./Profile.vue";
 
   export default {
-    data(){
-      return{
-        auth : localStorage.getItem('auth') === 'true'
-      }
+    props : {
+      auth : Boolean
     },
     components : {
       LoginView,
@@ -18,6 +16,9 @@
     },
     methods:{
 
+    },
+    mounted() {
+      console.log(this.auth)
     }
   }
 </script>

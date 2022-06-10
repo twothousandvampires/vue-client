@@ -18,7 +18,6 @@ export default {
       this.clicked_skill = item
     }
   }
-
 }
 </script>
 

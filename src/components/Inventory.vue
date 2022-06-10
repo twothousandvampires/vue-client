@@ -1,6 +1,7 @@
 <script>
 
 import Request from "../script/Request.js";
+import Used from "../script/Items/Used/Used";
 
 export default {
   name: "Inventory.vue",
@@ -65,6 +66,25 @@ export default {
           }
         })
       })
+
+      if(item instanceof Used){
+        let to_use = document.createElement('p')
+        to_use.textContent = "Use"
+        context.appendChild(to_use)
+
+        to_use.addEventListener('click', (e)=>{
+          Request.useItem(item.id).then(r => {
+            if(r.data.success){
+              if(r.data.data.type === 'book'){
+                this.char.skill_tree.learn(JSON.parse(r.data.data.data))
+              }
+              this.char.inv.deleteItem(item)
+              context.parentNode.removeChild(context)
+            }
+          })
+        })
+      }
+
 
       context.appendChild(to_delete_p)
       document.body.appendChild(context)

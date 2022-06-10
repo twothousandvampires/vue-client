@@ -1,40 +1,24 @@
 <script>
+import Request from "../script/Request";
 export default {
   data(){
     return{
-      character_class : 'young_star',
       character_name : ''
     }
   },
   methods:{
-    selectClass(e){
-      this.character_class = e.target.value
-    },
     inputName(e){
       this.character_name = e.target.value
     },
-    create(e){
-      e.preventDefault()
+    create(){
       if(this.character_name !== ''){
-        axios({method: 'post', url: '//127.0.0.1:8000/api/character/create/', headers: {
-            'Authorization': 'Bearer ' + localStorage.getItem('token'),
-          }, data : {
-            user_id : localStorage.getItem('user_id'),
-            name : this.character_name,
-            class_name : this.character_class
-          }
-        }).then( ()=>{
+        Request.createCharacter(this.character_name).then( (r)=>{
               location.href = '/'
         })
       }
     }
   },
   name: "CharacterCreate.vue"
-  ,computed:{
-    classImage(){
-      return 'src/assets//img/' + this.character_class + '.jpg'
-    }
-  }
 }
 </script>
 
@@ -42,14 +26,9 @@ export default {
   <div class="modal">
     <form>
       <input class="input" @input="inputName" v-bind:value="character_name" >
-      <select class="input" @input="selectClass" v-bind:value="character_class">
-        <option value="young_star" selected>Young</option>
-        <option value="old_star">Old</option>
-        <option value="middle_age_star">Middle age</option>
-      </select>
-      <button class="btn" @click="create">Create</button>
+      <button class="btn" @click.prevent="create">Create</button>
+      <p @click="$emit('stopCreating')">Close</p>
     </form>
-    <img width="200" height="320" :src="classImage" alt="">
   </div>
 </template>
 
@@ -73,7 +52,7 @@ export default {
     position: absolute;
     background-color: darkcyan;
     width: 400px;
-    height: 600px;
+    height: 200px;
   }
   form{
     padding: 6px;

@@ -1,29 +1,23 @@
 <script>
-import { RouterLink, RouterView } from 'vue-router'
-import { useCounterStore} from "./stores/counter";
-import test from "./components/test.vue";
-
-export default {
-  data(){
-    return{
-      auth : localStorage.getItem('auth') === 'true',
-      acc_name : localStorage.getItem('acc_name')
-    }
-  },
-  components:{
-    test,
-  },
-  mounted() {
-    if(this.auth){
-
-    }
-  },
-  methods:{
-    logout(){
-      this.auth = false
+  import Request from "./script/Request";
+  export default {
+    data(){
+      return{
+        auth : !!localStorage.getItem('token')
+      }
     },
-  },
-}
+    mounted() {
+      console.log('mounted')
+    },
+    methods:{
+      logout(){
+        Request.logout().then( r =>{
+          localStorage.clear()
+          window.location.href = '/'
+        })
+      },
+    },
+  }
 </script>
 
 <template>
@@ -32,13 +26,14 @@ export default {
     <div class="wrapper">
       <nav>
         <RouterLink  to="/" v-if="!auth">Login</RouterLink>
+        <p @click="logout" v-else>Logout</p>
         <RouterLink  to="/" v-if="auth">Profile</RouterLink>
-        <RouterLink  to="/logout" v-if="auth">Logout</RouterLink>
         <RouterLink to="/canvas">Scoreboard</RouterLink>
       </nav>
     </div>
   </header>
-  <RouterView @logout="logout" />
+
+  <RouterView v-bind:auth="auth"/>
 
 </template>
 
