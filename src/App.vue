@@ -14,9 +14,47 @@ export default {
     test,
   },
   mounted() {
-    if(this.auth){
+    let test =[]
 
+    function search(needle, arr){
+      let start = Date.now()
+      let result
+      for(let i = 0; i < arr.length - 1; i++){
+        if(needle === arr[i]){
+          result = arr[i]
+          break
+        }
+      }
+      console.log(Date.now() - start)
+      console.log(result)
     }
+
+    function binarySearch(item, list){
+      let start = 0
+      let end = list.length - 1
+
+      while (start <= end){
+        let mid = Math.floor((start + end) /2)
+        let quess = list[mid]
+
+        if(quess === item){
+          return mid
+        }
+        else if(item > list[mid]){
+          start = mid + 1
+        }
+        else{
+          end = mid -1
+        }
+      }
+    }
+
+    for(let i = 0; i < 1000000; i++){
+      test.push(i)
+    }
+
+    console.log(binarySearch(452525, test))
+
   },
   methods:{
     logout(){

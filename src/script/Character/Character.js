@@ -10,7 +10,9 @@ export default class Character extends Unit{
     constructor(template) {
         super(650, 850)
         this.template = template.character
-        this.parseStats(template.character)
+        this.x = template.character.x
+        this.y = template.character.y
+        this.id = template.character.id
         this.inv = new Inventory(template.items, this)
         this.skill_tree = new SkillTree(JSON.parse(template.skill_tree), this)
 
@@ -54,12 +56,6 @@ export default class Character extends Unit{
 
     }
 
-    parseStats(template){
-        for(let elem in template){
-            this[elem] = template[elem]
-        }
-    }
-
     calcStats(){
         this.max_life = Functions.increasedByPercent(this.template.max_life, this.getIncreased('life'))
         this.life = Functions.increasedByPercent(this.template.life, this.getIncreased('life'))
@@ -69,28 +65,28 @@ export default class Character extends Unit{
 
     getMinAttackDamage(){
         if(this.inv.weaponIsEquip()){
-            return this.inv.getWeapon().min_damage + this.add_attack_damage * 0.5
+            return this.inv.getWeapon().min_damage + this.getStat('add_attack_damage') * 0.5
         }
         else {
-            return this.min_attack_damage + this.add_attack_damage * 0.5
+            return 1 + this.getStat('add_attack_damage')  * 0.5
         }
     }
 
     getMaxAttackDamage(){
         if(this.inv.weaponIsEquip()){
-            return this.inv.getWeapon().max_damage + this.add_attack_damage * 1.5
+            return this.inv.getWeapon().max_damage + this.getStat('add_attack_damage') * 1.5
         }
         else {
-            return this.max_attack_damage + this.add_attack_damage * 1.5
+            return 4 + this.getStat('add_attack_damage')  * 1.5
         }
     }
 
     getMinSpellDamage(){
-        return this.add_spell_damage * 0.5
+        return this.add_spell_damage ? this.add_spell_damage * 0.5 : 0
     }
 
     getMaxSpellDamage(){
-        return this.add_spell_damage * 1.5
+        return this.add_spell_damage ? this.add_spell_damage * 1.5 : 0
     }
 
     getTotalMinAttackDamage(){
@@ -106,16 +102,20 @@ export default class Character extends Unit{
     }
 
     getIncreased(stat){
-        return this['increased_'+stat] - this['reduced_'+stat]
+        return this['increased_'+stat] ? this['increased_'+stat] : 0  - this['reduced_'+stat] ? this['reduced_'+stat] : 0
     }
 
     getStat(stat ,total = false){
+        if(!this[stat]){
+            return 0
+        }
         return total ? Functions.increasedByPercent(this[stat], this.getIncreased(stat)) : this[stat]
     }
 
     getAttackSpeed(){
-        let base = this.inv.weaponIsEquip() ? this.inv.getWeapon().attack_speed : this.attack_speed
+        let base = this.inv.weaponIsEquip() ? this.inv.getWeapon().attack_speed : 1.5
         let increased = this.getIncreased('attack_speed')
+        console.log(this)
         return Functions.reducedByPercent(base, increased)
     }
 

@@ -29,6 +29,7 @@ export default class Game{
     }
 
     prettifyData(response){
+        console.log(response)
         if(response.char_update){
             this.char = new Character(response.character)
         }

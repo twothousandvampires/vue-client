@@ -52,10 +52,10 @@ export default class Weapon{
 
     equip(player){
         this.base_props.forEach(elem => {
-            player[elem[0]] += +elem[1]
+            player[elem[0]] ? player[elem[0]] += +elem[1] : player[elem[0]] = elem[1]
         })
         this.props.forEach(elem => {
-            player[elem[0]] += +elem[1]
+            player[elem[0]] ? player[elem[0]] += +elem[1] : player[elem[0]] = elem[1]
         })
         player.calcStats()
     }
