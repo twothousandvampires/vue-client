@@ -4,7 +4,6 @@ export default class Used{
         for(let prop in template) {
             this[prop] = template[prop]
         }
-        console.log(this)
     }
 
 

@@ -1,67 +1,23 @@
 <script>
-import { RouterLink, RouterView } from 'vue-router'
-import { useCounterStore} from "./stores/counter";
-import test from "./components/test.vue";
-
-export default {
-  data(){
-    return{
-      auth : localStorage.getItem('auth') === 'true',
-      acc_name : localStorage.getItem('acc_name')
-    }
-  },
-  components:{
-    test,
-  },
-  mounted() {
-    let test =[]
-
-    function search(needle, arr){
-      let start = Date.now()
-      let result
-      for(let i = 0; i < arr.length - 1; i++){
-        if(needle === arr[i]){
-          result = arr[i]
-          break
-        }
+  import Request from "./script/Request";
+  export default {
+    data(){
+      return{
+        auth : !!localStorage.getItem('token')
       }
-      console.log(Date.now() - start)
-      console.log(result)
-    }
-
-    function binarySearch(item, list){
-      let start = 0
-      let end = list.length - 1
-
-      while (start <= end){
-        let mid = Math.floor((start + end) /2)
-        let quess = list[mid]
-
-        if(quess === item){
-          return mid
-        }
-        else if(item > list[mid]){
-          start = mid + 1
-        }
-        else{
-          end = mid -1
-        }
-      }
-    }
-
-    for(let i = 0; i < 1000000; i++){
-      test.push(i)
-    }
-
-    console.log(binarySearch(452525, test))
-
-  },
-  methods:{
-    logout(){
-      this.auth = false
     },
-  },
-}
+    mounted() {
+
+    },
+    methods:{
+      logout(){
+        Request.logout().then( r =>{
+          localStorage.clear()
+          window.location.href = '/'
+        })
+      },
+    },
+  }
 </script>
 
 <template>
@@ -70,13 +26,14 @@ export default {
     <div class="wrapper">
       <nav>
         <RouterLink  to="/" v-if="!auth">Login</RouterLink>
+        <p @click="logout" v-else>Logout</p>
         <RouterLink  to="/" v-if="auth">Profile</RouterLink>
-        <RouterLink  to="/logout" v-if="auth">Logout</RouterLink>
         <RouterLink to="/canvas">Scoreboard</RouterLink>
       </nav>
     </div>
   </header>
-  <RouterView @logout="logout" />
+
+  <RouterView v-bind:auth="auth"/>
 
 </template>
 

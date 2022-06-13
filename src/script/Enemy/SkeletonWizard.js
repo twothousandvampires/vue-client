@@ -75,12 +75,10 @@ export default class SkeletonWizard extends Enemy{
         }
         else if(this.is_cast){
             if(!this.deal_cast && this.frame === 7){
-                console.log("!")
                 this.deal_cast = true
                 let to_resurect = enemy.filter(elem => {
                     return elem.is_dead && !elem.skull_was_spawn && !elem.is_resurected && elem.img_name != 'skeleton wizard'
                 })
-                console.log(to_resurect)
                 if(to_resurect.length){
                     to_resurect[0].resurect()
                 }

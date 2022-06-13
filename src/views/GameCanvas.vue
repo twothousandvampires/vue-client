@@ -12,6 +12,7 @@ import PlayerHUD from "../components/PlayerHUD.vue";
 export default {
   data(){
     return {
+      // char_id : localStorage.getItem('char_id')
       loaded : true,
       game : undefined
     }
@@ -23,9 +24,6 @@ export default {
     Inventory,
     PlayerHUD,
     SkillTree
-  },
-  props:{
-    char_id : String
   },
   mounted() {
     Request.world(this.char_id).then(response =>{
@@ -58,7 +56,7 @@ export default {
   <Inventory v-if="game?.inv_is_open" @close_inv="close_inv" v-bind:char="game.char" v-bind:mouse="game.mouse"></Inventory>
   <SkillTree v-if="game?.tree_is_open" @close_inv="close_inv" v-bind:char="game.char"></SkillTree>
   <RenderSettings v-if="game" v-bind:render="game.render"></RenderSettings>
-  <PlayerHUD v-if="game?.scene === 'fight'" v-bind:char="game.char"></PlayerHUD>
+<!--  <PlayerHUD v-if="game" v-bind:char="game.char.hud"></PlayerHUD>-->
 </template>
 <style scoped>
 

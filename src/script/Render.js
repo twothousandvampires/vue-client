@@ -38,44 +38,46 @@ export default class Render{
         this.ctx.fillStyle = 'black'
     }
 
-    drawWorld(game){
+    drawWorld(game ,char){
         this.ctx.fillStyle = 'black'
         this.ctx.clearRect(0,0,1300,1300)
         this.ctx.fillRect(0,0,1300,1300)
 
 
-        game.nodes.forEach(elem => {
-            if(elem.visited){
-                this.ctx.drawImage(this.img_data.getImage('tile'),elem.tile[0],elem.tile[1],100,100,elem.pretti_x * this.cell_size,elem.pretti_y * this.cell_size, this.cell_size, this.cell_size)
-                if(elem.content_name){
-                    elem.frame_timer ++
-                    if(elem.frame_timer > 10){
-                        elem.frame_timer = 0
-                        elem.frame ++
-                        if(elem.frame >= elem.max_frame){
-                            elem.frame = 0
+        game.map.forEach(row => {
+            row.forEach(elem => {
+                if(elem && elem.visited){
+                    this.ctx.drawImage(this.img_data.getImage('tile'),elem.tile[0],elem.tile[1],100,100,elem.pretti_x * this.cell_size,elem.pretti_y * this.cell_size, this.cell_size, this.cell_size)
+                    if(elem.content_name){
+                        elem.frame_timer ++
+                        if(elem.frame_timer > 10){
+                            elem.frame_timer = 0
+                            elem.frame ++
+                            if(elem.frame >= elem.max_frame){
+                                elem.frame = 0
+                            }
                         }
+                        this.ctx.drawImage(this.img_data.getImage(elem.content_name),
+                            elem.frame * elem.content_sprite_w,
+                            0,
+                            elem.content_sprite_w,
+                            elem.content_sprite_h,
+                            elem.pretti_x * this.cell_size + elem.content_img_offset_x,
+                            elem.pretti_y * this.cell_size + elem.content_img_offset_y,
+                            elem.size_w,
+                            elem.size_h)
                     }
-                    this.ctx.drawImage(this.img_data.getImage(elem.content_name),
-                                        elem.frame * elem.content_sprite_w,
-                                        0,
-                                        elem.content_sprite_w,
-                                        elem.content_sprite_h,
-                                        elem.pretti_x * this.cell_size + elem.content_img_offset_x,
-                                        elem.pretti_y * this.cell_size + elem.content_img_offset_y,
-                                        elem.size_w,
-                                        elem.size_h)
                 }
-            }
+            })
         })
 
-        this.ctx.drawImage(this.img_data.getImage('chel'),0,0,90,93,game.char.pretti_x * this.cell_size+20,game.char.pretti_y * this.cell_size,60,62)
+        this.ctx.drawImage(this.img_data.getImage('chel'),0,0,90,93,char.pretti_x * this.cell_size+20,char.pretti_y * this.cell_size,60,62)
     }
 
-    drawFight(char, enemy, effects, proj){
+    drawFight(char, fight_context){
         this.ctx.clearRect(0,0,1300,1300)
         this.drawBg()
-        let all = [char].concat(enemy).concat(effects).concat(proj)
+        let all = [char].concat(fight_context.enemy).concat(fight_context.effects).concat(fight_context.projectiles)
 
         all.sort(function(a,b){
             return a.cord_y - b.cord_y
@@ -99,8 +101,8 @@ export default class Render{
                     elem.y_frame_offset,
                     elem.sprite_w,
                     elem.sprite_h,
-                    elem.cord_x - elem.size_x/2,
-                    elem.cord_y - elem.size_y + elem.box_size_y/2 + (elem.size_y - elem.def_h)/2,
+                    elem.cord_x - elem.size_x,
+                    elem.cord_y - elem.size_y,
                     elem.size_x,
                     elem.size_y)
             }

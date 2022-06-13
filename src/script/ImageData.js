@@ -10,6 +10,9 @@ export default class ImageData{
         this['arrow'] = new Image()
         this['arrow'].src = './src/assets/img/projectiles/arrow.png'
 
+        this['fire_ball'] = new Image()
+        this['fire_ball'].src = './src/assets/img/projectiles/fireball.png'
+
         this['skeleton warrior'] = new Image()
         this['skeleton warrior'].src = './src/assets/img/enemy/skeleton_warrior.png'
 
@@ -30,6 +33,9 @@ export default class ImageData{
 
         this['reaper enemy'] = new Image()
         this['reaper enemy'].src = './src/assets/img/enemy/reaper.png'
+
+        this['fire explosion'] = new Image()
+        this['fire explosion'].src = './src/assets/img/effects/explosion_fire.png'
 
         this['weapon swing'] = new Image()
         this['weapon swing'].src = './src/assets/img/effects/weapon_swing.png'

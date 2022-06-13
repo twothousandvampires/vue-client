@@ -4,15 +4,27 @@ import SkillTree from "./SkillTree"
 import Unit from "../scr/Unit"
 import EffectCreator from "../Effects/EffectCreator"
 import Modal from "../Modal.js"
+import Belt from "./hud/Belt";
+import SkillPanel from "./hud/SkillPanel";
+import Status from "./hud/StatusBar";
 
 export default class Character extends Unit{
 
     constructor(template) {
         super(650, 850)
         this.template = template.character
+
         this.x = template.character.x
         this.y = template.character.y
         this.id = template.character.id
+
+        this.calcStats()
+
+        this.skill_panel = new SkillPanel(this)
+        this.status = new Status(this)
+        this.belt = new Belt(this)
+
+
         this.inv = new Inventory(template.items, this)
         this.skill_tree = new SkillTree(JSON.parse(template.skill_tree), this)
 
@@ -52,8 +64,6 @@ export default class Character extends Unit{
         this.defended = false
 
         this.speed = 2
-        this.calcStats()
-
     }
 
     calcStats(){
@@ -95,27 +105,30 @@ export default class Character extends Unit{
 
     getTotalMaxAttackDamage(){
         return Functions.increasedByPercent(this.getMaxAttackDamage(), this.getIncreased('attack_damage'))
-    }
+    }r
 
     getAttackDamage(){
         return +((Math.random() * (this.getTotalMaxAttackDamage() - this.getTotalMinAttackDamage()) + this.getTotalMinAttackDamage()).toFixed(1))
     }
 
-    getIncreased(stat){
-        return this['increased_'+stat] ? this['increased_'+stat] : 0  - this['reduced_'+stat] ? this['reduced_'+stat] : 0
+    getIncreased(stat) {
+        return this['increased_' + stat] ? this['increased_' + stat] : 0 - this['reduced_' + stat] ? this['reduced_' + stat] : 0
     }
-
-    getStat(stat ,total = false){
-        if(!this[stat]){
-            return 0
+    getStat(stat, type = 'total'){
+        switch (type){
+            case 'total':
+                return Functions.increasedByPercent(this[stat], this.getIncreased(stat))
+            case 'incr':
+                return this.getIncreased(stat)
+            case 'flat':
+                return this[stat]
         }
-        return total ? Functions.increasedByPercent(this[stat], this.getIncreased(stat)) : this[stat]
+
     }
 
     getAttackSpeed(){
         let base = this.inv.weaponIsEquip() ? this.inv.getWeapon().attack_speed : 1.5
         let increased = this.getIncreased('attack_speed')
-        console.log(this)
         return Functions.reducedByPercent(base, increased)
     }
 
@@ -211,7 +224,7 @@ export default class Character extends Unit{
         }
     }
 
-    act(mouse, effect, enemy, tick, text){
+    act(mouse, effect, enemy, tick, proj){
         this.regen(tick)
 
         let input = mouse.getInput()
@@ -253,7 +266,7 @@ export default class Character extends Unit{
                 this.defend()
             }
             else if(input.r_click){
-                this.cast()
+                this.cast(proj,Functions.angle(this, mouse_cord))
             }
             else if(input.l_click && this.energy > 2){
                 this.attack(mouse_cord)
@@ -279,6 +292,10 @@ export default class Character extends Unit{
                 this.frame = 0
             }
         }
+    }
+
+    cast(proj, angle){
+        this.skill_panel.skills[1].use(proj, angle, this.cord_x, this.cord_y)
     }
 
     idle(){

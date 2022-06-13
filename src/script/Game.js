@@ -1,35 +1,30 @@
 import Character from "./Character/Character.js";
-import Node from "./Node";
 import Render from "./Render.js";
 import Input from "./Input.js";
 import Request from "./Request.js";
-import Spawner from "./Enemy/src/Spawner"
-
+import Fight from "./Fight";
+import World from "./World";
+import Functions from './GameFunctions.js'
 
 export default class Game{
 
     constructor(game_context) {
-        this.spawner = new Spawner()
+        this.scene = 'world'
+        this.fight = new Fight(this)
+        this.world = new World(this)
+
         this.delay = false
+
         this.inv_is_open = false
         this.tree_is_open = false
-        this.scene = 'world'
-        this.enemy = []
-        this.effects = []
-        this.projectiles = []
-        this.text = []
+
         this.mouse = new Input(game_context.$refs.canvas)
         this.render = new Render(game_context.$refs.canvas.getContext('2d'))
-        this.win = false
+
         this.game_tick = 0
     }
 
-    setState(state){
-        window.location.href = '/world'
-    }
-
     prettifyData(response){
-        console.log(response)
         if(response.char_update){
             this.char = new Character(response.character)
         }
@@ -37,24 +32,15 @@ export default class Game{
             this.char.x = response.char.x
             this.char.y = response.char.y
         }
+        this.char.pretti_x = 6
+        this.char.pretti_y = 6
         switch (response.node_type){
             case 0:
-                this.scene = 'world'
-                this.nodes = response.nodes.map(elem =>{
-                    elem = new Node(elem, this.char.x, this.char.y)
-                    return elem
-                })
-                this.nodes = this.nodes.sort((a,b) => {
-                    return a.pretti_y - b.pretti_y
-                })
-                this.char.pretti_x = 6
-                this.char.pretti_y = 6
+                this.world.updateMapData(response.nodes, this.char.x, this.char.y)
                 break;
             case 1:
-                this.enemy = []
-                this.spawner.pull = []
                 this.scene = 'fight'
-                this.createEnemy()
+                this.fight.newFight()
                 break;
             case 4:
                 this.scene = 'tower'
@@ -62,125 +48,65 @@ export default class Game{
         }
     }
 
-    createEnemy(){
-        this.spawner.createPull()
-        this.enemy = this.enemy.concat(this.spawner.getWave())
-    }
-
     checkInput(){
-        if(this.mouse.getInput().w && !this.delay){
-            let items = this.nodes.filter( elem => {
-                return elem.pretti_y === this.char.pretti_y - 1 && elem.pretti_x === this.char.pretti_x
-            })
-            if(items[0]){
-                this.delay = true
-                this.worldMove(items[0], 1, -0.1)
-            }
-        }
-        if(this.mouse.getInput().s && !this.delay){
-            let items = this.nodes.filter( elem => {
-                return elem.pretti_y === this.char.pretti_y + 1 && elem.pretti_x === this.char.pretti_x
-            })
-            if(items[0]){
-                this.delay = true
-                this.worldMove(items[0], 1, 0.1)
-            }
-        }
-        if(this.mouse.getInput().a && !this.delay){
-            let items = this.nodes.filter( elem => {
-                return elem.pretti_y === this.char.pretti_y && elem.pretti_x === this.char.pretti_x - 1
-            })
-            if(items[0]){
-                this.delay = true
-                this.worldMove(items[0], 0, -0.1)
-            }
-        }
-        if(this.mouse.getInput().d && !this.delay){
-            let items = this.nodes.filter( elem => {
-                return elem.pretti_y === this.char.pretti_y && elem.pretti_x === this.char.pretti_x + 1
-            })
-            if(items[0]){
-                this.delay = true
-                this.worldMove(items[0], 0, 0.1)
-            }
-        }
-        if(this.mouse.getInput().v && !this.delay){
-            this.tree_is_open = false
+
+        let input = this.mouse.getInput()
+        if(input.i){
             this.inv_is_open = !this.inv_is_open
-            this.delay = true
-            setTimeout(()=>{
-                this.delay = false
-            },100)
+            this.tree_is_open = false
         }
-        if(this.mouse.getInput().b && !this.delay){
-            this.inv_is_open = false
+        if(input.o){
             this.tree_is_open = !this.tree_is_open
-            this.delay = true
-            setTimeout(()=>{
-                this.delay = false
-            },100)
+            this.inv_is_open = false
         }
-    }
-
-    frame(){
-        if(this.nodes) {
-            setInterval(()=>{
-                switch (this.scene){
-                    case 'world':
-                        this.checkInput()
-                        if(!this.inv_is_open && !this.tree_is_open) {
-                            this.render.drawWorld(this)
-                        }
-                        break;
-                    case 'fight':
-                        this.act()
-                        this.render.drawFight(this.char, this.enemy, this.effects, this.projectiles)
-                        break;
+        if(!this.delay){
+            let y = input.w ? -1 : input.s ? 1 : 0
+            let x = input.a ? -1 : input.d ? 1 : 0
+            if(y || x){
+                let node_to_go = this.world.map[this.char.pretti_y + y][this.char.pretti_x + x]
+                if(node_to_go){
+                    this.delay = true
+                    this.worldMove(node_to_go, y, x)
                 }
-                this.game_tick ++
-            },50)
-        }
-    }
-
-    act(){
-        if(this.game_tick % 1000 === 0){
-            this.enemy = this.enemy.concat(this.spawner.getWave())
-            // setTimeout(()=>{
-            //     Request.win(this.char.id).then(r => {
-            //         console.log(r)
-            //         this.prettifyData(r.data.data)
-            //         this.win = false
-            //     })
-            // },3000)
-        }
-
-        this.char.act(this.mouse ,this.effects, this.enemy, this.game_tick, this.text)
-        this.projectiles.forEach(elem => {
-            elem.act(this.char, this.effects, this.enemy, this.projectiles)
-        })
-        this.enemy.forEach(elem => {
-            elem.act(this.char, this.effects, this.enemy, this.projectiles)
-        })
-        this.effects.forEach(elem => {
-            elem.act(this.effects)
-        })
-    }
-
-    worldMove(node, xy, sign){
-        let add = 0
-        let move = setInterval(()=>{
-            add += sign
-            if(xy){
-                this.char.pretti_y += sign
-            }else {
-                this.char.pretti_x += sign
             }
-            if(Math.abs(add) >= 1){
+        }
+    }
+
+    worldMove(node, y, x){
+        let add = y ? y/10 : x/10
+        let tick = 0
+        let move = setInterval(()=>{
+            tick++
+            if(y !== 0){
+                this.char.pretti_y += add
+            }else {
+                this.char.pretti_x += add
+            }
+            if(tick === 10){
                 clearInterval(move);
                 Request.move(node.x, node.y, this.char.id).then(r => {
                     this.prettifyData(r.data.data)
                     this.delay = false
                 })
+            }
+        },50)
+    }
+
+    frame(){
+
+        setInterval(()=>{
+            this.game_tick ++
+            switch (this.scene){
+                case 'world':
+                    this.checkInput()
+                    if(!this.inv_is_open && !this.tree_is_open) {
+                        this.render.drawWorld(this.world, this.char)
+                    }
+                    break;
+                case 'fight':
+                    this.fight.act()
+                    this.render.drawFight(this.char, this.fight)
+                    break;
             }
         },50)
     }

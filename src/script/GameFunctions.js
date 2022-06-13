@@ -71,6 +71,10 @@ export default class Functions{
         return ms/50
     }
 
+    static every(second, tick){
+        return tick % (20 * second) === 0
+    }
+
     static rectCollision(item , other){
         let rect1_x = Math.floor(item.cord_x - (item.box_size_x/2))
         let rect1_y = Math.floor(item.cord_y)

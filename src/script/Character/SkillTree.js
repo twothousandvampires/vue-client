@@ -1,4 +1,5 @@
 import Passive from "../Skills/passive/Passive";
+import SkillCreator from "./SkillCreator";
 
 export default class SkillTree{
 
@@ -8,8 +9,7 @@ export default class SkillTree{
         this.sorcery_passives = [];
         this.travel_passives = [];
         this.active = [];
-
-        console.log(template)
+        this.player = player
 
         for(let one in template){
             let skill = template[one]
@@ -28,6 +28,9 @@ export default class SkillTree{
                     }
                     break;
                 case 'active':
+                    let new_skill = SkillCreator.create(skill,player)
+                    this.player.skill_panel.skills.push(new_skill)
+                    this.active.push(new_skill)
                     break;
             }
         }
@@ -43,6 +46,18 @@ export default class SkillTree{
                 return this.travel_passives
             case 'active':
                 return this.active
+        }
+    }
+
+    learn(skill){
+        let item = this.active.filter(elem => {
+            return elem.name === skill.name
+        })
+        if(item[0]){
+            item[0].levelUp()
+        }
+        else {
+            this.active.push(SkillCreator.create(skill))
         }
     }
 }

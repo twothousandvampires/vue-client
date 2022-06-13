@@ -43,4 +43,17 @@ export default class Passive{
     levelDown(player){
         player[this.affect] -= this.value
     }
+
+    getLevelProgress(){
+        if(this.trigger){
+            return 'trigger'
+        }
+        else {
+            let result = "";
+            this.affect.forEach((elem,index) => {
+                result += elem.replaceAll('_',' ') + ' - ' + this.value[index] * this.level + '(' + this.value[index] + 'per level)' + '\n'
+            })
+            return result
+        }
+    }
 }

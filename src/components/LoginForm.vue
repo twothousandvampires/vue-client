@@ -1,4 +1,5 @@
 <script>
+  import Request from "../script/Request";
   export default {
     data(){
       return{
@@ -7,11 +8,9 @@
         password : '',
         c_password : '',
         error_msg : false,
-        success_msg : false
+        success_msg : false,
+        login_form : true
       }
-    },
-    props:{
-      login : Boolean
     },
     mounted() {
 
@@ -19,15 +18,9 @@
     methods:{
       auth(e){
         e.preventDefault()
-        axios({method:'post', url : '//127.0.0.1:8000/api/login',data:{
-          email : this.email,
-          password : this.password
-          }}).then((response)=>{
+        Request.login(this.email, this.password).then((response)=>{
           if(response.data.success) {
-            localStorage.setItem('auth' , 'true')
-            localStorage.setItem('acc_name' , response.data.data.name)
             localStorage.setItem('token' , response.data.data.token)
-            localStorage.setItem('user_id', response.data.data.id)
             location.href = '/'
           }
           else{
@@ -47,31 +40,22 @@
       inputPass(e){
         this.password = e.target.value
       },
-      goToRegistration(e){
-        e.preventDefault()
-        location.href = '/registration'
-      },
-      goToLogin(e){
-        e.preventDefault()
-        location.href = '/'
+      switchForm(){
+        this.login_form = !this.login_form
       },
       clear(){
+        this.error_msg = ''
+        this.success_msg = ''
         this.password = ''
         this.name = ''
         this.c_password = ''
         this.email = ''
       },
-      registration(e){
-        e.preventDefault()
-        axios({method:'post', url : '//127.0.0.1:8000/api/register', data: {
-            name : this.name,
-            email : this.email,
-            password : this.password,
-            c_password : this.c_password
-          }}).then((response)=>{
+      registration(){
+        Request.registration(this.name, this.email, this.password, this.c_password).then((response)=>{
           if(response.data.success) {
-            this.success_msg = response.data.message
             this.clear()
+            this.success_msg = response.data.message
           }
           else{
             this.error_msg = response.data.message
@@ -86,23 +70,19 @@
   <div>
     <form>
 
-      <input v-if="!login" @input="inputName" v-bind:value="name" class="input" type="text" placeholder="name">
+      <input v-if="!login_form" @input="inputName" v-bind:value="name" class="input" type="text" placeholder="name">
 
       <input @input="inputLogin" v-bind:value="email" class="input" type="text" placeholder="email">
       <input @input="inputPass" v-bind:value="password" class="input" type="text" placeholder="password">
 
-      <input v-if="!login" @input="inputCpass" v-bind:value="c_password" class="input" type="text" placeholder="retype password">
+      <input v-if="!login_form" @input="inputCpass" v-bind:value="c_password" class="input" type="text" placeholder="retype password">
 
-      <button v-if="login" @click="auth" class="btn" >Login in</button>
-      <button v-if="login" @click="goToRegistration" class="btn" >Registration</button>
-
-
-      <button v-if="!login" @click="registration" class="btn">Registration</button>
-      <button v-if="!login" @click="goToLogin" class="btn">Go to login</button>
-
+      <button v-if="login_form" @click="auth" class="btn" >Login in</button>
+      <button v-if="!login_form" @click.prevent="registration" class="btn" >Registration</button>
+      <button @click.prevent="switchForm" class="btn" >{{ !this.login_form ? 'Go to login' : 'Go to registration' }}</button>
 
       <p v-if="error_msg">{{ error_msg }}</p>
-      <p v-if="success_msg">{{ success_msg }}</p>
+      <p style="color: green" v-if="success_msg">{{ success_msg }}</p>
     </form>
   </div>
 </template>

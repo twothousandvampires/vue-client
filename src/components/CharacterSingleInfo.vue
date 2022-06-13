@@ -1,5 +1,6 @@
 <script>
-import Character from "../script/Character/Character.js";
+import Request from "../script/Request";
+
 export default {
   name: "CharacterSingleInfo",
   props : {
@@ -11,31 +12,14 @@ export default {
     }
   },
   methods : {
-    classImage(str){
-      return 'src/assets/gif/' + str + '.gif'
-    },
-    play(id,e){
-      e.preventDefault()
+    play(id){
       localStorage.setItem('char_id', id)
-      location.href = '/world'
+      location.href = '/game'
     },
-    delete_char(char_id, e){
-      e.preventDefault()
-      axios({method: 'post',
-        url : '//127.0.0.1:8000/api/character/delete',
-        data : {
-          user_id : localStorage.getItem('user_id'),
-          char_id : char_id
-        },
-        headers : {
-          'Authorization': 'Bearer ' + localStorage.getItem('token'),
-        }
-      }).then(response =>{
+    delete_char(char_id){
+      Request.deleteCharacter(char_id).then(response =>{
         if(response.data.success){
-          location.href = '/'
-        }
-        else {
-          alert('!')
+          this.$emit('delete_char', char_id)
         }
       })
     }
@@ -51,24 +35,10 @@ export default {
     </div>
     <div id="info-body">
       <img width="90" height=93 src="src/assets/img/characters/chel_preview.gif" alt="">
-      <div id="info-stats">
-        <p>
-          <img title="life" src="@/assets/img/icons/life_icon.png" alt="life">
-          <span class="stat-elem">{{ char.life }} / {{ char.max_life }}</span>
-        </p>
-        <p>
-          <img title="energy" src="@/assets/img/icons/energy_icon.png" alt="energy">
-          <span class="stat-elem">{{ char.energy }} / {{ char.max_energy }}</span>
-        </p>
-        <p>
-          <img title="damage" src="@/assets/img/icons/sword.png" alt="damage">
-          <span class="stat-elem">{{ char.min_damage }} - {{ char.max_damage }}</span>
-        </p>
-      </div>
     </div>
     <div id="info-bottom">
-      <button  @click="play(char.id, $event)">Play</button>
-      <button  @click="delete_char(char.id, $event)">Delete</button>
+      <button  @click.prevent="play(char.id)">Play</button>
+      <button  @click.prevent="delete_char(char.id)">Delete</button>
     </div>
   </div>
 </template>
