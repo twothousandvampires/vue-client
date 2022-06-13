@@ -101,8 +101,8 @@ export default class Render{
                     elem.y_frame_offset,
                     elem.sprite_w,
                     elem.sprite_h,
-                    elem.cord_x - elem.size_x,
-                    elem.cord_y - elem.size_y,
+                    elem.cord_x - elem.size_x/2,
+                    elem.cord_y - elem.size_y + elem.box_size_y/2 + (elem.size_y - elem.def_h)/2,
                     elem.size_x,
                     elem.size_y)
             }
