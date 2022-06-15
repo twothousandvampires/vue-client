@@ -110,11 +110,7 @@ export default class Request{
 
     static useItem(id){
         return axios({method: 'post',
-            url : Request.URL + 'item/use/',
-            data : {
-                char_id : localStorage.getItem('char_id'),
-                id : id,
-            },
+            url : Request.URL + 'item/use/' + id,
             headers : {
                 'Authorization': 'Bearer ' + Request.TOKEN,
             }

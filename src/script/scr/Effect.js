@@ -10,6 +10,7 @@ export default class Effect extends GameObject{
     }
 
     act(effects){
+        console.log(this)
         this.frame_timer ++
         if(this.frame_timer === this.frame_change_tick){
             this.frame_timer = 0

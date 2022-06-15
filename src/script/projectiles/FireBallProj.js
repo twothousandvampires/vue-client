@@ -1,6 +1,7 @@
 import GameObject from "../scr/GameObject";
 import GameFunctions from '../GameFunctions'
 import Functions from "../GameFunctions";
+import FireExplosion from "../Effects/FireExplosion";
 
 export default class FireBallProj extends GameObject{
 
@@ -8,13 +9,13 @@ export default class FireBallProj extends GameObject{
         super(x, y);
         this.img_name = 'fire_ball'
         this.angle = angle
-        this.speed = 5
+        this.speed = 6
         this.box_size_x = 10
         this.sprite_w = 40
         this.sprite_h = 40
         this.box_size_y = 10
-        this.size_x = 10
-        this.size_y = 10
+        this.size_x = 25
+        this.size_y = 25
         this.x_move = Math.sin(angle)
         this.y_move = Math.cos(angle)
         this.max_frame = 11
@@ -38,6 +39,7 @@ export default class FireBallProj extends GameObject{
 
 
     act(char, enemy, effects, proj){
+        console.log(this.frame)
         this.frame_timer ++
         if(this.frame_timer == 3){
             this.frame ++
@@ -47,7 +49,9 @@ export default class FireBallProj extends GameObject{
             }
         }
         if(!this.setCord(this.x_move, this.y_move)){
+            effects.push(new FireExplosion(this.cord_x, this.cord_y,100,100))
             proj.splice(proj.indexOf(this),1)
+
         }
     }
 

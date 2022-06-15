@@ -34,7 +34,7 @@ export default {
       this.over = item
     },
     mouseleave(){
-      console.log("!")
+
       this.over = false
       this.clicked_context = false
     },
@@ -47,7 +47,6 @@ export default {
       context.className = 'item-context'
       context.style.top = e.pageY - 20 +'px'
       context.style.left = e.pageX - 20 +'px'
-      console.log(context)
       let to_delete_p = document.createElement('p')
       to_delete_p.textContent = "Delete"
 

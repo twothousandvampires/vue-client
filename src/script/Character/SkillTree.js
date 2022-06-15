@@ -11,9 +11,6 @@ export default class SkillTree{
         this.active = [];
         this.player = player
 
-
-        console.log(template)
-
         for(let one in template){
             let skill = template[one]
             switch (skill.type){

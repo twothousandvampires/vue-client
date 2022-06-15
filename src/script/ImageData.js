@@ -34,6 +34,9 @@ export default class ImageData{
         this['reaper enemy'] = new Image()
         this['reaper enemy'].src = './src/assets/img/enemy/reaper.png'
 
+        this['fire explosion'] = new Image()
+        this['fire explosion'].src = './src/assets/img/effects/explosion_fire.png'
+
         this['weapon swing'] = new Image()
         this['weapon swing'].src = './src/assets/img/effects/weapon_swing.png'
 
