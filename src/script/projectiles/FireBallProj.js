@@ -38,7 +38,7 @@ export default class FireBallProj extends GameObject{
     }
 
 
-    act(char, effects, enemy, proj){
+    act(char, enemy, effects, proj){
         this.frame_timer ++
         if(this.frame_timer == 3){
             this.frame ++

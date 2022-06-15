@@ -8,6 +8,7 @@ import Game from "../script/Game.js";
 import Request from "../script/Request.js";
 import RenderSettings from "../components/RenderSettings.vue";
 import PlayerHUD from "../components/PlayerHUD.vue";
+import Load from '../components/Load.vue'
 
 export default {
   data(){
@@ -23,23 +24,17 @@ export default {
     MainLayout,
     Inventory,
     PlayerHUD,
-    SkillTree
+    SkillTree,
+    Load
   },
   mounted() {
     Request.world(this.char_id).then(response =>{
       if(response.data.success){
-        this.game = new Game(this)
-        this.game.prettifyData(response.data.data)
+        this.game = new Game(this, response.data.data)
         this.loaded = false
-        this.game.frame()
       }
     })
   },
-  computed:{
-    can_style(){
-      return this.loaded ? 'visibility : hidden' : 'visibility : visible'
-    },
-  }
 }
 </script>
 <template>
@@ -53,10 +48,10 @@ export default {
 
     <!-- game scene -->
     <div v-else>
+      <Load v-if="loaded"></Load>
       <div id="canvas-wrap">
-        <canvas id='game-canvas' :style="can_style" width="1300" height="1300" ref="canvas"></canvas>
+        <canvas id='game-canvas'  width="1300" height="1300" ref="canvas"></canvas>
       </div>
-      <p style="position:absolute" v-if="loaded">Loading</p>
     </div>
 
     <Inventory v-if="game?.inv_is_open" @close_inv="close_inv" v-bind:char="game.char" v-bind:mouse="game.mouse"></Inventory>
@@ -75,7 +70,6 @@ export default {
 #canvas-wrap{
   overflow: hidden;
 }
-
 canvas{
   image-rendering: -moz-crisp-edges;
   image-rendering: -webkit-crisp-edges;

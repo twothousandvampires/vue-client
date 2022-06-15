@@ -8,10 +8,13 @@ import Functions from './GameFunctions.js'
 
 export default class Game{
 
-    constructor(game_context) {
+    constructor(game_context, initiate_data) {
         this.scene = 'world'
         this.fight = new Fight(this)
         this.world = new World(this)
+
+        this.char = new Character(initiate_data.character)
+        this.world.updateMapData(initiate_data.nodes, this.char.x, this.char.y)
 
         this.delay = false
 
@@ -22,20 +25,14 @@ export default class Game{
         this.render = new Render(game_context.$refs.canvas.getContext('2d'))
 
         this.game_tick = 0
+        this.frame()
     }
 
     prettifyData(response){
-        if(response.char_update){
-            this.char = new Character(response.character)
-        }
-        else {
-            this.char.x = response.char.x
-            this.char.y = response.char.y
-        }
-        this.char.pretti_x = 6
-        this.char.pretti_y = 6
         switch (response.node_type){
             case 0:
+                this.char.x = response.char.x
+                this.char.y = response.char.y
                 this.world.updateMapData(response.nodes, this.char.x, this.char.y)
                 break;
             case 1:
@@ -85,6 +82,8 @@ export default class Game{
             if(tick === 10){
                 clearInterval(move);
                 Request.move(node.x, node.y, this.char.id).then(r => {
+                    this.char.pretty_x = 6
+                    this.char.pretty_y = 6
                     this.prettifyData(r.data.data)
                     this.delay = false
                 })
@@ -104,8 +103,10 @@ export default class Game{
                     }
                     break;
                 case 'fight':
+                    let start = Date.now()
                     this.fight.act()
                     this.render.drawFight(this.char, this.fight)
+                    console.log(Date.now() - start)
                     break;
             }
         },50)
