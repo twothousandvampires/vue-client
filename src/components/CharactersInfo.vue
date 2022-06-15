@@ -1,5 +1,4 @@
 <script>
-import GameCanvas from "../views/GameCanvas.vue";
 import CharacterSingleInfo from "./CharacterSingleInfo.vue";
 export default {
   props:{
@@ -7,12 +6,11 @@ export default {
   },
   name: "CharactersInfo.vue",
   components:{
-    GameCanvas,
     CharacterSingleInfo
   },
   methods :{
     deleteCharacter(id){
-      this.$emit('delete_char', id)
+      this.$emit('deleteCharacter', id)
     }
   }
 }
@@ -21,7 +19,7 @@ export default {
 <template>
   <div class="characters-wrap">
     <div class="character" v-for="character in characters">
-        <CharacterSingleInfo @delete_char="deleteCharacter" v-bind:char="character"/>
+        <CharacterSingleInfo @deleteCharacter="deleteCharacter" v-bind:char="character"/>
     </div>
   </div>
 </template>

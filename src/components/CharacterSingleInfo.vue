@@ -16,7 +16,7 @@ export default {
       localStorage.setItem('char_id', id)
       location.href = '/game'
     },
-    delete_char(char_id){
+    deleteCharacter(char_id){
       Request.deleteCharacter(char_id).then(response =>{
         if(response.data.success){
           this.$emit('delete_char', char_id)
@@ -38,7 +38,7 @@ export default {
     </div>
     <div id="info-bottom">
       <button  @click.prevent="play(char.id)">Play</button>
-      <button  @click.prevent="delete_char(char.id)">Delete</button>
+      <button  @click.prevent="deleteCharacter(char.id)">Delete</button>
     </div>
   </div>
 </template>

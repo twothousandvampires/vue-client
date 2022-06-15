@@ -43,7 +43,6 @@ export default class Request{
     }
 
     static login(email, pass){
-        console.log(Request.URL + 'login')
         return  axios({method:'post', url : Request.URL + 'login',data:{
                     email : email,
                     password : pass

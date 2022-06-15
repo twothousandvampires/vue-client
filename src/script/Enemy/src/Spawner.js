@@ -33,7 +33,6 @@ export default class Spawner{
             result.push(enemy)
             this.pull.splice(this.pull.indexOf(enemy),1)
         }
-        console.log(result)
         return result ? result : false
     }
 

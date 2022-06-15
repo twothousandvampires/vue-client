@@ -26,18 +26,14 @@ export default {
 </script>
 
 <template>
-
     <div class="acc-info-wrap">
       <h1 class="acc-name">{{ user.name }}</h1>
       <button @click="create" >Create character</button>
     </div>
-
   <CharacterCreate @stopCreating="stopCreating" v-if="character_creating"/>
-
 </template>
 
 <style scoped>
-
   button{
     margin-left: 10px;
     cursor: pointer;
@@ -46,7 +42,6 @@ export default {
     font-family: o;
     font-size: 18px;
   }
-
   .acc-info-wrap{
     display: flex;
     flex-direction: row;
@@ -54,5 +49,4 @@ export default {
     padding: 4px;
     color: #c8c8c8;
   }
-
 </style>

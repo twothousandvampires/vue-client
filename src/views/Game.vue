@@ -35,11 +35,6 @@ export default {
       }
     })
   },
-  computed:{
-    can_style(){
-      return this.loaded ? 'visibility : hidden' : 'visibility : visible'
-    },
-  }
 }
 </script>
 <template>
@@ -53,10 +48,10 @@ export default {
 
     <!-- game scene -->
     <div v-else>
+      <p class="loading" v-if="loaded">Loading</p>
       <div id="canvas-wrap">
-        <canvas id='game-canvas' :style="can_style" width="1300" height="1300" ref="canvas"></canvas>
+        <canvas id='game-canvas' width="1300" height="1300" ref="canvas"></canvas>
       </div>
-      <p style="position:absolute" v-if="loaded">Loading</p>
     </div>
 
     <Inventory v-if="game?.inv_is_open" @close_inv="close_inv" v-bind:char="game.char" v-bind:mouse="game.mouse"></Inventory>
@@ -75,7 +70,12 @@ export default {
 #canvas-wrap{
   overflow: hidden;
 }
-
+.loading{
+  top:50%;
+  left:50%;
+  transform:translate(-50%, -50%);
+  position: absolute;
+}
 canvas{
   image-rendering: -moz-crisp-edges;
   image-rendering: -webkit-crisp-edges;

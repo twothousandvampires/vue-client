@@ -18,7 +18,7 @@
 
     },
     mounted() {
-      console.log(this.auth)
+
     }
   }
 </script>

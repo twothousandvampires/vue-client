@@ -7,7 +7,7 @@
       }
     },
     mounted() {
-      console.log('mounted')
+
     },
     methods:{
       logout(){

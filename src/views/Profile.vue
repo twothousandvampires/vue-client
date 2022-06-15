@@ -1,7 +1,6 @@
 <script>
 import AccountInfo from "../components/AccountInfo.vue";
 import CharactersInfo from "../components/CharactersInfo.vue";
-import MainLayout from '@/layouts/MainLayout.vue';
 import Request from "../script/Request";
 
 export default {
@@ -14,7 +13,6 @@ export default {
   components:{
     AccountInfo,
     CharactersInfo,
-    MainLayout
   },
   mounted() {
     Request.getUser().then( r =>{
@@ -35,12 +33,11 @@ export default {
     <p v-if="!user">Loading...</p>
     <div class="profile-wrap" v-else>
       <AccountInfo v-bind:user="user"/>
-      <CharactersInfo @delete_char="deleteCharacter" v-bind:characters="user.characters"/>
+      <CharactersInfo @deleteCharacter="deleteCharacter" v-bind:characters="user.characters"/>
     </div>
 </template>
 
 <style scoped>
-
 .profile-wrap{
   width: 100%;
   height: 100%;
@@ -48,5 +45,4 @@ export default {
   flex-direction: column;
   justify-content: space-around;
 }
-
 </style>
