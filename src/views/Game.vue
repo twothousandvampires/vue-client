@@ -8,6 +8,7 @@ import Game from "../script/Game.js";
 import Request from "../script/Request.js";
 import RenderSettings from "../components/RenderSettings.vue";
 import PlayerHUD from "../components/PlayerHUD.vue";
+import Load from '../components/Load.vue'
 
 export default {
   data(){
@@ -23,15 +24,14 @@ export default {
     MainLayout,
     Inventory,
     PlayerHUD,
-    SkillTree
+    SkillTree,
+    Load
   },
   mounted() {
     Request.world(this.char_id).then(response =>{
       if(response.data.success){
-        this.game = new Game(this)
-        this.game.prettifyData(response.data.data)
+        this.game = new Game(this, response.data.data)
         this.loaded = false
-        this.game.frame()
       }
     })
   },
@@ -48,9 +48,9 @@ export default {
 
     <!-- game scene -->
     <div v-else>
-      <p class="loading" v-if="loaded">Loading</p>
+      <Load v-if="loaded"></Load>
       <div id="canvas-wrap">
-        <canvas id='game-canvas' width="1300" height="1300" ref="canvas"></canvas>
+        <canvas id='game-canvas'  width="1300" height="1300" ref="canvas"></canvas>
       </div>
     </div>
 
@@ -69,12 +69,6 @@ export default {
 
 #canvas-wrap{
   overflow: hidden;
-}
-.loading{
-  top:50%;
-  left:50%;
-  transform:translate(-50%, -50%);
-  position: absolute;
 }
 canvas{
   image-rendering: -moz-crisp-edges;

@@ -12,6 +12,10 @@ export default class Character extends Unit{
 
     constructor(template) {
         super(650, 850)
+
+        this.pretti_x = 6
+        this.pretti_y = 6
+
         this.template = template.character
 
         this.x = template.character.x

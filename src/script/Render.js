@@ -71,7 +71,7 @@ export default class Render{
             })
         })
 
-        this.ctx.drawImage(this.img_data.getImage('chel'),0,0,90,93,char.pretti_x * this.cell_size+20,char.pretti_y * this.cell_size,60,62)
+        this.ctx.drawImage(this.img_data.getImage('chel'),0,0,90,93,char.pretti_x * this.cell_size + 20,char.pretti_y * this.cell_size, 60, 62)
     }
 
     drawFight(char, fight_context){
@@ -102,7 +102,7 @@ export default class Render{
                     elem.sprite_w,
                     elem.sprite_h,
                     elem.cord_x - elem.size_x/2,
-                    elem.cord_y - elem.size_y + elem.box_size_y/2 + (elem.size_y - elem.def_h)/2,
+                    elem.cord_y - elem.size_y + elem.box_size_y/2 + (elem.def_h ? (elem.size_y - elem.def_h)/2 : 0),
                     elem.size_x,
                     elem.size_y)
             }

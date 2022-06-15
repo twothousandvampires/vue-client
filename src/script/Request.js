@@ -72,11 +72,7 @@ export default class Request{
 
     static world(char_id){
         return axios({method: 'post',
-            url : Request.URL + 'character/world/',
-            data : {
-                user_id : localStorage.getItem('user_id'),
-                char_id : char_id
-            },
+            url : Request.URL + 'character/' + char_id + '/world',
             headers : {
                 'Authorization': 'Bearer ' + Request.TOKEN,
             }

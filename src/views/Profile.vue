@@ -2,6 +2,7 @@
 import AccountInfo from "../components/AccountInfo.vue";
 import CharactersInfo from "../components/CharactersInfo.vue";
 import Request from "../script/Request";
+import Load from '../components/Load.vue'
 
 export default {
   data(){
@@ -13,6 +14,7 @@ export default {
   components:{
     AccountInfo,
     CharactersInfo,
+    Load
   },
   mounted() {
     Request.getUser().then( r =>{
@@ -30,7 +32,7 @@ export default {
 </script>
 
 <template>
-    <p v-if="!user">Loading...</p>
+   <Load v-if="!user"></Load>
     <div class="profile-wrap" v-else>
       <AccountInfo v-bind:user="user"/>
       <CharactersInfo @deleteCharacter="deleteCharacter" v-bind:characters="user.characters"/>

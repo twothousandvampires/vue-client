@@ -7,10 +7,12 @@ export default class Effect extends GameObject{
         this.size_x = w
         this.size_y = h
         this.angle = angle
+
+        this.box_size_x = w
+        this.box_size_y = h/2
     }
 
     act(effects){
-        console.log(this)
         this.frame_timer ++
         if(this.frame_timer === this.frame_change_tick){
             this.frame_timer = 0

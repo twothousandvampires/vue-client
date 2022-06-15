@@ -39,7 +39,6 @@ export default class FireBallProj extends GameObject{
 
 
     act(char, enemy, effects, proj){
-        console.log(this.frame)
         this.frame_timer ++
         if(this.frame_timer == 3){
             this.frame ++
@@ -51,7 +50,6 @@ export default class FireBallProj extends GameObject{
         if(!this.setCord(this.x_move, this.y_move)){
             effects.push(new FireExplosion(this.cord_x, this.cord_y,100,100))
             proj.splice(proj.indexOf(this),1)
-
         }
     }
 
