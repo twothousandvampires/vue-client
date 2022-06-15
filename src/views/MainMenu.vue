@@ -1,5 +1,5 @@
 <script>
-  import NotLogin from "@/components/NotLogin.vue";
+
   import MainLayout from '@/layouts/MainLayout.vue'
   import LoginView from "./LoginView.vue";
   import Profile from "./Profile.vue";
@@ -10,7 +10,6 @@
     },
     components : {
       LoginView,
-      NotLogin,
       MainLayout,
       Profile
     },

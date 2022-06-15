@@ -82,8 +82,8 @@ export default class Game{
             if(tick === 10){
                 clearInterval(move);
                 Request.move(node.x, node.y, this.char.id).then(r => {
-                    this.char.pretty_x = 6
-                    this.char.pretty_y = 6
+                    this.char.pretti_x = 6
+                    this.char.pretti_y = 6
                     this.prettifyData(r.data.data)
                     this.delay = false
                 })

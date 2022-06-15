@@ -57,15 +57,13 @@ export default class Request{
 
     static move(x, y, char_id){
         return axios({method: 'post',
-            url: Request.URL + 'character/move/',
+            url: Request.URL + 'character/' + char_id +'/move/',
             headers: {
                 'Authorization': 'Bearer ' + Request.TOKEN
             },
             data :{
                 x : x,
                 y : y,
-                user_id : localStorage.getItem('user_id'),
-                char_id : char_id
             }
         })
     }

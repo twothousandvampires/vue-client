@@ -25,7 +25,7 @@ export default class Fight{
     }
 
     act(){
-        if(Functions.every(10, this.game.game_tick)){
+        if(Functions.every(3, this.game.game_tick)){
             this.enemy = this.enemy.concat(this.spawner.getWave())
             // setTimeout(()=>{
             //     Request.win(this.char.id).then(r => {
@@ -38,7 +38,7 @@ export default class Fight{
 
         this.game.char.act(this.game.mouse ,this.effects, this.enemy, this.game.game_tick, this.projectiles)
         this.projectiles.forEach(elem => {
-            elem.act(this.game.char, this.effects, this.enemy, this.projectiles)
+            elem.act(this.game.char,  this.enemy,this.effects, this.projectiles)
         })
         this.enemy.forEach(elem => {
             elem.act(this.game.char, this.effects, this.enemy, this.projectiles)

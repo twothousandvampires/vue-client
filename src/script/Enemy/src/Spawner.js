@@ -9,15 +9,15 @@ export default class Spawner{
     }
 
 
-    createPull(count = 15){
+    createPull(count = 45){
 
-        for(let i = 0;i < 2;i++){
+        for(let i = 0;i < 20;i++){
             this.pull.push(new SkeletonArcher(0,0))
         }
-        for(let i = 0;i < 19;i++){
+        for(let i = 0;i < 60;i++){
             this.pull.push(new SkeletonWarrior(0,0))
         }
-        for(let i = 0;i < 3;i++){
+        for(let i = 0;i < 10;i++){
             this.pull.push(new SkeletonWizard(0,0))
         }
     }

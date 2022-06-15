@@ -9,7 +9,7 @@ export default class Effect extends GameObject{
         this.angle = angle
 
         this.box_size_x = w
-        this.box_size_y = h/2
+        this.box_size_y = h
     }
 
     act(effects){

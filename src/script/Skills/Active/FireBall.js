@@ -30,6 +30,10 @@ export default class FireBall{
     }
 
     use(proj, angle, x ,y){
-        proj.push(new FireBallProj(x, y ,angle))
+        let a = 0
+        while (a < 6.24){
+            proj.push(new FireBallProj(x, y , a))
+            a += 0.1
+        }
     }
 }
