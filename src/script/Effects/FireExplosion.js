@@ -8,8 +8,14 @@ export default class FireExplosion extends Effect{
         this.max_frame = 10
         this.frame_change_tick = 2
 
-        this.sprite_w = 147
+
+
+        this.sprite_w = 143
         this.sprite_h = 147
+
+
+        this.def_w = this.sprite_w
+        this.def_h = this.sprite_h
 
     }
 

@@ -38,8 +38,7 @@ export default class FireBallProj extends GameObject{
     }
 
 
-    act(char, enemy, effects, proj){
-        console.log(this.frame)
+    act(char, effects, enemy, proj){
         this.frame_timer ++
         if(this.frame_timer == 3){
             this.frame ++
@@ -48,10 +47,28 @@ export default class FireBallProj extends GameObject{
                 this.frame = 0
             }
         }
+        enemy.forEach(elem => {
+            if(GameFunctions.rectCollision(elem, this) && !elem.is_dead && !elem.damaged){
+                let coll_rect = {
+                    cord_x : this.cord_x,
+                    cord_y : this.cord_y,
+                    box_size_x : 100,
+                    box_size_y : 50,
+                }
+                effects.push(new FireExplosion(this.cord_x, this.cord_y,coll_rect.box_size_x,coll_rect.box_size_y))
+                proj.splice(proj.indexOf(this),1)
+                elem.damage(GameFunctions.angle(this,elem))
+            }
+        })
         if(!this.setCord(this.x_move, this.y_move)){
-            effects.push(new FireExplosion(this.cord_x, this.cord_y,100,100))
+            let coll_rect = {
+                cord_x : this.cord_x,
+                cord_y : this.cord_y,
+                box_size_x : 100,
+                box_size_y : 50,
+            }
+            effects.push(new FireExplosion(this.cord_x, this.cord_y,coll_rect.box_size_x,coll_rect.box_size_y))
             proj.splice(proj.indexOf(this),1)
-
         }
     }
 

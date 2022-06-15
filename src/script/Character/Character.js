@@ -45,8 +45,8 @@ export default class Character extends Unit{
         this.sprite_h = 93
 
         // coll box size
-        this.box_size_x = 46
-        this.box_size_y = 30
+        this.box_size_x = 48
+        this.box_size_y = 24
 
         this.def_w = this.sprite_w
         this.def_h = this.sprite_h

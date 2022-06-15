@@ -41,7 +41,7 @@ export default class Fight{
             elem.act(this.game.char, this.effects, this.enemy, this.projectiles)
         })
         this.enemy.forEach(elem => {
-            elem.act(this.game.char.act, this.effects, this.enemy, this.projectiles)
+            elem.act(this.game.char, this.effects, this.enemy, this.projectiles)
         })
         this.effects.forEach(elem => {
             elem.act(this.effects)
