@@ -9,17 +9,23 @@ export default class Spawner{
     }
 
 
-    createPull(count = 45){
-
-        for(let i = 0;i < 20;i++){
-            this.pull.push(new SkeletonArcher(0,0))
-        }
-        for(let i = 0;i < 60;i++){
-            this.pull.push(new SkeletonWarrior(0,0))
-        }
-        for(let i = 0;i < 10;i++){
-            this.pull.push(new SkeletonWizard(0,0))
-        }
+    createPull(content_count){
+        content_count.forEach(elem => {
+            while (elem.count){
+                switch (elem.name){
+                    case 'skeleton warrior':
+                        this.pull.push(new SkeletonWarrior(0,0))
+                        break;
+                    case 'skeleton archer':
+                        this.pull.push(new SkeletonArcher(0,0))
+                        break;
+                    case 'skeleton mage':
+                        this.pull.push(new SkeletonWizard(0,0))
+                        break;
+                }
+                elem.count--
+            }
+        })
     }
 
     getWave(){

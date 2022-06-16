@@ -37,7 +37,7 @@ export default class Game{
                 break;
             case 1:
                 this.scene = 'fight'
-                this.fight.newFight()
+                this.fight.newFight(response.node)
                 break;
             case 4:
                 this.scene = 'tower'

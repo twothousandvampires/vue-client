@@ -8,10 +8,10 @@ export default class Node{
         this.tile = this.getTile(template)
         this.visited = template.visited
         this.type = template.type
-        if(template.content_img){
+        if(template.content_type){
             this.frame_timer = 0
             this.frame = 0
-            this.content_name = template.content_img
+            this.content_name = template.content_type
             switch (this.content_name){
                 case 'undying squad':
                     this.content_img_offset_x = 20

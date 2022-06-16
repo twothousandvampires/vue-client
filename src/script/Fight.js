@@ -12,16 +12,17 @@ export default class Fight{
         this.win = false
     }
 
-    createEnemy(){
-        this.spawner.createPull()
+    createEnemy(content_count){
+        this.spawner.createPull(content_count)
         this.enemy = this.enemy.concat(this.spawner.getWave())
     }
 
-    newFight(){
+    newFight(node){
+        this.map = JSON.parse(node.map)
         this.enemy = []
         this.spawner.pull = []
         this.scene = 'fight'
-        this.createEnemy()
+        this.createEnemy(JSON.parse(node.content_count))
     }
 
     act(){

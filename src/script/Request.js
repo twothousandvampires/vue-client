@@ -6,11 +6,8 @@ export default class Request{
 
     static deleteCharacter(id){
        return  axios({method: 'post',
-           url : Request.URL + 'character/delete',
-            data : {
-                char_id : id
-            },
-            headers : {
+           url : Request.URL + 'character/' + id + '/delete',
+           headers : {
                 'Authorization': 'Bearer ' + Request.TOKEN,
             }
         })

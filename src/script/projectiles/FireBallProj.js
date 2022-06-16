@@ -41,7 +41,7 @@ export default class FireBallProj extends GameObject{
 
     act(char, enemy, effects, proj){
         this.frame_timer ++
-        if(this.frame_timer == 3){
+        if(this.frame_timer == 2){
             this.frame ++
             this.frame_timer = 0
             if(this.frame > this.max_frame){
