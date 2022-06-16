@@ -51,7 +51,7 @@ export default class SkeletonArcher extends Enemy{
         }, ms)
     }
 
-    act(char, effects, enemy, proj){
+    act(char, fight){
         let distance_to_char = Functions.distance(this, char)
         if(this.is_resurected){
 
@@ -76,19 +76,19 @@ export default class SkeletonArcher extends Enemy{
         else if(this.damaged){
             let move_x = Math.sin(this.direction_angle)
             let move_y = Math.cos(this.direction_angle)
-            this.setCord(move_x, move_y)
+            this.setCord(move_x, move_y, fight.map)
         }
         else if(this.is_attack){
             if(!this.deal_hit && this.frame === 6){
                 this.deal_hit = true
-                proj.push(new Arrow(this.cord_x+5, this.cord_y-50, Functions.angle({cord_x : this.cord_x,cord_y : this.cord_y-50}, char)))
+                fight.proj.push(new Arrow(this.cord_x+5, this.cord_y-50, Functions.angle({cord_x : this.cord_x,cord_y : this.cord_y-50}, char)))
             }
         }
         else if(this.is_idle_move){
             let move_x = Math.sin(this.deriction_angle)
             this.fliped = move_x <= 0;
             let move_y = Math.cos(this.deriction_angle)
-            this.setCord(move_x, move_y)
+            this.setCord(move_x, move_y , fight.map)
         }
 
         this.frame_timer ++
@@ -107,7 +107,7 @@ export default class SkeletonArcher extends Enemy{
                 if(this.frame >= this.max_frame){
                     if(this.is_dead){
                         if(this.skull_spawned && !this.skull_was_spawn){
-                            enemy.push(new SkeletonSkull(this.cord_x, this.cord_y))
+                            fight.enemy.push(new SkeletonSkull(this.cord_x, this.cord_y))
                             this.skull_was_spawn = true
                         }
                         this.frame = this.max_frame - 1

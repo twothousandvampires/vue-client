@@ -11,12 +11,13 @@ export default class GameObject{
         this.y_frame_offset = 0
     }
 
-    setCord(x ,y, m = 1){
-        if(!(this.cord_x + x * this.speed * m >= 1050) && !(this.cord_x + x * this.speed * m <= 250)){
-            this.cord_x += x * this.speed * m
+    setCord(x ,y, map){
+        console.log(map)
+        if(!(this.cord_x + x * this.speed  >= map.start_x + map.width) && !(this.cord_x + x * this.speed <= map.start_x)){
+            this.cord_x += x * this.speed
         }
-        if(!(this.cord_y + y * this.speed * m >= 1175) && !(this.cord_y + y * this.speed * m <= 375)){
-            this.cord_y += y * this.speed * m
+        if(!(this.cord_y + y * this.speed >= map.start_y + map.height) && !(this.cord_y + y * this.speed <= map.start_y)) {
+            this.cord_y += y * this.speed
         }
     }
 }

@@ -106,7 +106,7 @@ export default class Game{
                     let start = Date.now()
                     this.fight.act()
                     this.render.drawFight(this.char, this.fight)
-                    console.log(Date.now() - start)
+                    // console.log(Date.now() - start)
                     break;
             }
         },50)

@@ -49,7 +49,7 @@ export default class SkeletonWizard extends Enemy{
         }, ms)
     }
 
-    act(char, effects, enemy, proj){
+    act(char, fight){
         let distance_to_char = Functions.distance(this, char)
         if(this.is_dead){
 
@@ -71,7 +71,7 @@ export default class SkeletonWizard extends Enemy{
         else if(this.damaged){
             let move_x = Math.sin(this.direction_angle)
             let move_y = Math.cos(this.direction_angle)
-            this.setCord(move_x, move_y)
+            this.setCord(move_x, move_y, fight.map)
         }
         else if(this.is_cast){
             if(!this.deal_cast && this.frame === 7){
@@ -88,7 +88,7 @@ export default class SkeletonWizard extends Enemy{
             let move_x = Math.sin(this.deriction_angle)
             this.fliped = move_x <= 0;
             let move_y = Math.cos(this.deriction_angle)
-            this.setCord(move_x, move_y)
+            this.setCord(move_x, move_y, fight.map)
         }
 
         this.frame_timer ++
@@ -98,7 +98,7 @@ export default class SkeletonWizard extends Enemy{
             if(this.frame >= this.max_frame){
                 if(this.is_dead){
                     if(this.skull_spawned){
-                        enemy.push(new SkeletonSkull(this.cord_x, this.cord_y))
+                        fight.enemy.push(new SkeletonSkull(this.cord_x, this.cord_y))
                         this.skull_spawned = false
                     }
                     this.frame = this.max_frame - 1

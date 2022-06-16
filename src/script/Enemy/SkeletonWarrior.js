@@ -58,7 +58,7 @@ export default class SkeletonWarrior extends Enemy{
         }, ms)
     }
 
-    act(char, effects, enemy){
+    act(char, fight){
         let distance_to_char = Functions.distance(this, char)
         if(this.is_resurected){
 
@@ -94,12 +94,12 @@ export default class SkeletonWarrior extends Enemy{
         else if(this.damaged){
             let move_x = Math.sin(this.direction_angle)
             let move_y = Math.cos(this.direction_angle)
-            this.setCord(move_x, move_y)
+            this.setCord(move_x, move_y, fight.map)
         }
         else if(this.is_attack){
             if(!this.deal_hit && this.frame === 4){
                 this.deal_hit = true
-                effects.push(EffectCreator.createEffect('weapon swing', this.attack_box.cord_x, this.attack_box.cord_y, this.attack_box.box_size_x, this.attack_box.box_size_y, this.attack_box.angle))
+                fight.effects.push(EffectCreator.createEffect('weapon swing', this.attack_box.cord_x, this.attack_box.cord_y, this.attack_box.box_size_x, this.attack_box.box_size_y, this.attack_box.angle))
                 if(Functions.rectCollision(this.attack_box, char) && !char.damaged){
                     char.damage(Functions.angle(this, char))
                 }
@@ -114,20 +114,20 @@ export default class SkeletonWarrior extends Enemy{
                 let move_x = Math.sin(this.move_angle)
                 this.fliped = move_x <= 0;
                 let move_y = Math.cos(this.move_angle)
-                this.setCord(move_x, move_y)
+                this.setCord(move_x, move_y, fight.map)
             }
         }
         else if(this.is_charge){
             let move_x = Math.sin(this.deriction_angle)
             this.fliped = move_x <= 0;
             let move_y = Math.cos(this.deriction_angle)
-            this.setCord(move_x, move_y, 3)
+            this.setCord(move_x, move_y, fight.map)
         }
         else if(this.is_idle_move){
             let move_x = Math.sin(this.deriction_angle)
             this.fliped = move_x <= 0;
             let move_y = Math.cos(this.deriction_angle)
-            this.setCord(move_x, move_y)
+            this.setCord(move_x, move_y, fight.map)
         }
 
         this.frame_timer ++
@@ -146,7 +146,7 @@ export default class SkeletonWarrior extends Enemy{
                 if(this.frame >= this.max_frame){
                     if(this.is_dead){
                         if(this.skull_spawned && !this.skull_was_spawn){
-                            enemy.push(new SkeletonSkull(this.cord_x, this.cord_y))
+                            fight.enemy.push(new SkeletonSkull(this.cord_x, this.cord_y))
                             this.skull_was_spawn = true
                         }
                         this.frame = this.max_frame - 1

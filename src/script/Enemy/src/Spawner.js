@@ -10,6 +10,7 @@ export default class Spawner{
 
 
     createPull(content_count){
+        console.log(content_count)
         content_count.forEach(elem => {
             while (elem.count){
                 switch (elem.name){
@@ -28,12 +29,12 @@ export default class Spawner{
         })
     }
 
-    getWave(){
+    getWave(map){
         let count = this.pull.length >= 8 ? 8 : this.pull.length
         let result = []
         for(let i = 0; i < count;i++){
             let enemy = this.pull[Math.floor(Math.random() * this.pull.length)]
-            let cords = this.getCords(i)
+            let cords = this.getCords(i, map)
             enemy.cord_x = cords[0]
             enemy.cord_y = cords[1]
             result.push(enemy)
@@ -42,24 +43,24 @@ export default class Spawner{
         return result ? result : false
     }
 
-    getCords(i){
+    getCords(i, map){
         switch (i){
             case 0:
-                return [300,425]
+                return [map.start_x + 50, map.start_y + 50]
             case 1:
-                return [650,425]
+                return [map.start_x + map.width/2, map.start_y + 50]
             case 2:
-                return [1000,425]
+                return [map.start_x + map.width - 50, map.start_y + 50]
             case 3:
-                return [300,775]
+                return [map.start_x + 50, map.start_y + map.height/2]
             case 4:
-                return [1000,775]
+                return [map.start_x + map.width - 50, map.start_y + map.height/2]
             case 5:
-                return [300,1125]
+                return [map.start_x + 50, map.height + map.start_y - 50]
             case 6:
-                return [650,1125]
+                return [map.start_x + map.width/2, map.height + map.start_y - 50]
             case 7:
-                return [1000,1125]
+                return [map.start_x + map.width- 50, map.height + map.start_y- 50]
         }
     }
 

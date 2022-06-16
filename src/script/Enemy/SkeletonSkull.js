@@ -41,7 +41,7 @@ export default class SkeletonSkull extends Enemy{
         }
     }
 
-    act(char){
+    act(char, fight){
         let distance_to_char = Functions.distance(this, char)
         if(this.is_dead){
 
@@ -52,7 +52,7 @@ export default class SkeletonSkull extends Enemy{
         else if(this.damaged){
             let move_x = Math.sin(this.direction_angle)
             let move_y = Math.cos(this.direction_angle)
-            this.setCord(move_x, move_y)
+            this.setCord(move_x, move_y, fight.map)
         }
         else if(this.is_attack){
             if(!this.deal_hit && this.frame === 5){
@@ -71,7 +71,7 @@ export default class SkeletonSkull extends Enemy{
                 let move_x = Math.sin(this.move_angle)
                 this.fliped = move_x <= 0;
                 let move_y = Math.cos(this.move_angle)
-                this.setCord(move_x, move_y)
+                this.setCord(move_x, move_y, fight.map)
             }
             else if(this.wait_between_attack){
                 if(!this.is_idle){

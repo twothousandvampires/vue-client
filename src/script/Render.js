@@ -18,12 +18,14 @@ export default class Render{
         // ms
         this.bg_aniamtion_speed = 4000
 
+
+
         this.show_box = false
         this.show_state = false
         this.show_attack_box = false
     }
 
-    drawBg(){
+    drawBg(context){
         // this.bg_timer += 1
         // if(this.bg_timer >= this.bg_aniamtion_speed / 50){
         //     this.bg_timer = 0
@@ -32,9 +34,9 @@ export default class Render{
         //         this.bg_frame = 0
         //     }
         // }
-        this.ctx.drawImage(this.img_data.getImage('background'),0,0,850,850,225,350,850,850)
+        this.ctx.drawImage(this.img_data.getImage('background'),0,0,850,850,context.map.start_x,context.map.start_y,context.map.width,context.map.height)
         this.ctx.strokeStyle = 'yellow'
-        this.ctx.strokeRect(250,375,800,800)
+        this.ctx.strokeRect(context.map.start_x,context.map.start_y,context.map.width,context.map.height)
         this.ctx.fillStyle = 'black'
     }
 
@@ -76,7 +78,7 @@ export default class Render{
 
     drawFight(char, fight_context){
         this.ctx.clearRect(0,0,1300,1300)
-        this.drawBg()
+        this.drawBg(fight_context)
         let all = [char].concat(fight_context.enemy).concat(fight_context.effects).concat(fight_context.projectiles)
 
         all.sort(function(a,b){

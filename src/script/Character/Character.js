@@ -228,7 +228,7 @@ export default class Character extends Unit{
         }
     }
 
-    act(mouse, effect, enemy, tick, proj){
+    act(mouse, effect, enemy, tick, proj, map){
         this.regen(tick)
 
         let input = mouse.getInput()
@@ -240,7 +240,7 @@ export default class Character extends Unit{
         else if(this.damaged){
             let move_x = Math.sin(this.direction_angle)
             let move_y = Math.cos(this.direction_angle)
-            this.setCord(move_x, move_y)
+            this.setCord(move_x, move_y, map)
         }
         else if(this.is_attack){
             if(!this.deal_hit && this.frame === 5){
@@ -277,10 +277,10 @@ export default class Character extends Unit{
             }
             else if(this.moveInputIsPressed(input)){
                 if(input[' '] && this.energy > 0.5){
-                    this.run(input, tick)
+                    this.run(input, map)
                 }
                 else{
-                    this.move(input)
+                    this.move(input, map)
                 }
             }
             else if(!this.is_idle){
@@ -334,7 +334,7 @@ export default class Character extends Unit{
         this.setRecoveryTimeOut(1000)
     }
 
-    run(input, tick){
+    run(input, map){
         if(!this.is_run){
             this.resetFrame()
             this.setSize(90, 93)
@@ -345,10 +345,10 @@ export default class Character extends Unit{
         }
         else{
             this.getMoveAngle(input)
-            let move_x = Math.sin(this.move_angle)
+            let move_x = Math.sin(this.move_angle) * 2
             this.fliped = move_x <= 0;
-            let move_y = Math.cos(this.move_angle)
-            this.setCord(move_x, move_y, 2)
+            let move_y = Math.cos(this.move_angle) * 2
+            this.setCord(move_x, move_y, map)
         }
     }
 
@@ -361,7 +361,7 @@ export default class Character extends Unit{
         this.frame_change_tick = 12
     }
 
-    move(input){
+    move(input ,map){
         if(!this.is_move){
             this.resetFrame()
             this.setSize(90, 93)
@@ -375,7 +375,7 @@ export default class Character extends Unit{
             let move_x = Math.sin(this.move_angle)
             this.fliped = move_x <= 0;
             let move_y = Math.cos(this.move_angle)
-            this.setCord(move_x, move_y)
+            this.setCord(move_x, move_y, map)
         }
     }
 }
