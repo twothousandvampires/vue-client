@@ -1,7 +1,10 @@
 export default class ImageData{
 
     constructor() {
-        // environment
+        // Environment
+        this['rock'] = new Image()
+        this['rock'].src = './src/assets/img/rocks/rock.png'
+
         this['background'] = new Image(),
         this['background'].src = './src/assets/img/bgs/1.png'
 

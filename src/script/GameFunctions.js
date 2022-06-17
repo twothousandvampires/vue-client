@@ -56,10 +56,10 @@ export default class Functions{
     }
 
     static pointInRect(x,y,rect){
-        let rect1_x = Math.floor(rect.cords.x - (rect.size_w/2))
-        let rect1_y = Math.floor(rect.cords.y)
-        let rect1_w = rect.size_w
-        let rect1_h = rect.size_h
+        let rect1_x = Math.floor(rect.cord_x - (rect.box_size_x/2))
+        let rect1_y = Math.floor(rect.cord_y - rect.box_size_y/2)
+        let rect1_w = rect.box_size_x
+        let rect1_h = rect.box_size_y
 
         if(x > rect1_x && x < rect1_x + rect1_w && y > rect1_y && y < rect1_y + rect1_h){
             return true

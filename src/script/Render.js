@@ -79,7 +79,7 @@ export default class Render{
     drawFight(char, fight_context){
         this.ctx.clearRect(0,0,1300,1300)
         this.drawBg(fight_context)
-        let all = [char].concat(fight_context.enemy).concat(fight_context.effects).concat(fight_context.projectiles)
+        let all = [char].concat(fight_context.enemy).concat(fight_context.effects).concat(fight_context.projectiles).concat(fight_context.map.rocks)
 
         all.sort(function(a,b){
             return a.cord_y - b.cord_y
