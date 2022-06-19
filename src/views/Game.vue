@@ -54,9 +54,9 @@ export default {
       </div>
     </div>
 
-    <Inventory v-if="game?.inv_is_open" @close_inv="close_inv" v-bind:char="game.char" v-bind:mouse="game.mouse"></Inventory>
+    <Inventory v-if="game?.inv_is_open" v-bind:char="game.char" v-bind:mouse="game.mouse"></Inventory>
 
-    <SkillTree v-if="game?.tree_is_open" @close_inv="close_inv" v-bind:char="game.char"></SkillTree>
+    <SkillTree v-if="game?.tree_is_open" v-bind:char="game.char"></SkillTree>
 
     <RenderSettings v-if="game" v-bind:render="game.render"></RenderSettings>
 

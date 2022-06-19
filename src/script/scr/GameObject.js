@@ -14,12 +14,21 @@ export default class GameObject {
 
     setCord(x, y, map) {
 
+        let x_coll, y_coll = false
+
         if ( !this.collWithRocks(map, x, true) && !(this.cord_x + x * this.speed >= map.start_x + map.width) && !(this.cord_x + x * this.speed <= map.start_x)) {
             this.cord_x += x * this.speed
+        }
+        else {
+            x_coll = true
         }
         if ( !this.collWithRocks(map, y, false) && !(this.cord_y + y * this.speed >= map.start_y + map.height) && !(this.cord_y + y * this.speed <= map.start_y)) {
             this.cord_y += y * this.speed
         }
+        else {
+            y_coll = true
+        }
+        return x_coll || y_coll
     }
 
     collWithRocks(map, move, horizontal) {

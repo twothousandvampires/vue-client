@@ -11,6 +11,7 @@ import Status from "./hud/StatusBar";
 export default class Character extends Unit{
 
     constructor(template) {
+        console.log(template)
         super(650, 850)
 
         this.pretti_x = 6

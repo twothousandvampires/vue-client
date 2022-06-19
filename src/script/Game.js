@@ -49,6 +49,7 @@ export default class Game{
 
         let input = this.mouse.getInput()
         if(input.i){
+            console.log(this.inv_is_open)
             this.inv_is_open = !this.inv_is_open
             this.tree_is_open = false
         }

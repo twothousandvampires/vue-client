@@ -22,24 +22,7 @@ export default class FireBallProj extends GameObject{
         this.max_frame = 7
     }
 
-    setCord(x ,y){
-        if(!(this.cord_x + x * this.speed >= 1050) && !(this.cord_x + x * this.speed <= 250)){
-            this.cord_x += x * this.speed
-        }
-        else {
-            return false
-        }
-        if(!(this.cord_y + y * this.speed >= 1175) && !(this.cord_y + y * this.speed <= 375)){
-            this.cord_y += y * this.speed
-        }
-        else {
-            return false
-        }
-        return true
-    }
-
-
-    act(char, enemy, effects, proj){
+    act(char, enemy, effects, proj, map){
         this.frame_timer ++
         if(this.frame_timer == 2){
             this.frame ++
@@ -73,7 +56,7 @@ export default class FireBallProj extends GameObject{
                 }
             }
         })
-        if(!this.setCord(this.x_move, this.y_move)){
+        if(this.setCord(this.x_move, this.y_move, map)){
             let coll_rect = {
                 cord_x : this.cord_x,
                 cord_y : this.cord_y,
@@ -86,7 +69,7 @@ export default class FireBallProj extends GameObject{
                 proj.splice(proj.indexOf(this),1)
             }
             else {
-                let angle = Math.random() * 6.24
+                let angle = this.angle - Math.PI
                 this.x_move = Math.sin(angle)
                 this.y_move = Math.cos(angle)
             }

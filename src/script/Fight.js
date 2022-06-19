@@ -45,20 +45,20 @@ export default class Fight{
             switch (zone){
                 case 0:
                     min_x = this.map.start_x + 100 + rock_width/2
-                    min_y = this.map.start_y
+                    min_y = this.map.start_y + rock_height/2
                     max_x = this.map.start_x + this.map.width/2 - 50 - rock_width/2
                     max_y = this.map.start_y + 100
                     break;
                 case 1:
                     min_x = this.map.start_x + this.map.width/2 + 50 + rock_width/2
-                    min_y = this.map.start_y
+                    min_y = this.map.start_y + rock_height/2
                     max_x = this.map.start_x + this.map.width - 100 - rock_width/2
                     max_y = this.map.start_y + 100
                     break;
                 case 2:
-                    min_x = this.map.start_x
+                    min_x = this.map.start_x + rock_width/2
                     min_y = this.map.start_y + 100 + rock_height/2
-                    max_x = this.map.start_x + this.map.width
+                    max_x = this.map.start_x + this.map.width -rock_width/2
                     max_y = this.map.start_y + this.map.height/2 -50 - rock_height/2
                     break;
                 case 3:
@@ -74,30 +74,28 @@ export default class Fight{
                     max_y = this.map.start_y + this.map.height/2 + 50
                     break;
                 case 5:
-                    min_x = this.map.start_x
+                    min_x = this.map.start_x + rock_width/2
                     min_y = this.map.start_y + this.map.height/2 + 50 + rock_height/2
-                    max_x = this.map.start_x + this.map.width
+                    max_x = this.map.start_x + this.map.width - rock_width/2
                     max_y = this.map.start_y + this.map.height - 100 - rock_height/2
                     break;
                 case 6:
                     min_x = this.map.start_x + 100 + rock_width/2
                     min_y = this.map.start_y + this.map.height - 100
                     max_x = this.map.start_x + this.map.width/2 - 50 - rock_width/2
-                    max_y = this.map.start_y + this.map.height
+                    max_y = this.map.start_y + this.map.height - rock_height/2
                     break;
                 case 7:
                     min_x = this.map.start_x + this.map.width/2 + 50 + rock_width/2
                     min_y = this.map.start_y + this.map.height - 100
                     max_x = this.map.start_x + this.map.width - 100 - rock_width/2
-                    max_y = this.map.start_y + this.map.height
+                    max_y = this.map.start_y + this.map.height - rock_height/2
                     break;
             }
             let random_x = Math.floor(Math.random() * (max_x - min_x) + min_x)
-            console.log(min_x)
             let random_y = Math.floor(Math.random() * (max_y - min_y) + min_y)
             result.push(new Rock(random_x, random_y, rock_width, rock_height))
         }
-        console.log(result)
         return result
     }
 
@@ -118,7 +116,7 @@ export default class Fight{
             elem.act(this.game.char,  this.enemy,this.effects, this.projectiles, this.map)
         })
         this.enemy.forEach(elem => {
-            elem.act(this.game.char, this)
+            elem.act(this.game.char.act, this)
         })
         this.effects.forEach(elem => {
             elem.act(this.effects)

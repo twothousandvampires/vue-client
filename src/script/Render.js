@@ -34,10 +34,10 @@ export default class Render{
         //         this.bg_frame = 0
         //     }
         // }
-        this.ctx.drawImage(this.img_data.getImage('background'),0,0,850,850,context.map.start_x,context.map.start_y,context.map.width,context.map.height)
-        this.ctx.strokeStyle = 'yellow'
-        this.ctx.strokeRect(context.map.start_x,context.map.start_y,context.map.width,context.map.height)
-        this.ctx.fillStyle = 'black'
+        this.ctx.drawImage(this.img_data.getImage('background'),0,0,900,900,context.map.start_x - 25,context.map.start_y - 25,context.map.width + 50,context.map.height +50)
+        // this.ctx.strokeStyle = 'yellow'
+        // this.ctx.strokeRect(context.map.start_x,context.map.start_y,context.map.width,context.map.height)
+        // this.ctx.fillStyle = 'black'
     }
 
     drawWorld(game ,char){

@@ -35,5 +35,6 @@ export default class FireBall{
             proj.push(new FireBallProj(x, y , a))
             a += 0.1
         }
+        proj.push(new FireBallProj(x, y , angle))
     }
 }
