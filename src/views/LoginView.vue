@@ -16,8 +16,7 @@ export default {
 
   },
   methods:{
-    auth(e){
-      e.preventDefault()
+    auth(){
       Request.login(this.email, this.password).then((response)=>{
         if(response.data.success) {
           localStorage.setItem('token' , response.data.data.token)
@@ -75,7 +74,7 @@ export default {
 
       <input v-if="!login_form" @input="inputCpass" v-bind:value="c_password" class="input" type="text" placeholder="retype password">
 
-      <button v-if="login_form" @click="auth" class="btn" >Login in</button>
+      <button v-if="login_form" @click.prevent="auth" class="btn" >Login in</button>
       <button v-if="!login_form" @click.prevent="registration" class="btn" >Registration</button>
       <button @click.prevent="switchForm" class="btn" >{{ !this.login_form ? 'Go to login' : 'Go to registration' }}</button>
 

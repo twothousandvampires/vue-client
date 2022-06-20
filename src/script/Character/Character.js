@@ -11,7 +11,6 @@ import Status from "./hud/StatusBar";
 export default class Character extends Unit{
 
     constructor(template) {
-        console.log(template)
         super(650, 850)
 
         this.pretti_x = 6
@@ -76,6 +75,8 @@ export default class Character extends Unit{
         this.life = Functions.increasedByPercent(this.template.life, this.getIncreased('life'))
         this.energy = Functions.increasedByPercent(this.template.energy, this.getIncreased('energy'))
         this.max_energy = Functions.increasedByPercent(this.template.max_energy, this.getIncreased('energy'))
+        this.will = Functions.increasedByPercent(this.template.will, this.getIncreased('will'))
+        this.max_will = Functions.increasedByPercent(this.template.max_will, this.getIncreased('will'))
     }
 
     getMinAttackDamage(){

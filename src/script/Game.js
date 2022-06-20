@@ -4,7 +4,6 @@ import Input from "./Input.js";
 import Request from "./Request.js";
 import Fight from "./Fight";
 import World from "./World";
-import Functions from './GameFunctions.js'
 
 export default class Game{
 
@@ -25,7 +24,6 @@ export default class Game{
         this.render = new Render(game_context.$refs.canvas.getContext('2d'))
 
         this.game_tick = 0
-        this.frame()
     }
 
     prettifyData(response){
@@ -46,10 +44,8 @@ export default class Game{
     }
 
     checkInput(){
-
         let input = this.mouse.getInput()
         if(input.i){
-            console.log(this.inv_is_open)
             this.inv_is_open = !this.inv_is_open
             this.tree_is_open = false
         }
@@ -93,7 +89,6 @@ export default class Game{
     }
 
     frame(){
-
         setInterval(()=>{
             this.game_tick ++
             switch (this.scene){

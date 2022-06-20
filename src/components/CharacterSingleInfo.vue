@@ -6,11 +6,6 @@ export default {
   props : {
     char : Object
   },
-  data(){
-    return{
-
-    }
-  },
   methods : {
     play(id){
       localStorage.setItem('char_id', id)

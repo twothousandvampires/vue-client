@@ -34,7 +34,6 @@ export default {
       this.over = item
     },
     mouseleave(){
-
       this.over = false
       this.clicked_context = false
     },

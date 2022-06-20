@@ -1,5 +1,4 @@
 <script>
-
   import MainLayout from '@/layouts/MainLayout.vue'
   import LoginView from "./LoginView.vue";
   import Profile from "./Profile.vue";
@@ -13,12 +12,6 @@
       MainLayout,
       Profile
     },
-    methods:{
-
-    },
-    mounted() {
-
-    }
   }
 </script>
 

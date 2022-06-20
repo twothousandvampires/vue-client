@@ -32,6 +32,7 @@ export default {
       if(response.data.success){
         this.game = new Game(this, response.data.data)
         this.loaded = false
+        this.game.frame()
       }
     })
   },
@@ -41,13 +42,13 @@ export default {
   <MainLayout>
 
     <!-- tower scene -->
-    <div v-if="game?.scene === 'tower'">
-      <p>Tower</p>
-      <p @click="game.setState('world')">Exit</p>
-    </div>
+<!--    <div v-if="game?.scene === 'tower'">-->
+<!--      <p>Tower</p>-->
+<!--      <p @click="game.setState('world')">Exit</p>-->
+<!--    </div>-->
 
     <!-- game scene -->
-    <div v-else>
+    <div>
       <Load v-if="loaded"></Load>
       <div id="canvas-wrap">
         <canvas id='game-canvas'  width="1300" height="1300" ref="canvas"></canvas>
@@ -58,7 +59,7 @@ export default {
 
     <SkillTree v-if="game?.tree_is_open" v-bind:char="game.char"></SkillTree>
 
-    <RenderSettings v-if="game" v-bind:render="game.render"></RenderSettings>
+    <RenderSettings v-if="game?.state === 'fight'" v-bind:render="game.render"></RenderSettings>
 
     <PlayerHUD v-if="game" v-bind:char="game.char"></PlayerHUD>
 
