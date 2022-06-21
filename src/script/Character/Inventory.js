@@ -39,7 +39,10 @@ export default class Inventory{
     }
 
     getWeapon(){
-        return this.equip[1]
+        if(this.weaponIsEquip()){
+            return this.equip[1]
+        }
+        return false
     }
 
     getDiscription(slot){

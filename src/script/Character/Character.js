@@ -12,17 +12,14 @@ export default class Character extends Unit{
 
     constructor(template) {
         super(650, 850)
-
-        this.pretti_x = 6
-        this.pretti_y = 6
-
         this.template = template.character
+
 
         this.x = template.character.x
         this.y = template.character.y
         this.id = template.character.id
-
-        this.calcStats()
+        this.pretti_x = 6
+        this.pretti_y = 6
 
         this.skill_panel = new SkillPanel(this)
         this.status = new Status(this)
@@ -32,9 +29,11 @@ export default class Character extends Unit{
         this.inv = new Inventory(template.items, this)
         this.skill_tree = new SkillTree(JSON.parse(template.skill_tree), this)
 
+        this.createStats()
+
         this.img_name = 'grim traveler'
 
-        //ms
+        //ms !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
         this.attack_speed = 1200
         this.attack_range = 60
 
@@ -61,6 +60,8 @@ export default class Character extends Unit{
         this.max_frame = 9
         this.frame_change_tick = 7 // 7 * 50(game_tick) = 350 ms
 
+        console.log(this.stats)
+
         this.is_cast = false
         this.is_poution = false
         this.is_scroll = false
@@ -68,7 +69,53 @@ export default class Character extends Unit{
         this.defended = false
 
         this.speed = 2
+
     }
+
+    createStats(){
+        this.stats = new Map()
+        this.createCharacterStats()
+        this.createAttackStats()
+        console.log(this.stats)
+    }
+
+    createCharacterStats(){
+        this.stats.set('name',this.template.name)
+    }
+
+    createAttackStats(){
+        // set additional attack damage
+
+        let add_attack_damage = this.template.add_attack_damage + this.add_attack_damage ? this.add_attack_damage : 0
+        this.stats.set('add_min_attack_damage', add_attack_damage * 0.5)
+        this.stats.set('add_max_attack_damage', add_attack_damage * 1.5)
+
+        // set more/less attack damage
+
+        this.stats.set('less_attack_damage', this.less_attack_damage ? this.less_attack_damage : 0)
+        this.stats.set('more_attack_damage', this.less_attack_damage ? this.less_attack_damage : 0)
+
+        let increased_attack_damage = this.template.increased_attack_damage
+                                    + this.template.reduced_attack_damage
+                                    + this.increased_attack_damage ? this.increased_attack_damage : 0
+                                    + this.reduced_attack_damage ? this.reduced_attack_damage : 0
+
+        this.stats.set('increased_attack_damage', increased_attack_damage)
+
+        let min_attack_damage, max_attack_damage
+        let weapon = this.inv.getWeapon()
+        if(weapon){
+            min_attack_damage = weapon.min_damage
+            max_attack_damage = weapon.max_damage
+        }
+        else{
+            min_attack_damage = this.template.min_attack_damage
+            max_attack_damage = this.template.max_attack_damage
+        }
+        this.stats.set('min_attack_damage', min_attack_damage)
+        this.stats.set('max_attack_damage', max_attack_damage)
+    }
+
 
     calcStats(){
         this.max_life = Functions.increasedByPercent(this.template.max_life, this.getIncreased('life'))

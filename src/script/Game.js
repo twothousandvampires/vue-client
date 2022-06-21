@@ -13,6 +13,7 @@ export default class Game{
         this.world = new World(this)
 
         this.char = new Character(initiate_data.character)
+        console.log(this.char)
         this.world.updateMapData(initiate_data.nodes, this.char.x, this.char.y)
 
         this.delay = false
