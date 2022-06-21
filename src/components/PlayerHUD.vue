@@ -21,6 +21,7 @@ export default {
     <div id="stats">
       <div>
         <p>Life - {{char.life}} / {{char.max_life}}</p>
+        <p>{{char.stats.get('life')}}</p>
       </div>
       <div>
         <p>Will - 100/100</p>

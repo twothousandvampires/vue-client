@@ -14,7 +14,8 @@ export default class Character extends Unit{
         super(650, 850)
         this.template = template.character
 
-
+        this.stats = new Map()
+        console.log(template)
         this.x = template.character.x
         this.y = template.character.y
         this.id = template.character.id
@@ -51,6 +52,7 @@ export default class Character extends Unit{
         this.box_size_x = 48
         this.box_size_y = 24
 
+
         this.def_w = this.sprite_w
         this.def_h = this.sprite_h
 
@@ -73,14 +75,118 @@ export default class Character extends Unit{
     }
 
     createStats(){
-        this.stats = new Map()
+
         this.createCharacterStats()
         this.createAttackStats()
+        this.createSpeedStats()
+        this.regenerationStats()
+        this.spellStats()
+        this.critStats()
         console.log(this.stats)
+    }
+
+    critStats(){
+
+        let spell_crit_chance, attack_crit_chance, spell_crit_multy, attack_crit_multy
+
+        spell_crit_chance = this.template.spell_crit_chance + (this.spell_crit_chance ? this.spell_crit_chance : 0)
+        let increased_spell_crit_chance = this.getIncreased('spell_crit_chance')
+
+        this.stats.set('spell_crit_chance' , spell_crit_chance)
+        this.stats.set('increased_spell_crit_chance' , increased_spell_crit_chance)
+
+        spell_crit_multy = this.template.spell_crit_multy + (this.spell_crit_multy ? this.spell_crit_multy : 0)
+        let increased_spell_crit_multy = this.getIncreased('spell_crit_multy')
+
+        this.stats.set('spell_crit_multy' , spell_crit_multy)
+        this.stats.set('increased_spell_crit_multy' , increased_spell_crit_multy)
+
+        //attack
+
+        let weapon = this.inv.getWeapon()
+        if(weapon){
+            attack_crit_chance = weapon.crit_chance + (this.attack_crit_chance ? this.attack_crit_chance : 0)
+        }
+        else{
+            attack_crit_chance = this.template.attack_crit_chance + (this.attack_crit_chance ? this.attack_crit_chance : 0)
+        }
+
+        let increased_attack_crit_chance = this.getIncreased('attack_crit_chance')
+
+        this.stats.set('attack_crit_chance' , attack_crit_chance)
+        this.stats.set('increased_attack_crit_chance' , increased_attack_crit_chance)
+
+
+        attack_crit_multy = this.template.attack_crit_multy + (this.attack_crit_multy ? this.attack_crit_multy : 0)
+        let increased_attack_crit_multy = this.getIncreased('attack_crit_multy')
+
+        this.stats.set('attack_crit_multy' , attack_crit_multy)
+        this.stats.set('increased_attack_crit_multy' , increased_attack_crit_multy)
+    }
+
+    spellStats(){
+
+        let add_spell_damage = this.template.add_spell_damage + this.add_spell_damage ? this.add_spell_damage : 0
+        this.stats.set('add_min_spell_damage', add_spell_damage * 0.5)
+        this.stats.set('add_max_spell_damage', add_spell_damage * 1.5)
+
+        let increased_spell_aoe = this.getIncreased('spell_aoe')
+        this.stats.set('increased_spell_aoe', increased_spell_aoe)
+
+        let increased_spell_damage = this.getIncreased('spell_damage')
+        this.stats.set('increased_spell_damage', increased_spell_damage)
+
+        let spell_leech = this.template.spell_life_leech + this.spell_life_leech ? spell_life_leech : 0
+        this.stats.set('spell_life_leech', spell_leech)
+    }
+
+    regenerationStats(){
+        let energy_regeneration = this.template.energy_regeneration
+        let increased_energy_regeneration = this.getIncreased('energy_regeneration')
+        this.stats.set('energy_regeneration' , Functions.increasedByPercent(energy_regeneration, increased_energy_regeneration))
+        this.stats.set('increased_energy_regeneration' , increased_energy_regeneration)
+    }
+
+    createSpeedStats(){
+        //movement speed
+        let speed = this.template.movement_speed
+        let increased_movement_speed = this.getIncreased('movement_speed')
+
+        this.stats.set('movement_speed' , Functions.increasedByPercent(speed, increased_movement_speed))
+        this.stats.set('increased_movement_speed' , increased_movement_speed)
+
+        //attack speed
+        let a_speed = this.template.attack_speed
+        let increased_attack_speed = this.getIncreased('attack_speed')
+
+        this.stats.set('attack_speed' , Functions.reducedByPercent(a_speed, increased_attack_speed))
+        this.stats.set('increased_attack_speed' , increased_attack_speed)
+
+        //cast speed
+        let c_speed = this.template.cast_speed
+        let increased_cast_speed = this.getIncreased('cast_speed')
+
+        this.stats.set('cast_speed' , Functions.increasedByPercent(c_speed, increased_cast_speed))
+        this.stats.set('increased_cast_speed' , increased_cast_speed)
     }
 
     createCharacterStats(){
         this.stats.set('name',this.template.name)
+
+        let increased_life = this.getIncreased('life')
+        this.stats.set('max_life' , Functions.increasedByPercent(this.template.max_life, increased_life))
+        this.stats.set('life' , Functions.increasedByPercent(this.template.life, increased_life))
+        this.stats.set('increased_life' , increased_life)
+
+        let increased_will = this.getIncreased('will')
+        this.stats.set('max_will' , Functions.increasedByPercent(this.template.max_will, increased_will))
+        this.stats.set('will' , Functions.increasedByPercent(this.template.will, increased_will))
+        this.stats.set('increased_will' , increased_will)
+
+        let increased_energy = this.getIncreased('energy')
+        this.stats.set('max_energy' , Functions.increasedByPercent(this.template.max_energy, increased_energy))
+        this.stats.set('energy' , Functions.increasedByPercent(this.template.energy, increased_energy))
+        this.stats.set('increased_energy' , increased_energy)
     }
 
     createAttackStats(){
@@ -95,25 +201,33 @@ export default class Character extends Unit{
         this.stats.set('less_attack_damage', this.less_attack_damage ? this.less_attack_damage : 0)
         this.stats.set('more_attack_damage', this.less_attack_damage ? this.less_attack_damage : 0)
 
-        let increased_attack_damage = this.template.increased_attack_damage
-                                    + this.template.reduced_attack_damage
-                                    + this.increased_attack_damage ? this.increased_attack_damage : 0
-                                    + this.reduced_attack_damage ? this.reduced_attack_damage : 0
+        let increased_attack_damage = this.getIncreased('attack_damage')
 
         this.stats.set('increased_attack_damage', increased_attack_damage)
 
-        let min_attack_damage, max_attack_damage
+        let min_attack_damage, max_attack_damage, attack_range
         let weapon = this.inv.getWeapon()
         if(weapon){
             min_attack_damage = weapon.min_damage
             max_attack_damage = weapon.max_damage
+            attack_range = weapon.attack_range
         }
         else{
             min_attack_damage = this.template.min_attack_damage
             max_attack_damage = this.template.max_attack_damage
+            attack_range = this.template.attack_range
         }
+
+        let increase_attack_range = this.getIncreased('attack_range')
+
+        this.stats.set('increased_attack_range' , increase_attack_range)
+        this.stats.set('attack_range' , Functions.increasedByPercent(attack_range, increase_attack_range))
+
         this.stats.set('min_attack_damage', min_attack_damage)
         this.stats.set('max_attack_damage', max_attack_damage)
+
+        let attack_leech = this.template.attack_life_leech + this.attack_life_leech ? attack_life_leech : 0
+        this.stats.set('attack_life_leech', attack_leech)
     }
 
 
@@ -165,7 +279,11 @@ export default class Character extends Unit{
     }
 
     getIncreased(stat) {
-        return this['increased_' + stat] ? this['increased_' + stat] : 0 - this['reduced_' + stat] ? this['reduced_' + stat] : 0
+        let result = this.template['increased_' + stat]
+                    + this.template['reduced_' + stat]
+                    + (this['increased_' + stat] ? this['increased_' + stat] : 0)
+                    + (this['reduced_' + stat] ? this['reduced_' + stat] : 0)
+        return result
     }
     getStat(stat, type = 'total'){
         switch (type){
@@ -280,6 +398,8 @@ export default class Character extends Unit{
     act(mouse, effect, enemy, tick, proj, map){
         this.regen(tick)
 
+
+
         let input = mouse.getInput()
         let mouse_cord = {cord_x: input.canvas_x, cord_y: input.canvas_y}
 
@@ -316,6 +436,7 @@ export default class Character extends Unit{
         }
         else {
             if(input.e){
+                this.stats.set('life', 4033)
                 this.defend()
             }
             else if(input.r_click){
