@@ -34,10 +34,6 @@ export default class Character extends Unit{
 
         this.img_name = 'grim traveler'
 
-        //ms !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-        this.attack_speed = 1200
-        this.attack_range = 60
-
         this.attack_box = undefined
 
         // size on canvas
@@ -62,8 +58,6 @@ export default class Character extends Unit{
         this.max_frame = 9
         this.frame_change_tick = 7 // 7 * 50(game_tick) = 350 ms
 
-        console.log(this.stats)
-
         this.is_cast = false
         this.is_poution = false
         this.is_scroll = false
@@ -75,7 +69,6 @@ export default class Character extends Unit{
     }
 
     createStats(){
-
         this.createCharacterStats()
         this.createAttackStats()
         this.createSpeedStats()
@@ -223,8 +216,8 @@ export default class Character extends Unit{
         this.stats.set('increased_attack_range' , increase_attack_range)
         this.stats.set('attack_range' , Functions.increasedByPercent(attack_range, increase_attack_range))
 
-        this.stats.set('min_attack_damage', min_attack_damage)
-        this.stats.set('max_attack_damage', max_attack_damage)
+        this.stats.set('min_attack_damage', Functions.increasedByPercent(min_attack_damage + (add_attack_damage * 0.5), increased_attack_damage))
+        this.stats.set('max_attack_damage', Functions.increasedByPercent(max_attack_damage + (add_attack_damage * 1.5), increased_attack_damage))
 
         let attack_leech = this.template.attack_life_leech + this.attack_life_leech ? attack_life_leech : 0
         this.stats.set('attack_life_leech', attack_leech)
@@ -295,12 +288,6 @@ export default class Character extends Unit{
                 return this[stat]
         }
 
-    }
-
-    getAttackSpeed(){
-        let base = this.inv.weaponIsEquip() ? this.inv.getWeapon().attack_speed : 1.5
-        let increased = this.getIncreased('attack_speed')
-        return Functions.reducedByPercent(base, increased)
     }
 
     getState(){

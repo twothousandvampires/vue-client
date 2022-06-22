@@ -5,42 +5,89 @@ export default class Inventory{
 
     constructor(items,player) {
         this.player = player
-        this.equip = {
-            0 : 'empty',
-            1 : 'empty',
-            2 : 'empty',
-            3 : 'empty',
-            4 : 'empty',
-            5 : 'empty',
-            6 : 'empty',
-        }
+        this.equip = new Map()
         this.pull = []
         this.belt = []
+        for(let i = 0; i < 20; i++){
+            if(!this.pull[i]){
+                this.pull[i] = 'empty'
+            }
+        }
+        for(let i = 0; i < 10;i++){
+            this.equip.set(this.getEquipSlot(i), undefined)
+        }
         items.forEach(elem =>{
             switch (elem.slot_type){
                 case 'inv':
                     this.pull[elem.slot] = this.createItem(elem)
                     break;
                 case 'equip':
-                    this.equip[elem.slot] = this.createItem(elem)
-                    this.equip[elem.slot].equip(player)
+                    let slot = this.getEquipSlot(elem.slot)
+                    this.equip.set(slot, this.createItem(elem))
+                    this.equip.get(slot).equip(player)
                     break;
             }
         })
-        for(let i = 0; i < 20; i++){
-            if(!this.pull[i]){
-                this.pull[i] = 'empty'
-            }
+
+    }
+
+    getEquipSlot(slot){
+        switch (slot){
+            case 0:
+                return 'head'
+            case 1:
+                return 'weapon'
+            case 2:
+                return 'shield'
+            case 3:
+                return 'body'
+            case 4:
+                return 'gloves'
+            case 5:
+                return 'belt'
+            case 6:
+                return 'boots'
+            case 7:
+                return 'left ring'
+            case 8:
+                return 'right ring'
+            case 9:
+                return 'amulet'
+        }
+    }
+
+    equipToSlot(equip){
+        switch (equip){
+            case 'head':
+                return 0
+            case 'weapon':
+                return 1
+            case 'shield':
+                return 2
+            case 'body':
+                return 3
+            case 'gloves':
+                return 4
+            case 'belt':
+                return 5
+            case 'boots':
+                return 6
+            case 'left ring':
+                return 7
+            case 'right ring':
+                return 8
+            case 'amulet':
+                return 9
         }
     }
 
     weaponIsEquip(){
-        return this.equip[1] !== 'empty'
+        return this.equip.get('weapon')
     }
 
     getWeapon(){
         if(this.weaponIsEquip()){
-            return this.equip[1]
+            return this.equip.get('weapon')
         }
         return false
     }

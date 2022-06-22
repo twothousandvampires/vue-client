@@ -84,7 +84,7 @@ export default {
   </div>
 </template>
 
-<style>
+<style scoped>
   form{
     display: flex;
     flex-direction: column;
@@ -97,9 +97,5 @@ export default {
     border: 2px solid aqua;
     cursor: pointer;
     margin-bottom: 10px;
-  }
-  p{
-    text-align: center;
-    color: red;
   }
 </style>

@@ -10,18 +10,19 @@ export default {
   },
   data() {
     return {
-      clicked : false,
-      over : false,
+      clicked_item : false,
+      over_item : false,
       clicked_context : false
     }
   },
   methods : {
-    clickItem(item, slot, slot_type){
-      if(!this.clicked && item !== 'empty'){
-        this.clicked = item
+    clickItem(item, slot, type){
+      console.log(type)
+      if(!this.clicked_item && item){
+        this.clicked_item = item
         item.clicked = true
       }
-      else if(this.clicked && this.clicked.slot != slot && this.check(slot, slot_type)){
+      else if(this.clicked_item && this.clicked.slot != slot  && this.check(slot, slot_type)){
         this.char.inv.change(this.clicked ,slot ,slot_type,this.char)
         this.clicked = false
       }
@@ -115,86 +116,51 @@ export default {
 <template>
   <div id="inv_wrap">
     <div id="stats">
-      <div id="char_stats">
-        <p style="font-size: 24px">{{char.name}}</p>
-        <p>Increased life : {{char.getIncreased('life')}}</p>
-        <p>Life : {{char.life}} / {{char.max_life}}</p>
-        <p>Energy : {{char.energy}} / {{char.max_energy}}</p>
-        <p>Energy regen : {{char.increased_energy_regen}}</p>
+      <div>
+        <img style="width: 100%" src="/src/assets/img/icons/items/misc/stats_character_top.gif" alt="">
+        <div id="char_stats">
+          <p style="font-size: 24px">Character</p>
+          <p style="font-size: 24px">{{char.stats.get('name')}}</p>
+          <p>Increased life : {{char.stats.get('increased_life')}}</p>
+          <p>Life : {{char.stats.get('life')}} / {{char.stats.get('max_life')}}</p>
+          <p>Energy : {{char.stats.get('energy')}} / {{char.stats.get('max_energy')}}</p>
+          <p>Energy regen : {{char.stats.get('energy_regeneration')}}</p>
+        </div>
       </div>
-      <div id="attack_stats">
+      <div>
         <img style="width: 100%" src="/src/assets/img/icons/items/misc/attack_stats_top.gif" alt="">
-        <p style="font-size: 24px">Attack</p>
-        <p>Attack damage : {{char.getTotalMinAttackDamage()}} - {{char.getTotalMaxAttackDamage()}}</p>
-        <p>Critical chance : {{char.getStat('attack_crit_chance', true)}}%</p>
-        <p>Critical multiplier - {{char.getStat('attack_crit_multy', true)}}%</p>
-        <p>Attack speed : {{char.getAttackSpeed()/1000}} per second</p>
-        <p>Attack range : {{char.getStat('attack_range', true)}}px</p>
-        <p>Life Leech : {{char.getStat('attack_life_leech')}}%</p>
+        <div id="attack_stats">
+          <p style="font-size: 24px">Attack</p>
+          <p>Attack damage : {{char.stats.get('min_attack_damage')}} - {{char.stats.get('max_attack_damage')}}</p>
+          <p>Critical chance : {{char.stats.get('attack_crit_chance')}}%</p>
+          <p>Critical multiplier - {{char.stats.get('attack_crit_multy')}}%</p>
+          <p>Attack speed : {{char.stats.get('attack_speed')}} per second</p>
+          <p>Attack range : {{char.stats.get('attack_range')}}px</p>
+          <p>Life Leech : {{char.stats.get('attack_life_leech')}}%</p>
+        </div>
       </div>
-      <div id="spell_stats">
-        <p>Add spell damage : {{char.getMinSpellDamage()}} - {{char.getMaxSpellDamage()}}</p>
-        <p>Increased spell damage : {{char.getIncreased('spell_damage')}}%</p>
-        <p>Spell Leech : {{char.getStat('spell_life_leech')}}%</p>
-        <p>Increased spell aoe : {{char.getIncreased('spell_aoe')}}px</p>
-        <p>Spell critical chance - {{char.getStat('spell_crit_chance', true)}}%</p>
-        <p>Spell critical multiplier - {{char.getStat('spell_crit_multy', true)}}%</p>
+      <div>
+        <img style="width: 100%" src="/src/assets/img/icons/items/misc/stats_spell_top.gif" alt="">
+        <div id="spell_stats">
+          <p style="font-size: 24px">Magick</p>
+          <p>Add spell damage : {{char.stats.get('add_min_spell_damage')}} - {{char.stats.get('add_max_spell_damage')}}</p>
+          <p>Increased spell damage : {{char.stats.get('increased_spell_damage')}}%</p>
+          <p>Spell Leech : {{char.stats.get('spell_life_leech')}}%</p>
+          <p>Increased spell aoe : {{char.stats.get('increased_spell_aoe')}}px</p>
+          <p>Spell critical chance - {{char.stats.get('spell_crit_chance')}}%</p>
+          <p>Spell critical multiplier - {{char.stats.get('spell_crit_multy')}}%</p>
+        </div>
       </div>
     </div>
     <div id="equip_block">
-        <div id="equip">
-        <!-- head -->
-        <div id="head" @click="clickItem(char.inv.equip['0'],0,'equip')">
-          <p v-if="char.inv.equip['0'] !== 'empty'">{{ char.inv.equip['0'].name }}</p>
-          <img v-if="char.inv.equip['0'] !== 'empty'" :src="char.inv.equip['0'].img_path" alt="">
-
-          <img v-else width="100" height="100" src="/src/assets/img/icons/items/misc/empty_helm.png" alt="">
-        </div>
-
-        <!-- left -->
-        <div id="left_hand" @click="clickItem(char.inv.equip['1'],1,'equip')">
-          <p v-if="char.inv.equip['1'] !== 'empty'">{{ char.inv.equip['1'].name }}</p>
-          <img v-if="char.inv.equip['1'] !== 'empty'" :src="char.inv.equip['1'].img_path" alt="">
-
-          <img v-else width="100" height="100" src="/src/assets/img/icons/items/misc/empty_left.png" alt="">
-        </div>
-
-        <!-- right -->
-        <div id="right_hand" @click="clickItem(char.inv.equip['2'],2,'equip')" >
-          <p v-if="char.inv.equip['2'] !== 'empty'">{{ char.inv.equip['2'].name }}</p>
-          <img v-if="char.inv.equip['2'] !== 'empty'" :src="char.inv.equip['2'].img_path" alt="">
-
-          <img v-else width="100" height="100" src="/src/assets/img/icons/items/misc/empty_right.png" alt="">
-        </div>
-
-        <!-- body -->
-        <div id="body" @click="clickItem(char.inv.equip['3'],3,'equip')" >
-          <p v-if="char.inv.equip['3'] !== 'empty'">{{ char.inv.equip['3'].name }}</p>
-          <img v-if="char.inv.equip['3'] !== 'empty'" :src="char.inv.equip['3'].img_path" alt="">
-
-          <img v-else width="100" height="100" src="/src/assets/img/icons/items/misc/empty_body.png" alt="">
-        </div>
-
-        <div id="first_accessory" @click="clickItem(char.inv.equip['4'],4,'equip')" >
-          <p v-if="char.inv.equip['4'] !== 'empty'">{{ char.inv.equip['4'].name }}</p>
-          <img v-if="char.inv.equip['4'] !== 'empty'" :src="char.inv.equip['4'].img_path" alt="">
-
-          <img v-else width="100" height="100" src="/src/assets/img/icons/items/misc/empty_acess.png" alt="">
-        </div>
-
-        <div id="second_accessory" @click="clickItem(char.inv.equip['5'],5,'equip')"  >
-          <p v-if="char.inv.equip['5'] !== 'empty'">{{ char.inv.equip['5'].name }}</p>
-          <img v-if="char.inv.equip['5'] !== 'empty'" :src="char.inv.equip['5'].img_path" alt="">
-
-          <img v-else width="100" height="100" src="/src/assets/img/icons/items/misc/empty_acess.png" alt="">
-        </div>
-
-        <div id="belt" @click="clickItem(char.inv.equip['6'],6,'equip')" >
-          <p v-if="char.inv.equip['6'] !== 'empty'">{{ char.inv.equip['6'].name }}</p>
-          <img v-if="char.inv.equip['6'] !== 'empty'" :src="char.inv.equip['6'].img_path" alt="">
-
-          <img v-else width="100" height="100" src="/src/assets/img/icons/items/misc/empty_belt.png" alt="">
-        </div>
+      <div id="equip">
+          <div v-for="equip_slot in char.inv.equip.keys()" :id="equip_slot.replace(' ','_')" @click="clickItem(char.inv.equip.get(equip_slot), char.inv.equipToSlot(equip_slot), 'equip')">
+            <div v-if="char.inv.equip.get('head')">
+              <p >{{char.inv.equip.get('head').name}}</p>
+              <img :src="char.inv.equip.get('head').img_path" alt="">
+            </div>
+            <img v-else width="100" height="100" :src="`/src/assets/img/icons/items/misc/empty_${equip_slot.replace(' ', '_')}.png`" alt="">
+          </div>
       </div>
       <div id="belt_block">
 
@@ -208,8 +174,8 @@ export default {
       </div>
       <div id="items">
         <div class="inv_item"  v-for="(item,index) in char.inv.pull" :key="item.id">
-          <div @click="clickItem(item,index,'inv')" :slot="index" class="empty_slot" v-if="item === 'empty'"></div>
-          <div @contextmenu="contextClick(item, $event)" v-on:mouseover="mouseover(item)" v-on:mouseleave="mouseleave" @click="clickItem(item,index,'inv')" :title="char.inv.getDiscription(item.slot)" v-bind:class="{clicked: item.clicked}" class="slot" v-else>
+          <div @click="clickItem(false)" :slot="index" class="empty_slot" v-if="item === 'empty'"></div>
+          <div @contextmenu="contextClick(item, $event)" v-on:mouseover="mouseover(item)" v-on:mouseleave="mouseleave" @click="clickItem(item,index)" :title="char.inv.getDiscription(item.slot)" v-bind:class="{clicked: item.clicked}" class="slot" v-else>
             <img :src="item.img_path" alt="">
           </div>
         </div>
@@ -219,6 +185,9 @@ export default {
 </template>
 <style scoped>
 
+ .empty_slot{
+   height: 100%;
+ }
 
   #utility{
     display: flex;
@@ -236,7 +205,7 @@ export default {
     flex-direction: row;
     flex-wrap: wrap;
   }
-  #belt, #head, #body, #left_hand, #right_hand, #first_accessory, #second_accessory{
+  #belt, #head, #body, #left_ring, #right_ring, #gloves, #boots, #weapon, #shield, #amulet{
     width: 120px;
     height: 120px;
     background-color: blue;
@@ -250,25 +219,25 @@ export default {
     top:2%;
   }
 
-  #left_hand{
+  #weapon{
     position: absolute;
     left: calc(15% - 50px);
     top:22%;
   }
 
-  #right_hand{
+  #shield{
     position: absolute;
     left: calc(85% - 50px);
     top:22%;
   }
 
-  #first_accessory{
+  #gloves{
     position: absolute;
     left: calc(15% - 50px);
     top:58%;
   }
 
-  #second_accessory{
+  #boots{
     position: absolute;
     left: calc(85% - 50px);
     top:58%;
@@ -277,13 +246,28 @@ export default {
   #belt{
     position: absolute;
     left: calc(50% - 50px);
-    top:78%;
+    top:90%;
   }
 
   #body{
     position: absolute;
     left: calc(50% - 50px);
-    top:calc(50% - 50px);
+    top:calc(70% - 50px);
+  }
+  #amulet{
+    position: absolute;
+    left: calc(50% - 50px);
+    top:calc(40% - 50px);
+  }
+  #left_ring, #right_ring{
+    position: absolute;
+    top:90%;
+  }
+  #left_ring{
+    left: calc(15% - 50px);
+  }
+  #right_ring{
+    left: calc(85% - 50px);
   }
 
   #clicked{
@@ -316,45 +300,51 @@ export default {
     background-color: dimgrey;
   }
   #stats{
-    width: 25%;
-    background-color: aqua;
+    overflow-y:auto;
+    background-color: #e1e1e1;
+    width: 30%;
   }
   #equip_block{
-    width: 35%;
-    background-color: aqua;
+    width: 40%;
+    background-color: #e1e1e1;
     display: flex;
     justify-content: center;
   }
   #inv{
-    width: 40%;
-    background-color: red;
+    color:black;
+    background-color: #e1e1e1;
+    width: 30%;
     align-items: flex-start;
     display: flex;
     flex-direction: column;
     justify-content: space-around;
   }
+  #char_stats, #attack_stats, #spell_stats{
+    padding: 6px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-start;
+  }
   #char_stats{
-    padding: 4px;
-    border: 6px solid #40c4c8;
-    border-image: url("/src/assets/img/border/border_big.png") 3 stretch stretch;
+
   }
   #char_stats p{
     font-size: 16px;
     font-weight: bold;
   }
   #attack_stats{
-    padding: 4px;
-    border: 6px solid #40c4c8;
-    border-image: url("/src/assets/img/border/border_big.png") 3 stretch stretch;
+
+  }
+  p{
+    color:#4b4b4b;
   }
   #attack_stats p{
     font-size: 16px;
     font-weight: bold;
   }
   #spell_stats{
-    padding: 4px;
-    border: 6px solid #40c4c8;
-    border-image: url("/src/assets/img/border/border_big.png") 3 stretch stretch;
+
   }
   #spell_stats p{
     font-size: 16px;
