@@ -24,11 +24,18 @@ export default class Inventory{
                 case 'equip':
                     let slot = this.getEquipSlot(elem.slot)
                     this.equip.set(slot, this.createItem(elem))
-                    this.equip.get(slot).equip(player)
                     break;
             }
         })
+    }
 
+    initItems(){
+        for(let item in this.equip){
+            if(this.equip.get(item)){
+                this.equip.get(item).equip(this.player)
+            }
+        }
+        this.player.calcStats()
     }
 
     getEquipSlot(slot){
@@ -82,6 +89,7 @@ export default class Inventory{
     }
 
     weaponIsEquip(){
+        console.log(this.equip.get('weapon'))
         return this.equip.get('weapon')
     }
 
@@ -107,85 +115,122 @@ export default class Inventory{
         }
     }
 
-    change(clicked, slot, slot_type){
-        let which = clicked
-        let for_what = false;
+    change(clicked, slot, type){
 
-        switch (slot_type) {
+        let changed_item = clicked
+
+
+        let exchanged_item = false;
+        let temp
+        switch (type) {
             case 'inv':
-                for_what = this.pull[slot]
+                exchanged_item = this.pull[slot]
                 break;
             case 'equip':
-                for_what = this.equip[slot]
+                exchanged_item = this.equip.get(this.getEquipSlot(slot))
                 break;
         }
 
-        if('empty' === for_what) { for_what = false}
+        if('empty' === exchanged_item) { exchanged_item = false}
+        if(!exchanged_item) {exchanged_item = false}
+
+        let change = {
+            id : changed_item.id,
+            type : changed_item.type
+        }
+        let exchange = {
+            exchange : exchanged_item ? true : false,
+            id : exchanged_item ? exchanged_item.id : slot,
+            type : exchanged_item ? exchanged_item.type : type
+        }
+
+        console.log(change)
+        console.log(exchange)
 
         axios({method: 'post',
             url : '//127.0.0.1:8000/api/item/change/',
             data : {
-                char_id : localStorage.getItem('char_id'),
-                which_id : which.id,
-                which_type : which.type,
-                for_what_id : for_what ? for_what.id : null,
-                for_what_type : for_what ? for_what.type : null,
-                slot : slot,
-                slot_type : slot_type
+                changed_item : JSON.stringify(change),
+                exchanged_item : JSON.stringify(exchange)
             },
             headers : {
                 'Authorization': 'Bearer ' + localStorage.getItem('token'),
             }
         }).then(response =>{
             if(response.data.success){
-                //если просто переместили
-                let one = new Weapon(response.data.data['which'])
+                // если 2 предмета
+                if(exchanged_item){
 
-                if(!for_what){
-                    // если был снят с эквипа
-                    if(which.slot_type === 'equip') {
-                        this.equip[which.slot] = 'empty'
-                        which.unequip(this.player)
+                    let temp_slot_type = changed_item.slot_type
+                    let temp_slot = changed_item.slot
+
+                    if(changed_item.slot_type === 'equip' && exchanged_item.slot_type === 'inv'){
+
+                        changed_item.unequip(this.player)
+                        exchanged_item.equip(this.player)
+
+                        this.equip.set(this.getEquipSlot(changed_item.slot), exchanged_item)
+                        this.pull[exchanged_item.slot] = changed_item
+
+
+                        changed_item.slot_type = exchanged_item.slot_type
+                        changed_item.slot = exchanged_item.slot
+
+                        exchanged_item.slot = temp_slot
+                        exchanged_item.slot_type = temp_slot_type
+                    }
+                    if(changed_item.slot_type === 'inv' && exchanged_item.slot_type === 'equip') {
+
+                        changed_item.equip(this.player)
+                        exchanged_item.unequip(this.player)
+
+                        this.equip.set(this.getEquipSlot(exchanged_item.slot), changed_item)
+                        this.pull[changed_item.slot] = exchanged_item
+
+
+                        changed_item.slot_type = exchanged_item.slot_type
+                        changed_item.slot = exchanged_item.slot
+
+                        exchanged_item.slot = temp_slot
+                        exchanged_item.slot_type = temp_slot_type
+
                     }
                     else {
-                        this.pull[which.slot] = 'empty'
-                    }
-
-                    // если новый слот эквип
-                    if(one.slot_type === 'equip'){
-                        this.equip[one.slot] = one
-                        one.equip(this.player)
-                    }
-                    else {
-                        this.pull[one.slot] = one
+                        this.pull[changed_item.slot] = exchanged_item
+                        this.pull[exchanged_item.slot] = changed_item
+                        changed_item.slot = exchanged_item.slot
+                        exchanged_item.slot = temp_slot
                     }
                 }
-                else {
-                    let two = new Weapon(response.data.data['for_what'])
+                // если 1 предмет
+                else{
+                    if(exchange.type === 'equip'){
+                        changed_item.equip(this.player)
 
-                    if(which.slot_type === 'equip') {
-                        which.unequip(this.player)
-                    }
-                    if(for_what.slot_type === 'equip') {
-                        for_what.unequip(this.player)
-                    }
+                        this.equip.set(this.getEquipSlot(exchange.id), changed_item)
+                        this.pull[changed_item.slot] = 'empty'
 
-                    if(two.slot_type === 'equip'){
-                        this.equip[two.slot] = two
-                        two.equip(this.player)
+                        changed_item.slot = exchange.id
+                        changed_item.slot_type = exchange.type
+                    }
+                    else if(exchange.type === 'inv' && changed_item.slot_type === 'equip'){
+
+                        changed_item.unequip(this.player)
+
+
+                        this.equip.set(this.getEquipSlot(changed_item.slot), undefined)
+                        this.pull[exchange.id] = changed_item
+
+                        changed_item.slot = exchange.id
+                        changed_item.slot_type = exchange.type
                     }
                     else {
-                        this.pull[two.slot] = two
-                    }
-
-                    if(one.slot_type === 'equip'){
-                        this.equip[one.slot] = one
-                        one.equip(this.player)
-                    }
-                    else {
-                        this.pull[one.slot] = one
+                        this.pull[exchange.id] = changed_item
+                        this.pull[changed_item.slot] = 'empty'
+                        changed_item.slot = exchange.id
                     }
                 }
+                this.player.createStats()
             }
         })
     }

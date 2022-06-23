@@ -15,7 +15,7 @@ export default class Character extends Unit{
         this.template = template.character
 
         this.stats = new Map()
-        console.log(template)
+
         this.x = template.character.x
         this.y = template.character.y
         this.id = template.character.id
@@ -28,8 +28,9 @@ export default class Character extends Unit{
 
 
         this.inv = new Inventory(template.items, this)
+        this.inv.initItems()
         this.skill_tree = new SkillTree(JSON.parse(template.skill_tree), this)
-
+        // this.spell_life_leech = 1000100
         this.createStats()
 
         this.img_name = 'grim traveler'
@@ -58,6 +59,9 @@ export default class Character extends Unit{
         this.max_frame = 9
         this.frame_change_tick = 7 // 7 * 50(game_tick) = 350 ms
 
+
+
+
         this.is_cast = false
         this.is_poution = false
         this.is_scroll = false
@@ -69,13 +73,14 @@ export default class Character extends Unit{
     }
 
     createStats(){
+        console.log(this.inv)
         this.createCharacterStats()
         this.createAttackStats()
         this.createSpeedStats()
         this.regenerationStats()
         this.spellStats()
         this.critStats()
-        console.log(this.stats)
+
     }
 
     critStats(){
@@ -129,7 +134,7 @@ export default class Character extends Unit{
         let increased_spell_damage = this.getIncreased('spell_damage')
         this.stats.set('increased_spell_damage', increased_spell_damage)
 
-        let spell_leech = this.template.spell_life_leech + this.spell_life_leech ? spell_life_leech : 0
+        let spell_leech = this.template.spell_life_leech + (this.spell_life_leech || 0)
         this.stats.set('spell_life_leech', spell_leech)
     }
 

@@ -10,7 +10,6 @@ export default class Spawner{
 
 
     createPull(content_count){
-        console.log(content_count)
         content_count.forEach(elem => {
             elem.count *= 10
             while (elem.count){

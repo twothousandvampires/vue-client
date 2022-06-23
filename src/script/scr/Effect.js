@@ -18,7 +18,6 @@ export default class Effect extends GameObject{
             this.frame_timer = 0
             this.frame ++
             if(this.frame === this.max_frame){
-                console.log(this)
                 effects.splice(effects.indexOf(this),1)
             }
         }

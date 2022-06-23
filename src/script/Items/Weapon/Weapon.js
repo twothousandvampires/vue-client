@@ -57,7 +57,6 @@ export default class Weapon{
         this.props.forEach(elem => {
             player[elem[0]] ? player[elem[0]] += +elem[1] : player[elem[0]] = elem[1]
         })
-        player.createStats()()
     }
 
     unequip(player){
@@ -67,6 +66,5 @@ export default class Weapon{
         this.props.forEach(elem => {
             player[elem[0]] -= +elem[1]
         })
-        player.createStats()()
     }
 }
