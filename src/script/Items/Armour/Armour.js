@@ -49,7 +49,6 @@ export default class Armour{
             player[elem[0]] += +elem[1]
         })
         player.armour += this.armour
-        player.calcStats()
     }
 
     unequip(player){
@@ -57,6 +56,5 @@ export default class Armour{
             player[elem[0]] -= +elem[1]
         })
         player.armour -= this.armour
-        player.calcStats()
     }
 }

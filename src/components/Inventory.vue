@@ -92,7 +92,7 @@ export default {
     },
     check(slot, slot_type){
       if(slot_type === 'equip'){
-        if(slot == 0 && this.clicked_item.class == 'head') {return true}
+        if(slot == 0 && this.clicked_item.class == 'helm') {return true}
         if(slot == 1 && this.clicked_item.type == 'weapon') {return true}
         if(slot == 2 && this.clicked_item.type == 'weapon') {return true}
         if(slot == 3 && this.clicked_item.class == 'body') {return true}
@@ -109,6 +109,9 @@ export default {
     createItem(){
       Request.createItem().then(response =>{
         if(response.data.success){
+          console.log(response.data.data)
+          console.log(JSON.parse(response.data.data.item.item_body))
+
           let item = response.data.data.item
           this.char.inv.pull[item.slot] = this.char.inv.createItem(item)
         }

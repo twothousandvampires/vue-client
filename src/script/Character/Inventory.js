@@ -17,15 +17,7 @@ export default class Inventory{
             this.equip.set(this.getEquipSlot(i), undefined)
         }
         items.forEach(elem =>{
-            switch (elem.slot_type){
-                case 'inv':
-                    this.pull[elem.slot] = this.createItem(elem)
-                    break;
-                case 'equip':
-                    let slot = this.getEquipSlot(elem.slot)
-                    this.equip.set(slot, this.createItem(elem))
-                    break;
-            }
+            let item = this.createItem(elem)
         })
     }
 
@@ -105,7 +97,7 @@ export default class Inventory{
     }
 
     createItem(template){
-        switch (template.type){
+        switch (template.item_type){
             case 'weapon':
                 return new Weapon(template)
             case 'armour':
@@ -158,6 +150,7 @@ export default class Inventory{
             }
         }).then(response =>{
             if(response.data.success){
+                console.log(response)
                 // если 2 предмета
                 if(exchanged_item){
 

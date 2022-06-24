@@ -1,30 +1,29 @@
 export default class Weapon{
     constructor(template){
+
+        console.log(template)
+
+        this.item_type = template.item_type
+        this.item_class = template.item_class
+        this.item_name = template.item_name
+
+        this.item_stats = JSON.parse(template.item_body)
+
+        console.log(this.item_stats)
+
         this.increased_weapon_damage = 0
         this.add_damage = 0
-        this.base_props = [];
-        this.local_props = []
-        this.props = []
+
         this.discription = ''
-        for(let prop in template){
-            if(!prop.includes('property')){
-                this[prop] = template[prop]
-            }
-            else if(template[prop]){
-                let p = template[prop].split(';')
-                let type = p[0]
-                let affect = p[1]
-                let value = p[2]
-                if(type === 'local'){
-                    this[affect] += +value
-                    this.local_props.push([affect, value])
-                }
-                else if(type === 'base'){
-                    this.base_props.push([affect, value])
-                }
-                else{
-                    this.props.push([affect,value])
-                }
+
+        for(let prop in this.item_stats.props){
+            let property  = this.item_stats.props[prop]
+            switch (property.type){
+                case 'local':
+                    this[property.name] += parseInt(property.value)
+                    break;
+                case 'global':
+                    break;
             }
         }
         this.min_damage = template.min_damage + this.add_damage * 0.5
@@ -37,17 +36,17 @@ export default class Weapon{
     }
 
     getDiscription(){
-        let result = `${this.min_damage} - ${this.max_damage}\n`
-        this.base_props.forEach(elem => {
-            result += elem[0] + ' - ' + elem[1] + '\n'
-        })
-        this.local_props.forEach(elem => {
-            result += elem[0] + ' - ' + elem[1] + '\n'
-        })
-        this.props.forEach(elem => {
-            result += elem[0] + ' - ' + elem[1] + '\n'
-        })
-        return result
+        // let result = `${this.min_damage} - ${this.max_damage}\n`
+        // this.base_props.forEach(elem => {
+        //     result += elem[0] + ' - ' + elem[1] + '\n'
+        // })
+        // this.local_props.forEach(elem => {
+        //     result += elem[0] + ' - ' + elem[1] + '\n'
+        // })
+        // this.props.forEach(elem => {
+        //     result += elem[0] + ' - ' + elem[1] + '\n'
+        // })
+        // return result
     }
 
     equip(player){
