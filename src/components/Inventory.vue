@@ -16,16 +16,17 @@ export default {
     }
   },
   methods : {
-    clickItem(item, slot, type){
-      console.log(slot)
-      if(!this.clicked_item && item){
+    getEquipName(slot){
+      return this.char.inv.getEquipSlot(slot).replace(' ','_')
+    },
+    clickItem(item){
+      if(!this.clicked_item && item.name !== 'empty'){
         this.clicked_item = item
         item.clicked = true
       }
-      else if(this.clicked_item && this.clicked_item.slot !== slot  && this.check(slot, type)){
-        this.char.inv.change(this.clicked_item, slot, type)
+      else if(this.clicked_item && this.clicked_item.slot !== item.slot  && this.check(item.slot)){
+        this.char.inv.change(this.clicked_item, item.slot)
         this.clicked_item = false
-        console.log(this.clicked_item)
       }
       else {
         this.char.inv.pull[this.clicked_item.slot].clicked = false
@@ -90,21 +91,23 @@ export default {
       document.body.appendChild(context)
       e.preventDefault()
     },
-    check(slot, slot_type){
-      if(slot_type === 'equip'){
-        if(slot == 0 && this.clicked_item.class == 'helm') {return true}
-        if(slot == 1 && this.clicked_item.type == 'weapon') {return true}
-        if(slot == 2 && this.clicked_item.type == 'weapon') {return true}
-        if(slot == 3 && this.clicked_item.class == 'body') {return true}
-        if(slot == 4 && this.clicked_item.type == 'gloves') {return true}
-        if(slot == 5 && this.clicked_item.type == 'belt') {return true}
-        if(slot == 6 && this.clicked_item.class == 'boots') {return true}
-        if(slot == 7 && this.clicked_item.class == 'ring') {return true}
-        if(slot == 8 && this.clicked_item.class == 'ring') {return true}
-        if(slot == 9 && this.clicked_item.class == 'amulet') {return true}
+    check(slot){
+      console.log(slot)
+      console.log(this.clicked_item)
+      if(slot < 10){
+        if(slot === 0 && this.clicked_item.item_class === 'helm') {return true}
+        if(slot === 1 && this.clicked_item.item_type === 'weapon') {console.log("!"); return true}
+        if(slot === 2 && this.clicked_item.item_type === 'weapon') {return true}
+        if(slot === 3 && this.clicked_item.item_class === 'body') {return true}
+        if(slot === 4 && this.clicked_item.item_type === 'gloves') {return true}
+        if(slot === 5 && this.clicked_item.item_type === 'belt') {return true}
+        if(slot === 6 && this.clicked_item.item_class === 'boots') {return true}
+        if(slot === 7 && this.clicked_item.item_class === 'ring') {return true}
+        if(slot === 8 && this.clicked_item.item_class === 'ring') {return true}
+        if(slot === 9 && this.clicked_item.item_class === 'amulet') {return true}
+        else { return false }
       }
-      if(slot_type === 'inv') {return true}
-      return false
+      return true
     },
     createItem(){
       Request.createItem().then(response =>{
@@ -142,6 +145,7 @@ export default {
           <p>Critical chance : {{char.stats.get('attack_crit_chance')}}%</p>
           <p>Critical multiplier - {{char.stats.get('attack_crit_multy')}}%</p>
           <p>Attack speed : {{char.stats.get('attack_speed')}} per second</p>
+          <p>Increased attack speed : {{char.stats.get('increased_attack_speed')}}%</p>
           <p>Attack range : {{char.stats.get('attack_range')}}px</p>
           <p>Life Leech : {{char.stats.get('attack_life_leech')}}%</p>
         </div>
@@ -161,12 +165,12 @@ export default {
     </div>
     <div id="equip_block">
       <div id="equip">
-          <div v-for="equip_slot in char.inv.equip.keys()" :id="equip_slot.replace(' ', '_')" @click="clickItem(char.inv.equip.get(equip_slot), char.inv.equipToSlot(equip_slot), 'equip')">
-            <div v-if="char.inv.equip.get(equip_slot)">
-              <p >{{char.inv.equip.get(equip_slot).name}}</p>
-              <img :src="char.inv.equip.get(equip_slot).img_path" alt="">
+          <div v-for="item in char.inv.pull.slice(0,10)" :id="getEquipName(item.slot)" @click="clickItem(item)">
+            <div v-if="item.name !== 'empty'">
+              <p >{{item.item_name}}</p>
+              <img :src="item.img_path" alt="">
             </div>
-            <img v-else width="100" height="100" :src="`/src/assets/img/icons/items/misc/empty_${equip_slot.replace(' ', '_')}.png`" alt="">
+            <img v-else width="100" height="100" :src="`/src/assets/img/icons/items/misc/empty_${this.getEquipName(item.slot)}.png`" alt="">
           </div>
       </div>
       <div id="belt_block">
@@ -180,9 +184,9 @@ export default {
         </p>
       </div>
       <div id="items">
-        <div class="inv_item"  v-for="(item,index) in char.inv.pull" :key="item.id">
-          <div @click="clickItem(false, index, 'inv')" :slot="index" class="empty_slot" v-if="item === 'empty'"></div>
-          <div @contextmenu="contextClick(item, $event)" v-on:mouseover="mouseover(item)" v-on:mouseleave="mouseleave" @click="clickItem(item, index,'inv')" :title="char.inv.getDiscription(item.slot)" v-bind:class="{clicked: item.clicked}" class="slot" v-else>
+        <div class="inv_item"  v-for="item in char.inv.pull.slice(10)" >
+          <div @click="clickItem(item)" :slot="item.slot" class="empty_slot" v-if="item.name === 'empty'"></div>
+          <div @contextmenu="contextClick(item, $event)" v-on:mouseover="mouseover(item)" v-on:mouseleave="mouseleave" @click="clickItem(item)" :title="item.getDescription()" v-bind:class="{clicked: item.clicked}" class="slot" v-else>
             <img :src="item.img_path" alt="">
           </div>
         </div>

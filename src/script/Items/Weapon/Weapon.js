@@ -1,69 +1,83 @@
 export default class Weapon{
-    constructor(template){
+    constructor(template, body){
 
-        console.log(template)
+        this.id = template.id
 
+        this.char_id = template.char_id
+        this.slot = template.slot
         this.item_type = template.item_type
         this.item_class = template.item_class
         this.item_name = template.item_name
 
-        this.item_stats = JSON.parse(template.item_body)
+        this.attack_speed = body.attack_speed
+        this.attack_range = body.attack_range
+        this.crit_chance = body.crit_chance
+        this.img_path = body.img_path
+        this.min_damage = body.min_damage
+        this.max_damage = body.max_damage
 
-        console.log(this.item_stats)
+        this.base_props = new Map()
+        this.local_props = new Map()
+        this.props = new Map()
 
         this.increased_weapon_damage = 0
         this.add_damage = 0
 
-        this.discription = ''
-
-        for(let prop in this.item_stats.props){
-            let property  = this.item_stats.props[prop]
+        for(let prop in body.props){
+            let property  = body.props[prop]
             switch (property.type){
                 case 'local':
-                    this[property.name] += parseInt(property.value)
+                    this.local_props.set(property.name, property.value)
                     break;
                 case 'global':
+                    this.props.set(property.name, property.value)
+                    break;
+                case 'base':
+                    this.base_props.set(property.name, property.value)
                     break;
             }
         }
-        this.min_damage = template.min_damage + this.add_damage * 0.5
-        this.max_damage = template.max_damage + this.add_damage * 1.5
 
-        this.min_damage = Math.floor(this.min_damage * (1 + this.increased_weapon_damage / 100))
-        this.max_damage = Math.floor(this.max_damage * (1 + this.increased_weapon_damage / 100))
+        this.min_damage += this.local_props.has('add_damage') ? +this.local_props.get('add_damage') * 0.5 : 0
+        this.max_damage += this.local_props.has('add_damage') ? +this.local_props.get('add_damage') * 1.5 : 0
 
-        this.discription = this.getDiscription()
+        this.min_damage = Math.floor(this.min_damage * (1 + (this.local_props.has('increased_weapon_damage') ? this.local_props.get('increased_weapon_damage') : 0) / 100) )
+        this.max_damage = Math.floor(this.max_damage * (1 + (this.local_props.has('increased_weapon_damage') ? this.local_props.get('increased_weapon_damage') : 0) / 100) )
+
     }
 
-    getDiscription(){
-        // let result = `${this.min_damage} - ${this.max_damage}\n`
-        // this.base_props.forEach(elem => {
-        //     result += elem[0] + ' - ' + elem[1] + '\n'
-        // })
-        // this.local_props.forEach(elem => {
-        //     result += elem[0] + ' - ' + elem[1] + '\n'
-        // })
-        // this.props.forEach(elem => {
-        //     result += elem[0] + ' - ' + elem[1] + '\n'
-        // })
-        // return result
+    getDescription(){
+
+        let result = `${this.min_damage} - ${this.max_damage}\n`
+
+        for(let prop of this.base_props.keys()){
+            result += prop + ' - ' +  this.base_props.get(prop) + '\n'
+        }
+        for(let prop of this.local_props.keys()){
+            result += prop + ' - ' +  this.local_props.get(prop) + '\n'
+        }
+        for(let prop of this.props.keys()){
+            result += prop + ' - ' +  this.props.get(prop) + '\n'
+        }
+        return result
+
     }
 
     equip(player){
-        this.base_props.forEach(elem => {
-            player[elem[0]] ? player[elem[0]] += +elem[1] : player[elem[0]] = elem[1]
-        })
-        this.props.forEach(elem => {
-            player[elem[0]] ? player[elem[0]] += +elem[1] : player[elem[0]] = elem[1]
-        })
+        for(let prop of this.base_props.keys()){
+            player[prop] ? player[prop] += +this.base_props.get(prop) : player[prop] = +this.base_props.get(prop)
+        }
+        for(let prop of this.props.keys()){
+            player[prop] ? player[prop] += +this.props.get(prop) : player[prop] = +this.props.get(prop)
+        }
     }
 
     unequip(player){
-        this.base_props.forEach(elem => {
-            player[elem[0]] -= +elem[1]
-        })
-        this.props.forEach(elem => {
-            player[elem[0]] -= +elem[1]
-        })
+        for(let prop of this.base_props.keys()){
+            player[prop] -= +this.base_props.get(prop)
+        }
+        for(let prop of this.props.keys()){
+            player[prop] -= +this.props.get(prop)
+        }
     }
 }

@@ -164,7 +164,7 @@ export default class Character extends Unit{
         let c_speed = this.template.cast_speed
         let increased_cast_speed = this.getIncreased('cast_speed')
 
-        this.stats.set('cast_speed' , Functions.increasedByPercent(c_speed, increased_cast_speed))
+        this.stats.set('cast_speed' , Functions.reducedByPercent(c_speed, increased_cast_speed))
         this.stats.set('increased_cast_speed' , increased_cast_speed)
     }
 
