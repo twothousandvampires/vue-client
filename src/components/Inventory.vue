@@ -133,8 +133,10 @@ export default {
           <p style="font-size: 24px">{{char.stats.get('name')}}</p>
           <p>Increased life : {{char.stats.get('increased_life')}}</p>
           <p>Life : {{char.stats.get('life')}} / {{char.stats.get('max_life')}}</p>
+          <p>Stamina : {{char.stats.get('stamina')}} / {{char.stats.get('max_stamina')}}</p>
+          <p>Stamina regen : {{char.stats.get('stamina_regeneration')}}</p>
           <p>Energy : {{char.stats.get('energy')}} / {{char.stats.get('max_energy')}}</p>
-          <p>Energy regen : {{char.stats.get('energy_regeneration')}}</p>
+          <p>Speed : {{char.stats.get('movement_speed')}}</p>
         </div>
       </div>
       <div>
@@ -144,7 +146,7 @@ export default {
           <p>Attack damage : {{char.stats.get('min_attack_damage')}} - {{char.stats.get('max_attack_damage')}}</p>
           <p>Critical chance : {{char.stats.get('attack_crit_chance')}}%</p>
           <p>Critical multiplier - {{char.stats.get('attack_crit_multy')}}%</p>
-          <p>Attack speed : {{char.stats.get('attack_speed')}} per second</p>
+          <p>Attack speed : {{char.stats.get('attack_speed')}} ms</p>
           <p>Increased attack speed : {{char.stats.get('increased_attack_speed')}}%</p>
           <p>Attack range : {{char.stats.get('attack_range')}}px</p>
           <p>Life Leech : {{char.stats.get('attack_life_leech')}}%</p>
@@ -157,9 +159,23 @@ export default {
           <p>Add spell damage : {{char.stats.get('add_min_spell_damage')}} - {{char.stats.get('add_max_spell_damage')}}</p>
           <p>Increased spell damage : {{char.stats.get('increased_spell_damage')}}%</p>
           <p>Spell Leech : {{char.stats.get('spell_life_leech')}}%</p>
-          <p>Increased spell aoe : {{char.stats.get('increased_spell_aoe')}}px</p>
+          <p>Increased spell AOE : {{char.stats.get('increased_spell_aoe')}}px</p>
           <p>Spell critical chance - {{char.stats.get('spell_crit_chance')}}%</p>
           <p>Spell critical multiplier - {{char.stats.get('spell_crit_multy')}}%</p>
+          <p>Cast speed - {{char.stats.get('cast_speed')}} ms</p>
+        </div>
+      </div>
+      <div>
+        <img style="width: 100%" src="/src/assets/img/icons/items/misc/stats_defend_top.gif" alt="">
+        <div id="defend_stats">
+          <p style="font-size: 24px">Defend</p>
+          <p>Increased armour : {{char.stats.get('increased_armour')}}%</p>
+          <p>Armour : {{char.stats.get('armour')}}</p>
+          <p>Increased evade - {{char.stats.get('increased_evade')}}%</p>
+          <p>Evade : {{char.stats.get('evade')}}</p>
+          <p>Increased resist : {{char.stats.get('increased_resist')}}%</p>
+          <p>Resist : {{char.stats.get('resist')}}</p>
+          <p>Will : {{char.stats.get('will')}}</p>
         </div>
       </div>
     </div>
@@ -330,36 +346,23 @@ export default {
     flex-direction: column;
     justify-content: space-around;
   }
-  #char_stats, #attack_stats, #spell_stats{
+  #char_stats, #attack_stats, #spell_stats, #defend_stats{
     padding: 6px;
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
     align-items: flex-start;
   }
-  #char_stats{
-
-  }
-  #char_stats p{
-    font-size: 16px;
-    font-weight: bold;
-  }
-  #attack_stats{
-
-  }
   p{
-    color:#4b4b4b;
-  }
-  #attack_stats p{
     font-size: 16px;
     font-weight: bold;
+    color:#4b4b4b;
   }
   #spell_stats{
 
   }
   #spell_stats p{
-    font-size: 16px;
-    font-weight: bold;
+
   }
   #inv_wrap{
     left: 0;

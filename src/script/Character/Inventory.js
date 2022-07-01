@@ -15,7 +15,6 @@ export default class Inventory{
         items.forEach(elem =>{
             this.pull[elem.slot] = this.createItem(elem)
         })
-        console.log(this.pull)
     }
 
     initItems(){
@@ -24,7 +23,7 @@ export default class Inventory{
                 this.pull[i].equip(this.player)
             }
         }
-        this.player.calcStats()
+        this.player.createStats()
     }
 
     getEquipSlot(slot){
@@ -97,7 +96,7 @@ export default class Inventory{
             case 'weapon':
                 return new Weapon(template, JSON.parse(template.item_body))
             case 'armour':
-                return new Armour(template)
+                return new Armour(template, JSON.parse(template.item_body))
             case 'used':
                 return new Used(template)
         }

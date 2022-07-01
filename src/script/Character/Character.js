@@ -28,11 +28,9 @@ export default class Character extends Unit{
 
 
         this.inv = new Inventory(template.items, this)
-        this.inv.initItems()
         this.skill_tree = new SkillTree(JSON.parse(template.skill_tree), this)
-        // this.spell_life_leech = 1000100
-        this.createStats()
 
+        this.createStats()
         this.img_name = 'grim traveler'
 
         this.attack_box = undefined
@@ -73,14 +71,44 @@ export default class Character extends Unit{
     }
 
     createStats(){
-        console.log(this.inv)
         this.createCharacterStats()
         this.createAttackStats()
         this.createSpeedStats()
         this.regenerationStats()
         this.spellStats()
         this.critStats()
+        this.defendStats()
+    }
 
+    defendStats(){
+
+        let armour, increased_armour
+
+        increased_armour = this.getIncreased('armour')
+        armour = this.template.armour + (this.armour ? this.armour : 0)
+
+        this.stats.set('armour', Functions.increasedByPercent(armour, increased_armour))
+        this.stats.set('increased_armour', increased_armour)
+
+        let evade, increased_evade
+
+        increased_evade = this.getIncreased('evade')
+        evade = this.template.evade + (this.evade ? this.evade : 0)
+
+        this.stats.set('evade', Functions.increasedByPercent(evade, increased_evade))
+        this.stats.set('increased_evade',  increased_evade)
+
+        let resist, increased_resist
+
+        increased_resist = this.getIncreased('resist')
+        resist = this.template.resist + (this.resist ? this.resist : 0)
+
+        this.stats.set('resist', Functions.increasedByPercent(resist, increased_resist))
+        this.stats.set('increased_resist', increased_resist)
+
+        let will = this.template.will + (this.will ? this.will : 0)
+        will = Functions.increasedByPercent(will, this.getIncreased('will'))
+        this.stats.set('will', will)
     }
 
     critStats(){
@@ -96,7 +124,7 @@ export default class Character extends Unit{
         spell_crit_multy = this.template.spell_crit_multy + (this.spell_crit_multy ? this.spell_crit_multy : 0)
         let increased_spell_crit_multy = this.getIncreased('spell_crit_multy')
 
-        this.stats.set('spell_crit_multy' , spell_crit_multy)
+        this.stats.set('spell_crit_multy' , Functions.increasedByPercent(spell_crit_multy, increased_spell_crit_multy))
         this.stats.set('increased_spell_crit_multy' , increased_spell_crit_multy)
 
         //attack
@@ -118,8 +146,11 @@ export default class Character extends Unit{
         attack_crit_multy = this.template.attack_crit_multy + (this.attack_crit_multy ? this.attack_crit_multy : 0)
         let increased_attack_crit_multy = this.getIncreased('attack_crit_multy')
 
-        this.stats.set('attack_crit_multy' , attack_crit_multy)
-        this.stats.set('increased_attack_crit_multy' , increased_attack_crit_multy)
+        this.stats.set('attack_crit_multy' , Functions.increasedByPercent(attack_crit_multy, increased_attack_crit_multy) )
+        this.stats.set('increased_attack_crit_multy' ,  increased_attack_crit_multy)
+
+
+        console.log(this.increased_attack_crit_multy)
     }
 
     spellStats(){
@@ -136,21 +167,24 @@ export default class Character extends Unit{
 
         let spell_leech = this.template.spell_life_leech + (this.spell_life_leech || 0)
         this.stats.set('spell_life_leech', spell_leech)
+
+
     }
 
     regenerationStats(){
-        let energy_regeneration = this.template.energy_regeneration
-        let increased_energy_regeneration = this.getIncreased('energy_regeneration')
-        this.stats.set('energy_regeneration' , Functions.increasedByPercent(energy_regeneration, increased_energy_regeneration))
-        this.stats.set('increased_energy_regeneration' , increased_energy_regeneration)
+        let stamina_regeneration = this.template.stamina_regeneration
+        let increased_stamina_regeneration = this.getIncreased('stamina_regeneration')
+        this.stats.set('stamina_regeneration' , Functions.increasedByPercent(stamina_regeneration, increased_stamina_regeneration))
+        this.stats.set('increased_stamina_regeneration' , increased_stamina_regeneration)
     }
 
     createSpeedStats(){
         //movement speed
+
         let speed = this.template.movement_speed
         let increased_movement_speed = this.getIncreased('movement_speed')
 
-        this.stats.set('movement_speed' , Functions.increasedByPercent(speed, increased_movement_speed))
+        this.stats.set('movement_speed' , Functions.reducedByPercent(speed, increased_movement_speed))
         this.stats.set('increased_movement_speed' , increased_movement_speed)
 
         //attack speed
@@ -176,15 +210,16 @@ export default class Character extends Unit{
         this.stats.set('life' , Functions.increasedByPercent(this.template.life, increased_life))
         this.stats.set('increased_life' , increased_life)
 
-        let increased_will = this.getIncreased('will')
-        this.stats.set('max_will' , Functions.increasedByPercent(this.template.max_will, increased_will))
-        this.stats.set('will' , Functions.increasedByPercent(this.template.will, increased_will))
-        this.stats.set('increased_will' , increased_will)
-
         let increased_energy = this.getIncreased('energy')
         this.stats.set('max_energy' , Functions.increasedByPercent(this.template.max_energy, increased_energy))
         this.stats.set('energy' , Functions.increasedByPercent(this.template.energy, increased_energy))
         this.stats.set('increased_energy' , increased_energy)
+
+        let increased_stamina = this.getIncreased('stamina')
+        this.stats.set('max_stamina' , Functions.increasedByPercent(this.template.max_stamina, increased_stamina))
+        this.stats.set('stamina' , Functions.increasedByPercent(this.template.stamina, increased_stamina))
+        this.stats.set('increased_stamina' , increased_stamina)
+
     }
 
     createAttackStats(){
@@ -224,56 +259,8 @@ export default class Character extends Unit{
         this.stats.set('min_attack_damage', Functions.increasedByPercent(min_attack_damage + (add_attack_damage * 0.5), increased_attack_damage))
         this.stats.set('max_attack_damage', Functions.increasedByPercent(max_attack_damage + (add_attack_damage * 1.5), increased_attack_damage))
 
-        let attack_leech = this.template.attack_life_leech + this.attack_life_leech ? attack_life_leech : 0
+        let attack_leech = this.template.attack_life_leech + this.attack_life_leech ? this.attack_life_leech : 0
         this.stats.set('attack_life_leech', attack_leech)
-    }
-
-
-    calcStats(){
-        this.max_life = Functions.increasedByPercent(this.template.max_life, this.getIncreased('life'))
-        this.life = Functions.increasedByPercent(this.template.life, this.getIncreased('life'))
-        this.energy = Functions.increasedByPercent(this.template.energy, this.getIncreased('energy'))
-        this.max_energy = Functions.increasedByPercent(this.template.max_energy, this.getIncreased('energy'))
-        this.will = Functions.increasedByPercent(this.template.will, this.getIncreased('will'))
-        this.max_will = Functions.increasedByPercent(this.template.max_will, this.getIncreased('will'))
-    }
-
-    getMinAttackDamage(){
-        if(this.inv.weaponIsEquip()){
-            return this.inv.getWeapon().min_damage + this.getStat('add_attack_damage') * 0.5
-        }
-        else {
-            return 1 + this.getStat('add_attack_damage')  * 0.5
-        }
-    }
-
-    getMaxAttackDamage(){
-        if(this.inv.weaponIsEquip()){
-            return this.inv.getWeapon().max_damage + this.getStat('add_attack_damage') * 1.5
-        }
-        else {
-            return 4 + this.getStat('add_attack_damage')  * 1.5
-        }
-    }
-
-    getMinSpellDamage(){
-        return this.add_spell_damage ? this.add_spell_damage * 0.5 : 0
-    }
-
-    getMaxSpellDamage(){
-        return this.add_spell_damage ? this.add_spell_damage * 1.5 : 0
-    }
-
-    getTotalMinAttackDamage(){
-        return Functions.increasedByPercent(this.getMinAttackDamage(), this.getIncreased('attack_damage'))
-    }
-
-    getTotalMaxAttackDamage(){
-        return Functions.increasedByPercent(this.getMaxAttackDamage(), this.getIncreased('attack_damage'))
-    }r
-
-    getAttackDamage(){
-        return +((Math.random() * (this.getTotalMaxAttackDamage() - this.getTotalMinAttackDamage()) + this.getTotalMinAttackDamage()).toFixed(1))
     }
 
     getIncreased(stat) {
@@ -282,17 +269,6 @@ export default class Character extends Unit{
                     + (this['increased_' + stat] ? this['increased_' + stat] : 0)
                     + (this['reduced_' + stat] ? this['reduced_' + stat] : 0)
         return result
-    }
-    getStat(stat, type = 'total'){
-        switch (type){
-            case 'total':
-                return Functions.increasedByPercent(this[stat], this.getIncreased(stat))
-            case 'incr':
-                return this.getIncreased(stat)
-            case 'flat':
-                return this[stat]
-        }
-
     }
 
     getState(){
