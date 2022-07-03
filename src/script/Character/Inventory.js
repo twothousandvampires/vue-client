@@ -30,7 +30,9 @@ export default class Inventory{
     }
 
     initItems(){
-        for(let item in this.equip){
+        console.log("!!")
+        for(let item of this.equip.keys()){
+            console.log(this.equip.get(item))
             if(this.equip.get(item)){
                 this.equip.get(item).equip(this.player)
             }
@@ -89,7 +91,6 @@ export default class Inventory{
     }
 
     weaponIsEquip(){
-        console.log(this.equip.get('weapon'))
         return this.equip.get('weapon')
     }
 

@@ -172,6 +172,7 @@ export default class Character extends Unit{
         this.stats.set('name',this.template.name)
 
         let increased_life = this.getIncreased('life')
+        console.log(increased_life)
         this.stats.set('max_life' , Functions.increasedByPercent(this.template.max_life, increased_life))
         this.stats.set('life' , Functions.increasedByPercent(this.template.life, increased_life))
         this.stats.set('increased_life' , increased_life)
@@ -279,9 +280,9 @@ export default class Character extends Unit{
     getIncreased(stat) {
         let result = this.template['increased_' + stat]
                     + this.template['reduced_' + stat]
-                    + (this['increased_' + stat] ? this['increased_' + stat] : 0)
-                    + (this['reduced_' + stat] ? this['reduced_' + stat] : 0)
-        return result
+                    + parseInt((this['increased_' + stat] ? this['increased_' + stat] : 0))
+                    + parseInt((this['reduced_' + stat] ? this['reduced_' + stat] : 0))
+        return parseInt(result)
     }
     getStat(stat, type = 'total'){
         switch (type){
