@@ -5,39 +5,26 @@ export default class Inventory{
 
     constructor(items,player) {
         this.player = player
-        this.equip = new Map()
         this.pull = []
-        this.belt = []
-        for(let i = 0; i < 20; i++){
-            if(!this.pull[i]){
-                this.pull[i] = 'empty'
+        for(let i = 0; i < 31; i++){
+            this.pull[i] = {
+                slot : i,
+                name : 'empty'
             }
-        }
-        for(let i = 0; i < 10;i++){
-            this.equip.set(this.getEquipSlot(i), undefined)
         }
         items.forEach(elem =>{
-            switch (elem.slot_type){
-                case 'inv':
-                    this.pull[elem.slot] = this.createItem(elem)
-                    break;
-                case 'equip':
-                    let slot = this.getEquipSlot(elem.slot)
-                    this.equip.set(slot, this.createItem(elem))
-                    break;
-            }
+            this.pull[elem.slot] = this.createItem(elem)
         })
     }
 
     initItems(){
-        console.log("!!")
-        for(let item of this.equip.keys()){
-            console.log(this.equip.get(item))
-            if(this.equip.get(item)){
-                this.equip.get(item).equip(this.player)
+
+        for(let i = 0; i < 10; i ++){
+            if(this.pull[i].name !== 'empty'){
+                this.pull[i].equip(this.player)
             }
         }
-        this.player.calcStats()
+        this.player.createStats()
     }
 
     getEquipSlot(slot){
@@ -91,12 +78,14 @@ export default class Inventory{
     }
 
     weaponIsEquip(){
-        return this.equip.get('weapon')
+
+        return this.pull[1].name !== 'empty'
+
     }
 
     getWeapon(){
         if(this.weaponIsEquip()){
-            return this.equip.get('weapon')
+            return this.pull[1]
         }
         return false
     }
@@ -106,129 +95,99 @@ export default class Inventory{
     }
 
     createItem(template){
-        switch (template.type){
+        switch (template.item_type){
             case 'weapon':
-                return new Weapon(template)
+                return new Weapon(template, JSON.parse(template.item_body))
             case 'armour':
-                return new Armour(template)
+                return new Armour(template, JSON.parse(template.item_body))
             case 'used':
                 return new Used(template)
         }
     }
 
-    change(clicked, slot, type){
+    change(clicked, slot){
 
-        let changed_item = clicked
-
-
-        let exchanged_item = false;
-        let temp
-        switch (type) {
-            case 'inv':
-                exchanged_item = this.pull[slot]
-                break;
-            case 'equip':
-                exchanged_item = this.equip.get(this.getEquipSlot(slot))
-                break;
-        }
-
-        if('empty' === exchanged_item) { exchanged_item = false}
-        if(!exchanged_item) {exchanged_item = false}
-
-        let change = {
-            id : changed_item.id,
-            type : changed_item.type
-        }
-        let exchange = {
-            exchange : exchanged_item ? true : false,
-            id : exchanged_item ? exchanged_item.id : slot,
-            type : exchanged_item ? exchanged_item.type : type
-        }
-
-        console.log(change)
-        console.log(exchange)
+        let exchanged_item = this.pull[slot].name === 'empty' ? false : this.pull[slot]
 
         axios({method: 'post',
             url : '//127.0.0.1:8000/api/item/change/',
             data : {
-                changed_item : JSON.stringify(change),
-                exchanged_item : JSON.stringify(exchange)
+                from : clicked.id,
+                to : exchanged_item ? exchanged_item.id : slot,
+                exchange : exchanged_item
             },
             headers : {
                 'Authorization': 'Bearer ' + localStorage.getItem('token'),
             }
         }).then(response =>{
             if(response.data.success){
+
                 // если 2 предмета
                 if(exchanged_item){
 
-                    let temp_slot_type = changed_item.slot_type
-                    let temp_slot = changed_item.slot
+                    let temp_slot = clicked.slot
 
-                    if(changed_item.slot_type === 'equip' && exchanged_item.slot_type === 'inv'){
+                    if(clicked.slot < 10 && exchanged_item.slot >= 10){
 
-                        changed_item.unequip(this.player)
+                        clicked.unequip(this.player)
                         exchanged_item.equip(this.player)
 
-                        this.equip.set(this.getEquipSlot(changed_item.slot), exchanged_item)
-                        this.pull[exchanged_item.slot] = changed_item
+                        this.pull[exchanged_item.slot] = clicked
+                        this.pull[clicked.slot] = exchanged_item.slot
 
-
-                        changed_item.slot_type = exchanged_item.slot_type
-                        changed_item.slot = exchanged_item.slot
+                        clicked.slot = exchanged_item.slot
 
                         exchanged_item.slot = temp_slot
-                        exchanged_item.slot_type = temp_slot_type
                     }
-                    if(changed_item.slot_type === 'inv' && exchanged_item.slot_type === 'equip') {
+                    if(clicked.slot >= 10 && exchanged_item.slot < 10) {
 
-                        changed_item.equip(this.player)
+                        clicked.equip(this.player)
                         exchanged_item.unequip(this.player)
 
-                        this.equip.set(this.getEquipSlot(exchanged_item.slot), changed_item)
-                        this.pull[changed_item.slot] = exchanged_item
+                        this.pull[exchanged_item.slot] = clicked
+                        this.pull[clicked.slot] = exchanged_item
 
-
-                        changed_item.slot_type = exchanged_item.slot_type
-                        changed_item.slot = exchanged_item.slot
+                        clicked.slot = exchanged_item.slot
 
                         exchanged_item.slot = temp_slot
-                        exchanged_item.slot_type = temp_slot_type
-
                     }
                     else {
-                        this.pull[changed_item.slot] = exchanged_item
-                        this.pull[exchanged_item.slot] = changed_item
-                        changed_item.slot = exchanged_item.slot
+                        this.pull[clicked.slot] = exchanged_item
+                        this.pull[exchanged_item.slot] = clicked
+                        clicked.slot = exchanged_item.slot
                         exchanged_item.slot = temp_slot
                     }
                 }
                 // если 1 предмет
                 else{
-                    if(exchange.type === 'equip'){
-                        changed_item.equip(this.player)
-
-                        this.equip.set(this.getEquipSlot(exchange.id), changed_item)
-                        this.pull[changed_item.slot] = 'empty'
-
-                        changed_item.slot = exchange.id
-                        changed_item.slot_type = exchange.type
+                    if(slot < 10){
+                        clicked.equip(this.player)
+                        this.pull[slot] = clicked
+                        this.pull[clicked.slot] = {
+                            slot : clicked.slot,
+                            name : 'empty'
+                        }
+                        clicked.slot = slot
                     }
-                    else if(exchange.type === 'inv' && changed_item.slot_type === 'equip'){
+                    else if(slot >= 10 && clicked.slot < 10){
 
-                        changed_item.unequip(this.player)
+                        clicked.unequip(this.player)
 
+                        this.pull[clicked.slot] = {
+                            slot : clicked.slot,
+                            name : 'empty'
+                        }
+                        this.pull[slot] = clicked
 
-                        this.equip.set(this.getEquipSlot(changed_item.slot), undefined)
-                        this.pull[exchange.id] = changed_item
-
-                        changed_item.slot = exchange.id
-                        changed_item.slot_type = exchange.type
+                        clicked.slot = slot
                     }
                     else {
-                        this.pull[exchange.id] = changed_item
-                        this.pull[changed_item.slot] = 'empty'
-                        changed_item.slot = exchange.id
+                        this.pull[slot] = clicked
+                        this.pull[clicked.slot] = {
+                            slot : clicked.slot,
+                            name : 'empty'
+                        }
+                        clicked.slot = slot
                     }
                 }
                 this.player.createStats()
