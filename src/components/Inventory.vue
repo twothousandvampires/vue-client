@@ -179,18 +179,26 @@ export default {
         </div>
       </div>
     </div>
-    <div id="equip_block">
-      <div id="equip">
-          <div v-for="item in char.inv.pull.slice(0,10)" :id="getEquipName(item.slot)" @click="clickItem(item)">
-            <div v-if="item.name !== 'empty'">
-              <p >{{item.item_name}}</p>
-              <img :src="item.img_path" alt="">
-            </div>
-            <img v-else width="100" height="100" :src="`/src/assets/img/icons/items/misc/empty_${this.getEquipName(item.slot)}.png`" alt="">
+    <div id="equip">
+        <div class="equip_block">
+          <p>combat</p>
+          <div v-for="item in char.inv.pull.slice(0,3)" class="equip_cell" @click="clickItem(item)">
+            <img src="/src/assets/img/icons/items/misc/empty_weapon.png" alt="">
           </div>
-      </div>
+        </div >
+        <div class="equip_block">
+          <p>wizardry</p>
+          <div v-for="item in char.inv.pull.slice(3,6)" class="equip_cell" @click="clickItem(item)">
+            <img src="/src/assets/img/icons/items/misc/empty_weapon.png" alt="">
+          </div>
+        </div>
+        <div class="equip_block">
+          <p>movement</p>
+          <div v-for="item in char.inv.pull.slice(6,9)" class="equip_cell" @click="clickItem(item)">
+            <img src="/src/assets/img/icons/items/misc/empty_weapon.png" alt="">
+          </div>
+        </div>
       <div id="belt_block">
-
       </div>
     </div>
     <div id="inv">
@@ -331,12 +339,6 @@ export default {
     background-color: #e1e1e1;
     width: 30%;
   }
-  #equip_block{
-    width: 40%;
-    background-color: #e1e1e1;
-    display: flex;
-    justify-content: center;
-  }
   #inv{
     color:black;
     background-color: #e1e1e1;
@@ -377,14 +379,28 @@ export default {
     position: fixed;
   }
   #equip{
-    margin: 10px;
-    width: 100%;
-    height: 70%;
-    background-image: url("./src/assets/img/border/equip_ring.png");
-    background-repeat: no-repeat;
-    background-size: 100%
+    width: 40%;
+    background-color: #e1e1e1;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    height: 100%;
   }
   .clicked{
     border: 2px green solid;
+  }
+  .equip_block{
+    padding: 20px 5px;
+    border: 2px gray solid;
+    align-items: center;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+  }
+  .equip_cell{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
   }
 </style>

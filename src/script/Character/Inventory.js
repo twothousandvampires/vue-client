@@ -6,7 +6,7 @@ export default class Inventory{
     constructor(items,player) {
         this.player = player
         this.pull = []
-        for(let i = 0; i < 31; i++){
+        for(let i = 0; i < 30; i++){
             this.pull[i] = {
                 slot : i,
                 name : 'empty'
