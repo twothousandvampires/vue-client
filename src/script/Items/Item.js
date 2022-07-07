@@ -1,3 +1,5 @@
+import Functions from "../GameFunctions";
+
 export default class Item{
     constructor(template) {
         this.name = template.name
@@ -11,33 +13,60 @@ export default class Item{
         this.image_path = template.img_path
         this.props = []
 
+
+        this.increased_by_row = 0
+        this.increased_by_column = 0
+
+        this.equiped = false
+
+
         for(let i = 1; i <= this.property_count; i++){
+            let total_increase = this.increased_by_row + this.increased_by_column
             this.props.push({
                name : template[i + '_property_name'],
                stat : template[i + '_property_stat'],
-               value : template[i + '_property_value'],
+               value :template[i + '_property_value'],
             })
         }
 
     }
 
     getDescription(){
+        let total = this.increased_by_row + this.increased_by_column;
         let result = ``
+        result += `class - ${this.class} \n`
+        result += `type - ${this.type} \n`
+        result += `----------------------- \n`
+
         this.props.forEach(elem => {
-            result += elem.name + ' - ' + elem.value + (elem.name.indexOf('adds') ? '%' : '') + `\n`
+            let value = total ? Functions.increasedByPercent(elem.value, total) : elem.value
+            result += elem.name + ' - ' + value + (elem.name.indexOf('adds') ? '%' : '') + `\n`
         })
+
+        if(this.increased_by_row){
+            result += `increased on row by 10% \n`
+        }
+        if(this.increased_by_column){
+            result += `increased on column by 10% \n`
+        }
         return result
     }
 
     equip(player){
+        let total = this.increased_by_row + this.increased_by_column
         this.props.forEach(elem => {
-            player[elem.stat] ? player[elem.stat] += +elem.value : player[elem.stat] = +elem.test
+            let value = total ? Functions.increasedByPercent(elem.value, total) : elem.value
+            player[elem.stat] ? player[elem.stat] += value : player[elem.stat] = value
         })
+        this.equiped = true
     }
 
     unequip(player){
+        let total = this.increased_by_row + this.increased_by_column
         this.props.forEach(elem => {
-            player[elem.stat] -= +elem.value
+            let value = total ? Functions.increasedByPercent(elem.value, total) : elem.value
+            player[elem.stat] -= value
         })
+        this.equiped = false
     }
 }

@@ -175,21 +175,21 @@ export default {
       </div>
     </div>
     <div id="equip">
-        <div class="equip_block">
+        <div class="equip_block" v-bind:class="{ is_row_combat: char.inv.isRow('combat')}">
           <p>combat</p>
-          <div v-for="item in char.inv.pull.slice(0,3)" class="equip_cell" @click="clickItem(item)">
+          <div v-for="item in char.inv.pull.slice(0,3)" class="equip_cell" @click="clickItem(item)" :title="item.getDescription()">
             <img :src="getInventoryCellImage(item)" alt="">
           </div>
         </div >
         <div class="equip_block">
           <p>wizardry</p>
-          <div v-for="item in char.inv.pull.slice(3,6)" class="equip_cell" @click="clickItem(item)">
+          <div v-for="item in char.inv.pull.slice(3,6)" class="equip_cell" @click="clickItem(item)" :title="item.getDescription()" v-bind:class="{ is_row_sorcery: char.inv.isRow('sorcery')}">
             <img :src="getInventoryCellImage(item)" alt="">
           </div>
         </div>
         <div class="equip_block">
           <p>movement</p>
-          <div v-for="item in char.inv.pull.slice(6,9)" class="equip_cell" @click="clickItem(item)">
+          <div v-for="item in char.inv.pull.slice(6,9)" class="equip_cell" @click="clickItem(item)" :title="item.getDescription()" v-bind:class="{ is_row_movement: char.inv.isRow('movement')}">
             <img :src="getInventoryCellImage(item)" alt="">
           </div>
         </div>
@@ -385,7 +385,7 @@ export default {
   }
   .equip_block{
     padding: 20px 5px;
-    border: 2px gray solid;
+    border:  2px gray solid;
     align-items: center;
     display: flex;
     flex-direction: row;
@@ -397,4 +397,17 @@ export default {
     align-items: center;
     justify-content: center;
   }
+  .is_row_combat{
+    border: 17px;
+    border-image: url('/src/assets/img/border/border_big.png') 75 stretch stretch;
+  }
+ .is_row_sorcery{
+   border: 2px blue solid;
+ }
+ .is_row_movement{
+   border: 2px green solid;
+ }
+ .is_column{
+   border-radius: 10px;
+ }
 </style>

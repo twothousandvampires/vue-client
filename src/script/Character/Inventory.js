@@ -3,7 +3,6 @@ import Item from "../Items/Item";
 export default class Inventory{
 
     constructor(items,player) {
-        console.log(items)
         this.player = player
         this.pull = []
         for(let i = 0; i < 30; i++){
@@ -11,8 +10,88 @@ export default class Inventory{
         }
         items.forEach(elem =>{
             this.pull[elem.slot] = this.createItem(elem)
+            if(elem.slot < 9){
+                this.equipItem(this.pull[elem.slot])
+            }
         })
 
+    }
+
+    getRowItems(type){
+        switch (type){
+            case 'combat':
+                return this.pull.slice(0,3)
+            case 'sorcery':
+                return this.pull.slice(3,6)
+            case 'movement':
+                return this.pull.slice(6,9)
+        }
+    }
+
+    getColumnItems(item){
+        if([0,3,6].includes(item.slot)) {
+            return this.pull.filter(elem => [0,3,6].includes(elem.slot))
+        }
+        if([1,4,7].includes(item.slot)) {
+            return this.pull.filter(elem => [1,4,7].includes(elem.slot))
+        }
+        if([2,5,8].includes(item.slot)) {
+            return this.pull.filter(elem => [2,5,8].includes(elem.slot))
+        }
+    }
+
+    equipItem(item){
+        let row = this.isRow(item.type)
+        let column = this.isColumn(item)
+        if(row){
+            this.getRowItems(item.type).forEach(elem => {
+                if(elem !== item){
+                    elem.unequip(this.player)
+                    elem.increased_by_row += 10
+                    elem.equip(this.player)
+                }
+                else {
+                    elem.increased_by_row += 10
+                }
+            })
+        }
+        if(column){
+            this.getColumnItems(item).forEach(elem => {
+                if(elem !== item){
+                    elem.unequip(this.player)
+                    elem.increased_by_column += 10
+                    elem.equip(this.player)
+                }
+                else {
+                    elem.increased_by_column += 10
+                }
+            })
+        }
+        item.equip(this.player)
+    }
+
+    unequipItem(item){
+        if(item.increased_by_row) {
+            this.getRowItems(item.type).forEach(elem => {
+                if(elem.name !== 'empty'){
+                    elem.unequip(this.player)
+                    elem.increased_by_row = 0
+                    elem.equip(this.player)
+                }
+            })
+        }
+        if(item.increased_by_column) {
+            this.getColumnItems(item).forEach(elem => {
+                if(elem.name !== 'empty'){
+                    elem.unequip(this.player)
+                    elem.increased_by_column = 0
+                    elem.equip(this.player)
+                }
+            })
+        }
+        item.unequip(this.player)
+        item.increased_by_row = 0
+        item.increased_by_column = 0
     }
 
     getCell(i){
@@ -27,30 +106,40 @@ export default class Inventory{
         }
     }
 
-    initItems(){
-        for(let i = 0; i < 9; i ++){
-            if(this.pull[i].name !== 'empty'){
-                this.pull[i].equip(this.player)
-            }
+    isRow(type){
+        switch (type){
+            case 'combat':
+                return this.pull.slice(0,3).every(elem => {
+                    return elem?.name !== 'empty' && elem?.type === type
+                })
+            case 'sorcery':
+                return this.pull.slice(3,6).every(elem => {
+                    return elem?.name !== 'empty' && elem?.type === type
+                })
+            case 'movement':
+                return this.pull.slice(6,9).every(elem => {
+                    return elem?.name !== 'empty' && elem?.type === type
+                })
         }
-        this.player.createStats()
     }
 
-    weaponIsEquip(){
-        return this.pull[1].name !== 'empty'
-    }
-
-    getWeapon(){
-        if(this.weaponIsEquip()){
-            return this.pull[1]
+    isColumn(item){
+        if([0,3,6].includes(item.slot)) {
+            return this.pull.filter(elem => [0,3,6].includes(elem.slot)).every(elem=>{
+                return elem.name !== 'empty' && elem.class === item.class
+            })
         }
-        return false
+        if([1,4,7].includes(item.slot)) {
+            return this.pull.filter(elem => [1,4,7].includes(elem.slot)).every(elem=>{
+                return elem.name !== 'empty' && elem.class === item.class
+            })
+        }
+        if([2,5,8].includes(item.slot)) {
+            return this.pull.filter(elem => [2,5,8].includes(elem.slot)).every(elem=>{
+                return elem.name !== 'empty' && elem.class === item.class
+            })
+        }
     }
-
-    getDiscription(slot){
-       return  this.pull[slot].discription
-    }
-
     createItem(template){
         return new Item(template)
     }
@@ -79,26 +168,25 @@ export default class Inventory{
 
                     if(clicked.slot < 9 && exchanged_item.slot >= 9){
 
-                        clicked.unequip(this.player)
-                        exchanged_item.equip(this.player)
-
                         this.pull[exchanged_item.slot] = clicked
                         this.pull[clicked.slot] = exchanged_item.slot
 
+                        this.unequipItem(clicked)
                         clicked.slot = exchanged_item.slot
+
                         exchanged_item.slot = temp_slot
+                        this.equipItem(exchanged_item)
                     }
                     if(clicked.slot >= 9 && exchanged_item.slot < 9) {
-
-                        clicked.equip(this.player)
-                        exchanged_item.unequip(this.player)
 
                         this.pull[exchanged_item.slot] = clicked
                         this.pull[clicked.slot] = exchanged_item
 
                         clicked.slot = exchanged_item.slot
-
+                        this.equipItem(clicked)
+                        this.unequipItem(exchanged_item)
                         exchanged_item.slot = temp_slot
+
                     }
                     else {
                         this.pull[clicked.slot] = exchanged_item
@@ -110,23 +198,20 @@ export default class Inventory{
                 // если 1 предмет
                 else{
                     if(slot < 9){
-                        clicked.equip(this.player)
                         this.pull[slot] = clicked
                         this.pull[clicked.slot] = this.getCell(clicked.slot)
                         clicked.slot = slot
+                        this.equipItem(clicked)
                     }
                     else if(slot >= 9 && clicked.slot < 9){
-
-                        clicked.unequip(this.player)
-
                         this.pull[clicked.slot] = this.getCell(clicked.slot)
                         this.pull[slot] = clicked
-
+                        this.unequipItem(clicked)
                         clicked.slot = slot
                     }
                     else {
                         this.pull[slot] = clicked
-                        this.pull[clicked.slot] = this.getCell(clicke.slot)
+                        this.pull[clicked.slot] = this.getCell(clicked.slot)
                         clicked.slot = slot
                     }
                 }
