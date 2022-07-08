@@ -98,17 +98,17 @@ export default {
     getInventoryCellImage(item){
       let str = '/src/assets/img/icons/items/misc/'
       if(item.name === 'empty'){
-        if(item.class === 'inventory'){
-          return str + 'empty_shield.png'
-        }
-        else if(item.class === 'weapon'){
+        if([0,3,6].includes(item.slot)){
           return str + 'empty_weapon.png'
         }
-        else if(item.class === 'armour'){
+        if([1,4,7].includes(item.slot)){
           return str + 'empty_armour.png'
         }
-        else if(item.class === 'accessory'){
+        if([2,5,8].includes(item.slot)){
           return str + 'empty_accessory.png'
+        }
+        else {
+          return str + 'empty_shield.png'
         }
       }
       else{
@@ -175,21 +175,21 @@ export default {
       </div>
     </div>
     <div id="equip">
-        <div class="equip_block" v-bind:class="{ is_row_combat: char.inv.isRow('combat')}">
+        <div class="equip_block" v-bind:class="{ is_row_combat: char.inv.is_combat_row}">
           <p>combat</p>
-          <div v-for="item in char.inv.pull.slice(0,3)" class="equip_cell" @click="clickItem(item)" :title="item.getDescription()">
+          <div v-for="item in char.inv.pull.slice(0,3)" class="equip_cell" @click="clickItem(item)" :title="item.getDescription()" v-bind:class="{ clicked: item?.clicked}">
             <img :src="getInventoryCellImage(item)" alt="">
           </div>
         </div >
-        <div class="equip_block">
+        <div class="equip_block" v-bind:class="{ is_sorcery_row: char.inv.is_sorcery_row}">
           <p>wizardry</p>
-          <div v-for="item in char.inv.pull.slice(3,6)" class="equip_cell" @click="clickItem(item)" :title="item.getDescription()" v-bind:class="{ is_row_sorcery: char.inv.isRow('sorcery')}">
+          <div v-for="item in char.inv.pull.slice(3,6)" class="equip_cell" @click="clickItem(item)" :title="item.getDescription()" v-bind:class="{ clicked: item?.clicked}">
             <img :src="getInventoryCellImage(item)" alt="">
           </div>
         </div>
-        <div class="equip_block">
+        <div class="equip_block" v-bind:class="{ is_row_combat: char.inv.is_movement_row}">
           <p>movement</p>
-          <div v-for="item in char.inv.pull.slice(6,9)" class="equip_cell" @click="clickItem(item)" :title="item.getDescription()" v-bind:class="{ is_row_movement: char.inv.isRow('movement')}">
+          <div v-for="item in char.inv.pull.slice(6,9)" class="equip_cell" @click="clickItem(item)" :title="item.getDescription()" v-bind:class="{ clicked: item?.clicked}">
             <img :src="getInventoryCellImage(item)" alt="">
           </div>
         </div>
@@ -381,25 +381,29 @@ export default {
     height: 100%;
   }
   .clicked{
-    border: 2px green solid;
+    border: 10px solid;
+    border-image: url('/src/assets/img/border/equip_clicked_border.png') 16 stretch stretch;
   }
   .equip_block{
-    padding: 20px 5px;
-    border:  2px gray solid;
+    border: 50px solid;
+    border-image: url('/src/assets/img/border/equip_block_border.png') 39 stretch stretch;
+    padding: 10px 5px;
     align-items: center;
     display: flex;
     flex-direction: row;
     justify-content: space-around;
   }
   .equip_cell{
+    min-height: 120px;
+    min-width: 120px;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
   }
   .is_row_combat{
-    border: 17px;
-    border-image: url('/src/assets/img/border/border_big.png') 75 stretch stretch;
+    border: 50px solid;
+    border-image: url('/src/assets/img/border/combat_equip_border.png') 39 stretch stretch;
   }
  .is_row_sorcery{
    border: 2px blue solid;
