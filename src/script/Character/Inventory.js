@@ -112,7 +112,7 @@ export default class Inventory{
             return [2,5,8].includes(elem.slot) && elem.name !== 'empty'
         })
         let item_class = undefined
-        if(weapon_row.length !== 0){
+        if(weapon_row.length === 3){
             item_class = weapon_row[0].class
         }
         if(weapon_row.every(elem => {  return elem.class === item_class })){
@@ -131,7 +131,7 @@ export default class Inventory{
         }
 
         item_class = undefined
-        if(armour_row.length !== 0){
+        if(armour_row.length === 3){
             item_class = armour_row[0].class
         }
 
@@ -153,7 +153,7 @@ export default class Inventory{
         }
 
         item_class = undefined
-        if(accessory_row.length !== 0){
+        if(accessory_row.length === 3){
             item_class = accessory_row[0].class
         }
 

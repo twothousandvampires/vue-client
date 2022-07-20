@@ -139,8 +139,8 @@ export default {
         <div id="attack_stats">
           <p style="font-size: 24px">Attack</p>
           <p>Attack damage : {{char.stats.get('min_attack_damage')}} - {{char.stats.get('max_attack_damage')}}</p>
-          <p>Critical chance : {{char.stats.get('attack_crit_chance')}}%</p>
-          <p>Critical multiplier - {{char.stats.get('attack_crit_multy')}}%</p>
+          <p>Critical chance : {{char.stats.get('attack_critical_chance')}}%</p>
+          <p>Critical multiplier - {{char.stats.get('attack_critical_multy')}}%</p>
           <p>Attack speed : {{char.stats.get('attack_speed')}} ms</p>
           <p>Increased attack speed : {{char.stats.get('increased_attack_speed')}}%</p>
           <p>Attack range : {{char.stats.get('attack_range')}}px</p>
