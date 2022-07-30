@@ -1,108 +1,138 @@
-import Weapon from "../Items/Weapon/Weapon";
-import Armour from "../Items/Armour/Armour";
-import Used from "../Items/Used/Used";
+import Item from "../Items/Item";
 export default class Inventory{
 
     constructor(items,player) {
         this.player = player
         this.pull = []
         for(let i = 0; i < 30; i++){
-            this.pull[i] = {
-                slot : i,
-                name : 'empty'
-            }
+            this.pull[i] = this.getCell(i)
         }
         items.forEach(elem =>{
             this.pull[elem.slot] = this.createItem(elem)
+            if(elem.slot < 9){
+                this.equipItem(this.pull[elem.slot])
+            }
         })
+
     }
 
-    initItems(){
+    getRowItems(type){
+        switch (type){
+            case 'combat':
+                return this.pull.slice(0,3)
+            case 'sorcery':
+                return this.pull.slice(3,6)
+            case 'movement':
+                return this.pull.slice(6,9)
+        }
+    }
 
-        for(let i = 0; i < 10; i ++){
-            if(this.pull[i].name !== 'empty'){
-                this.pull[i].equip(this.player)
+    getColumnItems(item){
+        if([0,3,6].includes(item.slot)) {
+            return this.pull.filter(elem => [0,3,6].includes(elem.slot))
+        }
+        if([1,4,7].includes(item.slot)) {
+            return this.pull.filter(elem => [1,4,7].includes(elem.slot))
+        }
+        if([2,5,8].includes(item.slot)) {
+            return this.pull.filter(elem => [2,5,8].includes(elem.slot))
+        }
+    }
+
+    equipItem(item){
+        item.equip(this.player)
+        let row = this.isRow(item.type)
+        let column = this.isColumn(item)
+        if(row){
+            this.getRowItems(item.type).forEach(elem => {
+                elem.unequip(this.player)
+                elem.increased_by_row += 10
+                elem.equip(this.player)
+            })
+        }
+        if(column){
+            this.getColumnItems(item).forEach(elem => {
+                elem.unequip(this.player)
+                elem.increased_by_column += 10
+                elem.equip(this.player)
+            })
+        }
+
+    }
+
+    unequipItem(item){
+        if(item.increased_by_row) {
+            this.getRowItems(item.type).forEach(elem => {
+                if(elem.name !== 'empty'){
+                    elem.unequip(this.player)
+                    elem.increased_by_row = 0
+                    elem.equip(this.player)
+                }
+            })
+        }
+        if(item.increased_by_column) {
+            this.getColumnItems(item).forEach(elem => {
+                if(elem.name !== 'empty'){
+                    elem.unequip(this.player)
+                    elem.increased_by_column = 0
+                    elem.equip(this.player)
+                }
+            })
+        }
+        item.unequip(this.player)
+        item.increased_by_row = 0
+        item.increased_by_column = 0
+    }
+
+    getCell(i){
+        return {
+            slot : i,
+            name : 'empty',
+            type : i < 3 ? 'combat' : i < 6 ? 'sorcery' : i < 9 ? 'movement' : 'inventory',
+            class : [0,3,6].includes(i) ? 'weapon' : [1, 4, 7].includes(i) ? 'armour' : [2, 5, 8].includes(i) ? 'accessory' : 'inventory',
+            getDescription : () =>{
+                return 'empty slot'
             }
         }
-        this.player.createStats()
     }
 
-    getEquipSlot(slot){
-        switch (slot){
-            case 0:
-                return 'head'
-            case 1:
-                return 'weapon'
-            case 2:
-                return 'shield'
-            case 3:
-                return 'body'
-            case 4:
-                return 'gloves'
-            case 5:
-                return 'belt'
-            case 6:
-                return 'boots'
-            case 7:
-                return 'left ring'
-            case 8:
-                return 'right ring'
-            case 9:
-                return 'amulet'
+    isRow(type){
+        switch (type){
+            case 'combat':
+                return this.pull.slice(0,3).every(elem => {
+                    return elem?.name !== 'empty' && elem?.type === type
+                })
+            case 'sorcery':
+                return this.pull.slice(3,6).every(elem => {
+                    return elem?.name !== 'empty' && elem?.type === type
+                })
+            case 'movement':
+                return this.pull.slice(6,9).every(elem => {
+                    return elem?.name !== 'empty' && elem?.type === type
+                })
         }
     }
 
-    equipToSlot(equip){
-        switch (equip){
-            case 'head':
-                return 0
-            case 'weapon':
-                return 1
-            case 'shield':
-                return 2
-            case 'body':
-                return 3
-            case 'gloves':
-                return 4
-            case 'belt':
-                return 5
-            case 'boots':
-                return 6
-            case 'left ring':
-                return 7
-            case 'right ring':
-                return 8
-            case 'amulet':
-                return 9
+    isColumn(item){
+        if([0,3,6].includes(item.slot)) {
+            return this.pull.filter(elem => [0,3,6].includes(elem.slot)).every(elem=>{
+                return elem.name !== 'empty' && elem.class === item.class
+            })
         }
-    }
-
-    weaponIsEquip(){
-
-        return this.pull[1].name !== 'empty'
-
-    }
-
-    getWeapon(){
-        if(this.weaponIsEquip()){
-            return this.pull[1]
+        if([1,4,7].includes(item.slot)) {
+            return this.pull.filter(elem => [1,4,7].includes(elem.slot)).every(elem=>{
+                return elem.name !== 'empty' && elem.class === item.class
+            })
         }
-        return false
-    }
-
-    getDiscription(slot){
-       return  this.pull[slot].discription
+        if([2,5,8].includes(item.slot)) {
+            return this.pull.filter(elem => [2,5,8].includes(elem.slot)).every(elem=>{
+                return elem.name !== 'empty' && elem.class === item.class
+            })
+        }
     }
 
     createItem(template){
-        switch (template.item_type){
-            case 'weapon':
-                return new Weapon(template, JSON.parse(template.item_body))
-            case 'armour':
-                return new Armour(template, JSON.parse(template.item_body))
-            case 'used':
-                return new Used(template)
-        }
+        return new Item(template)
     }
 
     change(clicked, slot){
@@ -127,29 +157,27 @@ export default class Inventory{
 
                     let temp_slot = clicked.slot
 
-                    if(clicked.slot < 10 && exchanged_item.slot >= 10){
-
-                        clicked.unequip(this.player)
-                        exchanged_item.equip(this.player)
+                    if(clicked.slot < 9 && exchanged_item.slot >= 9){
 
                         this.pull[exchanged_item.slot] = clicked
                         this.pull[clicked.slot] = exchanged_item.slot
 
+                        this.unequipItem(clicked)
                         clicked.slot = exchanged_item.slot
 
                         exchanged_item.slot = temp_slot
+                        this.equipItem(exchanged_item)
                     }
-                    if(clicked.slot >= 10 && exchanged_item.slot < 10) {
-
-                        clicked.equip(this.player)
-                        exchanged_item.unequip(this.player)
+                    if(clicked.slot >= 9 && exchanged_item.slot < 9) {
 
                         this.pull[exchanged_item.slot] = clicked
                         this.pull[clicked.slot] = exchanged_item
 
                         clicked.slot = exchanged_item.slot
-
+                        this.equipItem(clicked)
+                        this.unequipItem(exchanged_item)
                         exchanged_item.slot = temp_slot
+
                     }
                     else {
                         this.pull[clicked.slot] = exchanged_item
@@ -160,33 +188,21 @@ export default class Inventory{
                 }
                 // если 1 предмет
                 else{
-                    if(slot < 10){
-                        clicked.equip(this.player)
+                    if(slot < 9){
                         this.pull[slot] = clicked
-                        this.pull[clicked.slot] = {
-                            slot : clicked.slot,
-                            name : 'empty'
-                        }
+                        this.pull[clicked.slot] = this.getCell(clicked.slot)
                         clicked.slot = slot
+                        this.equipItem(clicked)
                     }
-                    else if(slot >= 10 && clicked.slot < 10){
-
-                        clicked.unequip(this.player)
-
-                        this.pull[clicked.slot] = {
-                            slot : clicked.slot,
-                            name : 'empty'
-                        }
+                    else if(slot >= 9 && clicked.slot < 9){
+                        this.pull[clicked.slot] = this.getCell(clicked.slot)
                         this.pull[slot] = clicked
-
+                        this.unequipItem(clicked)
                         clicked.slot = slot
                     }
                     else {
                         this.pull[slot] = clicked
-                        this.pull[clicked.slot] = {
-                            slot : clicked.slot,
-                            name : 'empty'
-                        }
+                        this.pull[clicked.slot] = this.getCell(clicked.slot)
                         clicked.slot = slot
                     }
                 }

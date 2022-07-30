@@ -85,7 +85,7 @@ export default class Character extends Unit{
         let armour, increased_armour
 
         increased_armour = this.getIncreased('armour')
-        armour = this.template.armour + (this.armour ? this.armour : 0)
+        armour = this.template.armour + (this.additional_armour ? this.additional_armour : 0)
 
         this.stats.set('armour', Functions.increasedByPercent(armour, increased_armour))
         this.stats.set('increased_armour', increased_armour)
@@ -129,13 +129,9 @@ export default class Character extends Unit{
 
         //attack
 
-        let weapon = this.inv.getWeapon()
-        if(weapon){
-            attack_crit_chance = weapon.crit_chance + (this.attack_crit_chance ? this.attack_crit_chance : 0)
-        }
-        else{
-            attack_crit_chance = this.template.attack_crit_chance + (this.attack_crit_chance ? this.attack_crit_chance : 0)
-        }
+
+        attack_crit_chance = this.template.attack_crit_chance + (this.attack_crit_chance ? this.attack_crit_chance : 0)
+
 
         let increased_attack_crit_chance = this.getIncreased('attack_crit_chance')
 
@@ -155,9 +151,9 @@ export default class Character extends Unit{
 
     spellStats(){
 
-        let add_spell_damage = this.template.add_spell_damage + this.add_spell_damage ? this.add_spell_damage : 0
-        this.stats.set('add_min_spell_damage', add_spell_damage * 0.5)
-        this.stats.set('add_max_spell_damage', add_spell_damage * 1.5)
+        let additional_spell_damage = this.template.additional_spell_damage + this.additional_spell_damage ? this.additional_spell_damage : 0
+        this.stats.set('additional_min_spell_damage', additional_spell_damage * 0.5)
+        this.stats.set('additional_max_spell_damage', additional_spell_damage * 1.5)
 
         let increased_spell_aoe = this.getIncreased('spell_aoe')
         this.stats.set('increased_spell_aoe', increased_spell_aoe)
@@ -224,41 +220,19 @@ export default class Character extends Unit{
     }
 
     createAttackStats(){
-        // set additional attack damage
-
-        let add_attack_damage = this.template.add_attack_damage + this.add_attack_damage ? this.add_attack_damage : 0
-        this.stats.set('add_min_attack_damage', add_attack_damage * 0.5)
-        this.stats.set('add_max_attack_damage', add_attack_damage * 1.5)
-
-        // set more/less attack damage
-
-        this.stats.set('less_attack_damage', this.less_attack_damage ? this.less_attack_damage : 0)
-        this.stats.set('more_attack_damage', this.less_attack_damage ? this.less_attack_damage : 0)
-
+        let additional_attack_damage = this.template.additional_attack_damage + (this.additional_attack_damage ? this.additional_attack_damage : 0)
         let increased_attack_damage = this.getIncreased('attack_damage')
 
         this.stats.set('increased_attack_damage', increased_attack_damage)
 
-        let min_attack_damage, max_attack_damage, attack_range
-        let weapon = this.inv.getWeapon()
-        if(weapon){
-            min_attack_damage = weapon.min_damage
-            max_attack_damage = weapon.max_damage
-            attack_range = weapon.attack_range
-        }
-        else{
-            min_attack_damage = this.template.min_attack_damage
-            max_attack_damage = this.template.max_attack_damage
-            attack_range = this.template.attack_range
-        }
+        let attack_range = this.template.attack_range + this.attack_range ? this.attack_damage : 0
+        let increased_attack_range = this.getIncreased('attack_range')
 
-        let increase_attack_range = this.getIncreased('attack_range')
+        this.stats.set('increased_attack_range' , increased_attack_range)
+        this.stats.set('attack_range' , Functions.increasedByPercent(attack_range, increased_attack_range))
 
-        this.stats.set('increased_attack_range' , increase_attack_range)
-        this.stats.set('attack_range' , Functions.increasedByPercent(attack_range, increase_attack_range))
-
-        this.stats.set('min_attack_damage', Functions.increasedByPercent(min_attack_damage + (add_attack_damage * 0.5), increased_attack_damage))
-        this.stats.set('max_attack_damage', Functions.increasedByPercent(max_attack_damage + (add_attack_damage * 1.5), increased_attack_damage))
+        this.stats.set('min_attack_damage', Functions.increasedByPercent(additional_attack_damage * 0.5, increased_attack_damage))
+        this.stats.set('max_attack_damage', Functions.increasedByPercent(additional_attack_damage * 1.5, increased_attack_damage))
 
         let attack_leech = this.template.attack_life_leech + this.attack_life_leech ? this.attack_life_leech : 0
         this.stats.set('attack_life_leech', attack_leech)

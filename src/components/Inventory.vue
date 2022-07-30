@@ -2,6 +2,7 @@
 
 import Request from "../script/Request.js";
 import Used from "../script/Items/Used/Used";
+import Item from "../script/Items/Item";
 
 export default {
   name: "Inventory.vue",
@@ -16,15 +17,12 @@ export default {
     }
   },
   methods : {
-    getEquipName(slot){
-      return this.char.inv.getEquipSlot(slot).replace(' ','_')
-    },
     clickItem(item){
       if(!this.clicked_item && item.name !== 'empty'){
         this.clicked_item = item
         item.clicked = true
       }
-      else if(this.clicked_item && this.clicked_item.slot !== item.slot  && this.check(item.slot)){
+      else if(this.clicked_item && this.clicked_item.slot !== item.slot){
         this.char.inv.change(this.clicked_item, item.slot)
         this.clicked_item = false
       }
@@ -85,41 +83,38 @@ export default {
           })
         })
       }
-
-
       context.appendChild(to_delete_p)
       document.body.appendChild(context)
       e.preventDefault()
-    },
-    check(slot){
-      console.log(slot)
-      console.log(this.clicked_item)
-      if(slot < 10){
-        if(slot === 0 && this.clicked_item.item_class === 'helm') {return true}
-        if(slot === 1 && this.clicked_item.item_type === 'weapon') {console.log("!"); return true}
-        if(slot === 2 && this.clicked_item.item_type === 'weapon') {return true}
-        if(slot === 3 && this.clicked_item.item_class === 'body') {return true}
-        if(slot === 4 && this.clicked_item.item_type === 'gloves') {return true}
-        if(slot === 5 && this.clicked_item.item_type === 'belt') {return true}
-        if(slot === 6 && this.clicked_item.item_class === 'boots') {return true}
-        if(slot === 7 && this.clicked_item.item_class === 'ring') {return true}
-        if(slot === 8 && this.clicked_item.item_class === 'ring') {return true}
-        if(slot === 9 && this.clicked_item.item_class === 'amulet') {return true}
-        else { return false }
-      }
-      return true
     },
     createItem(){
       Request.createItem().then(response =>{
         if(response.data.success){
           console.log(response.data.data)
-          console.log(JSON.parse(response.data.data.item.item_body))
-
-          let item = response.data.data.item
-          this.char.inv.pull[item.slot] = this.char.inv.createItem(item)
+          this.char.inv.pull[response.data.data.item.slot] = new Item(response.data.data.item)
         }
       })
     },
+    getInventoryCellImage(item){
+      let str = '/src/assets/img/icons/items/misc/'
+      if(item.name === 'empty'){
+        if(item.class === 'inventory'){
+          return str + 'empty_shield.png'
+        }
+        else if(item.class === 'weapon'){
+          return str + 'empty_weapon.png'
+        }
+        else if(item.class === 'armour'){
+          return str + 'empty_armour.png'
+        }
+        else if(item.class === 'accessory'){
+          return str + 'empty_accessory.png'
+        }
+      }
+      else{
+        return item.image_path
+      }
+    }
   },
 }
 </script>
@@ -180,22 +175,22 @@ export default {
       </div>
     </div>
     <div id="equip">
-        <div class="equip_block">
+        <div class="equip_block" v-bind:class="{ is_row_combat: char.inv.isRow('combat')}">
           <p>combat</p>
-          <div v-for="item in char.inv.pull.slice(0,3)" class="equip_cell" @click="clickItem(item)">
-            <img src="/src/assets/img/icons/items/misc/empty_weapon.png" alt="">
+          <div v-for="item in char.inv.pull.slice(0,3)" class="equip_cell" @click="clickItem(item)" :title="item.getDescription()">
+            <img :src="getInventoryCellImage(item)" alt="">
           </div>
         </div >
         <div class="equip_block">
           <p>wizardry</p>
-          <div v-for="item in char.inv.pull.slice(3,6)" class="equip_cell" @click="clickItem(item)">
-            <img src="/src/assets/img/icons/items/misc/empty_weapon.png" alt="">
+          <div v-for="item in char.inv.pull.slice(3,6)" class="equip_cell" @click="clickItem(item)" :title="item.getDescription()" v-bind:class="{ is_row_sorcery: char.inv.isRow('sorcery')}">
+            <img :src="getInventoryCellImage(item)" alt="">
           </div>
         </div>
         <div class="equip_block">
           <p>movement</p>
-          <div v-for="item in char.inv.pull.slice(6,9)" class="equip_cell" @click="clickItem(item)">
-            <img src="/src/assets/img/icons/items/misc/empty_weapon.png" alt="">
+          <div v-for="item in char.inv.pull.slice(6,9)" class="equip_cell" @click="clickItem(item)" :title="item.getDescription()" v-bind:class="{ is_row_movement: char.inv.isRow('movement')}">
+            <img :src="getInventoryCellImage(item)" alt="">
           </div>
         </div>
       <div id="belt_block">
@@ -208,10 +203,9 @@ export default {
         </p>
       </div>
       <div id="items">
-        <div class="inv_item"  v-for="item in char.inv.pull.slice(10)" >
-          <div @click="clickItem(item)" :slot="item.slot" class="empty_slot" v-if="item.name === 'empty'"></div>
-          <div @contextmenu="contextClick(item, $event)" v-on:mouseover="mouseover(item)" v-on:mouseleave="mouseleave" @click="clickItem(item)" :title="item.getDescription()" v-bind:class="{clicked: item.clicked}" class="slot" v-else>
-            <img :src="item.img_path" alt="">
+        <div class="inv_item"  v-for="item in char.inv.pull.slice(9)" >
+          <div @contextmenu="contextClick(item, $event)" v-on:mouseover="mouseover(item)" v-on:mouseleave="mouseleave" @click="clickItem(item)" :title="item.getDescription()" v-bind:class="{clicked: item?.clicked}" class="slot">
+            <img :src="getInventoryCellImage(item)" alt="">
           </div>
         </div>
       </div>
@@ -391,7 +385,7 @@ export default {
   }
   .equip_block{
     padding: 20px 5px;
-    border: 2px gray solid;
+    border:  2px gray solid;
     align-items: center;
     display: flex;
     flex-direction: row;
@@ -403,4 +397,17 @@ export default {
     align-items: center;
     justify-content: center;
   }
+  .is_row_combat{
+    border: 17px;
+    border-image: url('/src/assets/img/border/border_big.png') 75 stretch stretch;
+  }
+ .is_row_sorcery{
+   border: 2px blue solid;
+ }
+ .is_row_movement{
+   border: 2px green solid;
+ }
+ .is_column{
+   border-radius: 10px;
+ }
 </style>
