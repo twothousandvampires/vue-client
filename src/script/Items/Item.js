@@ -2,14 +2,17 @@ import Functions from "../GameFunctions";
 
 export default class Item{
     constructor(template) {
+
+        console.log(template)
+
         this.name = template.name
         this.class = template.class
+        this.subclass = template.subclass
         this.type = template.type
         this.char_id = template.char_id
         this.id = template.id
         this.slot = template.slot
         this.quality = template.quality
-        this.property_count = template.property_count
         this.image_path = template.img_path
         this.props = []
 
@@ -17,30 +20,29 @@ export default class Item{
         this.increased_by_row = 0
         this.increased_by_column = 0
         this.class_penalty = 0
-        this.type_penalty = 0
+        this.subclass_penalty = 0
 
         this.equiped = false
 
 
-        for(let i = 1; i <= this.property_count; i++){
+        template.properties.forEach(elem => {
             this.props.push({
-               name : template[i + '_property_name'],
-               stat : template[i + '_property_stat'],
-               value :template[i + '_property_value'],
+                name : elem.name,
+                stat : elem.stat,
+                value : elem.value,
             })
-        }
-
+        })
     }
 
     getTotal(){
-        return this.increased_by_column + this.increased_by_row - this.type_penalty - this.class_penalty
+        return this.increased_by_column + this.increased_by_row - this.subclass_penalty- this.class_penalty
     }
 
     getDescription(){
         let total = this.getTotal()
         let result = ``
         result += `class - ${this.class} \n`
-        result += `type - ${this.type} \n`
+        result += `subclass - ${this.subclass} \n`
         result += `----------------------- \n`
 
         this.props.forEach(elem => {
@@ -57,8 +59,8 @@ export default class Item{
         if(this.class_penalty){
             result += `reduced on wrong class by ${this.class_penalty} \n`
         }
-        if(this.type_penalty){
-            result += `reduced on wrong type by ${this.type_penalty} \n`
+        if(this.subclass_penalty){
+            result += `reduced on wrong subclass by ${this.subclass_penalty} \n`
         }
         return result
     }

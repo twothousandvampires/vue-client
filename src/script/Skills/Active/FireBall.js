@@ -3,7 +3,7 @@ import FireBallProj from "../../projectiles/FireBallProj";
 export default class FireBall{
 
     constructor(template, player) {
-        this.level = template.level
+        this.level = 4
         this.min_dmg_per_level = 1
         this.max_dmg_per_level = 3
         this.description = template.description

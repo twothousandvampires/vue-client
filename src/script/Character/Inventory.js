@@ -49,7 +49,7 @@ export default class Inventory{
         let movement_row = this.pull.slice(6,9)
 
         if(combat_row.every(elem => {
-            return elem.name !== 'empty' && elem.type === 'combat'
+            return elem.name !== 'empty' && elem.class === 'combat'
         })){
             combat_row.forEach(elem => {
                 elem.unequip(this.player)
@@ -66,7 +66,7 @@ export default class Inventory{
         }
 
         if(sorcery_row.every(elem => {
-            return elem.name !== 'empty' && elem.type === 'sorcery'
+            return elem.name !== 'empty' && elem.class === 'sorcery'
         })){
             sorcery_row.forEach(elem => {
                 elem.unequip(this.player)
@@ -83,7 +83,7 @@ export default class Inventory{
         }
 
         if(movement_row.every(elem => {
-            return elem.name !== 'empty' && elem.type === 'movement'
+            return elem.name !== 'empty' && elem.class === 'movement'
         })){
             movement_row.forEach(elem => {
                 elem.unequip(this.player)
@@ -112,9 +112,9 @@ export default class Inventory{
         })
         let item_class = undefined
         if(weapon_row.length === 3){
-            item_class = weapon_row[0].class
+            item_class = weapon_row[0].subclass
         }
-        if(weapon_row.every(elem => {  return elem.class === item_class })){
+        if(weapon_row.every(elem => {  return elem.subclass === item_class })){
             weapon_row.forEach(elem => {
                 elem.unequip(this.player)
                 elem.increased_by_column = 10
@@ -131,7 +131,7 @@ export default class Inventory{
 
         item_class = undefined
         if(armour_row.length === 3){
-            item_class = armour_row[0].class
+            item_class = armour_row[0].subclass
         }
 
         if(armour_row.every(elem => {
@@ -153,7 +153,7 @@ export default class Inventory{
 
         item_class = undefined
         if(accessory_row.length === 3){
-            item_class = accessory_row[0].class
+            item_class = accessory_row[0].subclass
         }
 
         if(accessory_row.every(elem => {
@@ -176,23 +176,22 @@ export default class Inventory{
     }
 
     equipItem(item){
-        let {cell_type, cell_class} = this.getEquipCellInfo(item.slot)
-        if(item.class !== cell_class){
+        let {cell_subclass, cell_class} = this.getEquipCellInfo(item.slot)
+        if(item.subclass !== cell_subclass){
+            item.subclass_penalty = 50
+        }
+        else if(item.class !== cell_class){
             item.class_penalty = 50
         }
-        else if(item.type !== cell_type){
-            item.type_penalty = 50
-        }
-        if(item.class_penalty || item.type_penalty){
-            if(item.class_penalty && item.type !== cell_type){
+        if(item.class_penalty || item.subclass_penalty){
+            if(item.class_penalty && item.type !== cell_subclass){
                 item.type_penalty = 25
             }
-            else if(item.type_penalty && item.class !== cell_class){
+            else if(item.subclass_penalty && item.class !== cell_class){
                 item.class_penalty = 25
             }
         }
         item.equip(this.player)
-        console.log(item)
     }
 
     unequipItem(item){
@@ -200,29 +199,29 @@ export default class Inventory{
         item.increased_by_row = 0
         item.increased_by_column = 0
         item.class_penalty = 0
-        item.type_penalty = 0
+        item.subclass_penalty = 0
     }
 
     getEquipCellInfo(slot){
         let info = {}
 
         if([0,3,6].includes(slot)){
-            info.cell_class = 'weapon'
+            info.cell_subclass = 'weapon'
         }
         if([1,4,7].includes(slot)){
-            info.cell_class = 'armour'
+            info.cell_subclass = 'armour'
         }
         if([2,5,8].includes(slot)){
-            info.cell_class = 'accessory'
+            info.cell_subclass = 'accessory'
         }
         if(slot < 3){
-            info.cell_type = 'combat'
+            info.cell_class = 'combat'
         }
         else if(slot < 6){
-            info.cell_type = 'sorcery'
+            info.cell_class = 'sorcery'
         }
         else{
-            info.cell_type = 'movement'
+            info.cell_class = 'movement'
         }
         return info
     }

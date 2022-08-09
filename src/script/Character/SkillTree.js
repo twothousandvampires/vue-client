@@ -34,6 +34,8 @@ export default class SkillTree{
                     break;
             }
         }
+
+
     }
 
     getPassives(page){
