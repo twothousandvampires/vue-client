@@ -66,7 +66,7 @@ export default {
         })
       })
 
-      if(item instanceof Used){
+      if(item.type === 'used'){
         let to_use = document.createElement('p')
         to_use.textContent = "Use"
         context.appendChild(to_use)

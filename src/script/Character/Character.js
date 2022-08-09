@@ -12,13 +12,13 @@ export default class Character extends Unit{
 
     constructor(template) {
         super(650, 850)
-        this.template = template.character
+        this.template = template
 
         this.stats = new Map()
 
-        this.x = template.character.x
-        this.y = template.character.y
-        this.id = template.character.id
+        this.x = template.x
+        this.y = template.y
+        this.id = template.id
         this.pretti_x = 6
         this.pretti_y = 6
 
@@ -27,8 +27,8 @@ export default class Character extends Unit{
         this.belt = new Belt(this)
 
 
-        this.inv = new Inventory(template.items, this)
-        this.skill_tree = new SkillTree(JSON.parse(template.skill_tree), this)
+        this.inv = new Inventory(template)
+        // this.skill_tree = new SkillTree(JSON.parse(template.skill_tree), this)
 
         this.createStats()
         this.img_name = 'grim traveler'

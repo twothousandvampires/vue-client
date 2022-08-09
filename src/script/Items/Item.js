@@ -3,8 +3,6 @@ import Functions from "../GameFunctions";
 export default class Item{
     constructor(template) {
 
-        console.log(template)
-
         this.name = template.name
         this.class = template.class
         this.subclass = template.subclass
@@ -23,7 +21,6 @@ export default class Item{
         this.subclass_penalty = 0
 
         this.equiped = false
-
 
         template.properties.forEach(elem => {
             this.props.push({

@@ -1,13 +1,16 @@
 import Item from "../Items/Item";
 export default class Inventory{
 
-    constructor(items,player) {
+    constructor(player) {
         this.player = player
         this.pull = []
         for(let i = 0; i < 30; i++){
             this.pull[i] = this.getCell(i)
         }
-        items.forEach(elem =>{
+
+        console.log(player)
+
+        player.items.forEach(elem =>{
             this.pull[elem.slot] = this.createItem(elem)
             if(elem.slot < 9){
                 this.equipItem(this.pull[elem.slot])
@@ -18,29 +21,6 @@ export default class Inventory{
         this.is_movement_row = false
         this.checkRow()
         this.checkColumn()
-    }
-
-    getRowItems(type){
-        switch (type){
-            case 'combat':
-                return this.pull.slice(0,3)
-            case 'sorcery':
-                return this.pull.slice(3,6)
-            case 'movement':
-                return this.pull.slice(6,9)
-        }
-    }
-
-    getColumnItems(item){
-        if([0,3,6].includes(item.slot)) {
-            return this.pull.filter(elem => [0,3,6].includes(elem.slot))
-        }
-        if([1,4,7].includes(item.slot)) {
-            return this.pull.filter(elem => [1,4,7].includes(elem.slot))
-        }
-        if([2,5,8].includes(item.slot)) {
-            return this.pull.filter(elem => [2,5,8].includes(elem.slot))
-        }
     }
 
     checkRow(){
@@ -241,6 +221,7 @@ export default class Inventory{
             }
         }
     }
+
     createItem(template){
         return new Item(template)
     }
