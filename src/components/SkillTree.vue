@@ -62,13 +62,11 @@ export default {
   <div id="tree_wrap">
     <div id="page">
       <div id="menu">
-        <p @click="setPage('combat')">Fight</p>
-        <p @click="setPage('sorcery')">Sorcery</p>
-        <p @click="setPage('travel')">Travel</p>
+        <p @click="setPage('passive')">Passive</p>
         <p @click="setPage('active')">Active</p>
       </div>
       <div id="skills">
-        <div @click="skillClick(item)" id="skill" v-for="(item) in char.skill_tree.getPassives(this.page)">
+        <div @click="skillClick(item)" id="skill" v-for="(item) in char.skills_tree.getPassives(this.page)">
           <p>{{item.name}}</p>
           <img :src=item.img_path alt="">
         </div>

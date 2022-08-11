@@ -28,7 +28,7 @@ export default class Character extends Unit{
 
 
         this.inv = new Inventory(template)
-        // this.skill_tree = new SkillTree(JSON.parse(template.skill_tree), this)
+        this.skills_tree = new SkillTree(template)
 
         this.createStats()
         this.img_name = 'grim traveler'

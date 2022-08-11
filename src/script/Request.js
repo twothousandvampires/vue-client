@@ -99,11 +99,14 @@ export default class Request{
         })
     }
 
-    static useItem(id){
+    static useBook(id, option){
         return axios({method: 'post',
             url : Request.URL + 'item/use/' + id,
             headers : {
                 'Authorization': 'Bearer ' + Request.TOKEN,
+            },
+            data : {
+                option : option ? option : false,
             }
         })
     }

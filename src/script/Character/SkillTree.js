@@ -3,49 +3,30 @@ import SkillCreator from "./SkillCreator";
 
 export default class SkillTree{
 
-    constructor(template, player) {
+    constructor(template) {
 
-        this.combat_passives = [];
-        this.sorcery_passives = [];
-        this.travel_passives = [];
+        this.player = template
+        this.passive = [];
         this.active = [];
-        this.player = player
 
-        for(let one in template){
-            let skill = template[one]
-            switch (skill.type){
-                case 'passive':
-                    switch (skill.class){
-                        case 'combat':
-                            this.combat_passives.push(new Passive(skill, player))
-                            break;
-                        case 'sorcery':
-                            this.sorcery_passives.push(new Passive(skill, player))
-                            break;
-                        case 'travel':
-                            this.travel_passives.push(new Passive(skill, player))
-                            break;
-                    }
-                    break;
+        template.skills.forEach(elem => {
+            let skill = SkillCreator.create(elem)
+            switch (elem.type){
                 case 'active':
-                    let new_skill = SkillCreator.create(skill,player)
-                    this.player.skill_panel.skills.push(new_skill)
-                    this.active.push(new_skill)
+                    this.active.push(skill)
+                    break;
+                case 'passive':
+                    this.active.push(skill)
                     break;
             }
-        }
-
+        })
 
     }
 
     getPassives(page){
         switch (page){
-            case 'combat':
-                return this.combat_passives
-            case 'sorcery':
-                return this.sorcery_passives
-            case 'travel':
-                return this.travel_passives
+            case 'passive':
+                return this.passive
             case 'active':
                 return this.active
         }
@@ -62,4 +43,5 @@ export default class SkillTree{
             this.active.push(SkillCreator.create(skill))
         }
     }
+
 }

@@ -72,15 +72,18 @@ export default {
         context.appendChild(to_use)
 
         to_use.addEventListener('click', (e)=>{
-          Request.useItem(item.id).then(r => {
-            if(r.data.success){
-              if(r.data.data.type === 'book'){
-                this.char.skill_tree.learn(JSON.parse(r.data.data.data))
-              }
-              this.char.inv.deleteItem(item)
-              context.parentNode.removeChild(context)
-            }
-          })
+          switch (item.class){
+            case 'book':
+                Request.useBook(item.id, 1).then(r => {
+                if(r.data.success){
+                  console.log(r.data)
+                  // this.char.skill_tree.learn(JSON.parse(r.data.data.data))
+                  this.char.inv.deleteItem(item)
+                  context.parentNode.removeChild(context)
+                }
+              })
+              break;
+          }
         })
       }
       context.appendChild(to_delete_p)

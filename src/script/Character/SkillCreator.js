@@ -1,16 +1,12 @@
-import FireBall from "../Skills/Active/FireBall";
+import FireCoil from "../Skills/Active/FireCoil";
 
 export default class SkillCreator{
 
-
-    static create(skill, player){
-
+    static create(skill){
         switch (skill.name){
-            case 'Fire Ball':
-                return new FireBall(skill, player);
-
+            case 'fire coil':
+                return new FireCoil(skill);
         }
-
     }
 
 }
