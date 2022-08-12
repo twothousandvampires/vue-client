@@ -36,11 +36,11 @@ export default {
       </div>
       <div class="skill_main_level_status">
         <p>Текущий уровень {{this.clicked_skill.level}}</p>
-        <p>{{this.clicked_skill.getLevelProgress()}}</p>
+        <p>{{}}</p>
       </div>
     </div>
     <div id="skill_childs">
-      <div v-for="(item) in this.clicked_skill.childs">
+      <div v-for="(item) in this.clicked_skill.chields">
         <div class="skill_main">
           <div class="skill_main_info">
             <div class="skill_img">
@@ -53,7 +53,7 @@ export default {
           </div>
           <div id="skill_main_level_status">
             <p>Текущий уровень {{item.level}}</p>
-            <p>{{item.getLevelProgress()}}</p>
+            <p></p>
           </div>
         </div>
       </div>

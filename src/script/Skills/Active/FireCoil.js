@@ -14,6 +14,7 @@ export default class FireCoil {
             return a.order - b.order
         })
 
+        this.chields = []
         this.create_fire_coil_prop = this.props[0]
     }
 
