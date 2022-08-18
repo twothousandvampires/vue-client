@@ -9,17 +9,17 @@ export default class SkillTree{
         this.passive = [];
         this.active = [];
 
-        template.skills.forEach(elem => {
-            let skill = SkillCreator.create(elem)
-            switch (elem.type){
-                case 'active':
-                    this.active.push(skill)
-                    break;
-                case 'passive':
-                    this.active.push(skill)
-                    break;
-            }
-        })
+        // template.skills.forEach(elem => {
+        //     let skill = SkillCreator.create(elem)
+        //     switch (elem.type){
+        //         case 'active':
+        //             this.active.push(skill)
+        //             break;
+        //         case 'passive':
+        //             this.active.push(skill)
+        //             break;
+        //     }
+        // })
 
     }
 
