@@ -1,6 +1,5 @@
 import Functions from "../GameFunctions"
 import Inventory from "./Inventory"
-import SkillTree from "./SkillTree"
 import Unit from "../scr/Unit"
 import EffectCreator from "../Effects/EffectCreator"
 import Modal from "../Modal.js"
@@ -27,8 +26,7 @@ export default class Character extends Unit{
         this.belt = new Belt(this)
 
 
-        this.inv = new Inventory(template)
-        this.skills_tree = new SkillTree(template)
+        this.inv = new Inventory(this, template.items)
 
         this.createStats()
         this.img_name = 'grim traveler'

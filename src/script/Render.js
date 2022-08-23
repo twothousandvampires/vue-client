@@ -73,7 +73,15 @@ export default class Render{
             })
         })
 
-        this.ctx.drawImage(this.img_data.getImage('chel'),0,0,90,93,char.pretti_x * this.cell_size + 20,char.pretti_y * this.cell_size, 60, 62)
+        this.ctx.drawImage(this.img_data.getImage('chel'),90 * char.frame,0,90,93,char.pretti_x * this.cell_size + 20,char.pretti_y * this.cell_size, 60, 62)
+        char.frame_timer ++
+        if(char.frame_timer >= char.frame_change_tick){
+            char.frame_timer = 0
+            char.frame ++
+            if(char.frame >= char.max_frame){
+                char.frame = 0
+            }
+        }
     }
 
     drawFight(char, fight_context){

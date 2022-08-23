@@ -2,7 +2,6 @@
 import Request from "../script/Request";
 
 export default {
-  name: "CharacterSingleInfo",
   props : {
     char : Object
   },
@@ -11,12 +10,11 @@ export default {
       localStorage.setItem('char_id', id)
       location.href = '/game'
     },
-    deleteCharacter(char_id){
-      Request.deleteCharacter(char_id).then(response =>{
-        if(response.data.success){
-          this.$emit('delete_char', char_id)
-        }
-      })
+    async deleteCharacter(char_id){
+      let ApiResponse = await Request.deleteCharacter(char_id)
+      if(ApiResponse.data.success){
+        this.$emit('delete_char', char_id)
+      }
     }
   }
 }

@@ -16,16 +16,15 @@ export default {
 
   },
   methods:{
-    auth(){
-      Request.login(this.email, this.password).then((response)=>{
-        if(response.data.success) {
-          localStorage.setItem('token' , response.data.data.token)
-          location.href = '/'
-        }
-        else{
-          this.error_msg = response.data.message
-        }
-      })
+    async auth(){
+      let ApiResponse = await Request.login(this.email, this.password)
+      if(ApiResponse.data.success) {
+        localStorage.setItem('token' , ApiResponse.data.data.token)
+        location.href = '/'
+      }
+      else{
+        this.error_msg = ApiResponse.data.message
+      }
     },
     inputLogin(e){
       this.email = e.target.value
@@ -50,16 +49,14 @@ export default {
       this.c_password = ''
       this.email = ''
     },
-    registration(){
-      Request.registration(this.name, this.email, this.password, this.c_password).then((response)=>{
-        if(response.data.success) {
-          this.clear()
-          this.success_msg = response.data.message
-        }
-        else{
-          this.error_msg = response.data.message
-        }
-      })
+    async registration() {
+      let ApiResponse = await Request.registration(this.name, this.email, this.password, this.c_password)
+      if (ApiResponse.data.success) {
+        this.clear()
+        this.success_msg = ApiResponse.data.message
+      } else {
+        this.error_msg = ApiResponse.data.message
+      }
     }
   },
 }

@@ -4,7 +4,6 @@ export default {
   props:{
     characters : Array
   },
-  name: "CharactersInfo.vue",
   components:{
     CharacterSingleInfo
   },

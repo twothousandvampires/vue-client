@@ -1,26 +1,30 @@
-import Item from "../Items/Item";
+import ItemCreator from "@/script/Items/ItemCreator";
+import EmptyCell from "@/script/Items/EmptyCell";
 export default class Inventory{
 
-    constructor(player) {
+    constructor(player, items) {
         this.player = player
         this.pull = []
-        for(let i = 0; i < 30; i++){
+        for(let i = 0; i <= 38; i++){
             this.pull[i] = this.getCell(i)
         }
 
-        console.log(player)
-
-        player.items.forEach(elem =>{
+        items.forEach(elem =>{
             this.pull[elem.slot] = this.createItem(elem)
-            if(elem.slot < 9){
+            if(elem.slot < 9 && elem.type === 'equip'){
+                this.equipItem(this.pull[elem.slot])
+            }
+            if(elem.slot > 28 && elem.slot < 35 && elem.type === 'skill_gem'){
                 this.equipItem(this.pull[elem.slot])
             }
         })
+
         this.is_combat_row = false
         this.is_sorcery_row = false
         this.is_movement_row = false
         this.checkRow()
         this.checkColumn()
+        console.log(this.pull)
     }
 
     checkRow(){
@@ -207,80 +211,94 @@ export default class Inventory{
     }
 
     getCell(i){
-        return {
-            slot : i,
-            name : 'empty',
-            getDescription : () =>{
-                return 'empty slot'
-            },
-            equip : function (p) {
-
-            },
-            unequip  : function (p) {
-
-            }
-        }
+        return new EmptyCell(i)
     }
 
     createItem(template){
-        return new Item(template)
+        return ItemCreator.createItem(template)
     }
 
-    change(clicked, slot){
+    async change(clicked, slot) {
         let exchanged_item = this.pull[slot].name === 'empty' ? false : this.pull[slot]
-        axios({method: 'post',
-            url : '//127.0.0.1:8000/api/item/change/',
-            data : {
-                from : clicked.id,
-                to : exchanged_item ? exchanged_item.id : slot,
-                exchange : exchanged_item
+        let ApiResponse = await axios({
+            method: 'post',
+            url: '//127.0.0.1:8000/api/item/change/',
+            data: {
+                from: clicked.id,
+                to: exchanged_item ? exchanged_item.id : slot,
+                exchange: exchanged_item
             },
-            headers : {
+            headers: {
                 'Authorization': 'Bearer ' + localStorage.getItem('token'),
             }
-        }).then(response =>{
-            if(response.data.success){
-                // если 2 предмета
-                if(exchanged_item){
-                    let temp_slot = clicked.slot
-                    this.pull[exchanged_item.slot] = clicked
-                    this.pull[clicked.slot] = exchanged_item
-                    if(clicked.slot < 9){
-                        this.unequipItem(clicked)
-                    }
-                    if(exchanged_item.slot < 9){
-                        this.unequipItem(exchanged_item)
-                    }
-                    clicked.slot = exchanged_item.slot
-                    exchanged_item.slot = temp_slot
-                    if(clicked.slot < 9 ){
-                        this.equipItem(clicked)
-                    }
-                    if(exchanged_item.slot < 9){
-                        this.equipItem(exchanged_item)
-                    }
-                    clicked.clicked = false
-                }
-                // если 1 предмет
-                else{
-                    this.pull[slot] = clicked
-                    this.pull[clicked.slot] = this.getCell(clicked.slot)
-                    if(clicked.slot < 9){
-                        this.unequipItem(clicked)
-                    }
-                    clicked.slot = slot
-                    if(clicked.slot < 9){
-                        this.equipItem(clicked)
-                    }
-                }
-                clicked.clicked = false
-                this.checkRow()
-                this.checkColumn()
-                this.player.createStats()
-            }
-        })
-    }
+        });
+        if (ApiResponse.data.success) {
+            // если 2 предмета
+            if (exchanged_item) {
+                let temp_slot = clicked.slot
+                this.pull[exchanged_item.slot] = clicked
+                this.pull[clicked.slot] = exchanged_item
 
+                if (clicked.slot < 9 && clicked.type === 'equip') {
+                    this.unequipItem(clicked)
+                }
+                else if(clicked.slot > 28 && clicked.slot < 35 && clicked.type === 'skill_gem'){
+                    this.unequipItem(clicked)
+                }
+
+                if (exchanged_item.slot < 9 && clicked.type === 'equip') {
+                    this.unequipItem(exchanged_item)
+                }
+                else if(exchanged_item.slot > 28 && exchanged_item.slot < 35 && exchanged_item.type === 'skill_gem'){
+                    this.unequipItem(exchanged_item)
+                }
+
+                clicked.slot = exchanged_item.slot
+                exchanged_item.slot = temp_slot
+
+                if (clicked.slot < 9 && clicked.type === 'equip') {
+                    this.equipItem(clicked)
+                }
+                else if(clicked.slot > 28 && clicked.slot < 35 && clicked.type === 'skill_gem'){
+                    this.equipItem(clicked)
+                }
+
+                if (exchanged_item.slot < 9 && clicked.type === 'equip') {
+                    this.equipItem(exchanged_item)
+                }
+                else if(exchanged_item.slot >28 && exchanged_item.slot < 35 && exchanged_item.type === 'skill_gem'){
+                    this.equipItem(exchanged_item)
+                }
+
+                clicked.clicked = false
+            }
+            // если 1 предмет
+            else {
+                this.pull[slot] = clicked
+                this.pull[clicked.slot] = new EmptyCell(clicked.slot)
+
+                if (clicked.slot < 9 && clicked.type === 'equip') {
+                    this.unequipItem(clicked)
+                }
+                else if(clicked.slot > 28 && clicked.slot < 35 && clicked.type === 'skill_gem'){
+                    this.unequipItem(clicked)
+                }
+
+                clicked.slot = slot
+
+                if (clicked.slot < 9 && clicked.type === 'equip') {
+                    this.equipItem(clicked)
+                }
+                else if(clicked.slot > 28 && clicked.slot < 35 && clicked.type === 'skill_gem'){
+                    this.equipItem(clicked)
+                }
+            }
+            clicked.clicked = false
+            this.checkRow()
+            this.checkColumn()
+            this.player.createStats()
+        }
+    }
     deleteItem(item){
         if(item.slot_type === 'equip'){
             this.equip[item.slot] = 'empty'

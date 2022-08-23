@@ -27,14 +27,13 @@ export default {
     SkillTree,
     Load
   },
-  mounted() {
-    Request.world(this.char_id).then(response =>{
-      if(response.data.success){
-        this.game = new Game(this, response.data.data)
-        this.loaded = false
-        this.game.frame()
-      }
-    })
+  async mounted() {
+    let ApiResponse = await Request.world(this.char_id)
+    if(ApiResponse.data.success){
+      this.game = new Game(this, ApiResponse.data.data)
+      this.loaded = false
+      this.game.frame()
+    }
   },
 }
 </script>

@@ -10,15 +10,13 @@ export default {
     inputName(e){
       this.character_name = e.target.value
     },
-    create(){
+    async create(){
       if(this.character_name !== ''){
-        Request.createCharacter(this.character_name).then( (r)=>{
-              location.href = '/'
-        })
+        await Request.createCharacter(this.character_name)
+        location.href = '/'
       }
     }
   },
-  name: "CharacterCreate.vue"
 }
 </script>
 

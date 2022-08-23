@@ -3,21 +3,17 @@ import CharacterCreate from "./CharacterCreate.vue";
 
 export default {
   data(){
-    return{
+    return {
       character_creating : false
     }
   },
-  name: "AccountInfo.vue",
   props:{
     user : Object
   },
   methods:{
-    create(){
-      this.character_creating = true
+    createSwitch(){
+      this.character_creating = !this.character_creating
     },
-    stopCreating(){
-      this.character_creating = false
-    }
   },
   components:{
     CharacterCreate,
@@ -28,9 +24,9 @@ export default {
 <template>
     <div class="acc-info-wrap">
       <h1 class="acc-name">{{ user.name }}</h1>
-      <button @click="create" >Create character</button>
+      <button @click="createSwitch" >Create character</button>
     </div>
-    <CharacterCreate @stopCreating="stopCreating" v-if="character_creating"/>
+    <CharacterCreate @stopCreating="createSwitch" v-if="character_creating"/>
 </template>
 
 <style scoped>
