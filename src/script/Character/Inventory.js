@@ -32,54 +32,57 @@ export default class Inventory{
         let sorcery_row = this.pull.slice(3,6)
         let movement_row = this.pull.slice(6,9)
 
+        console.log(combat_row)
+
         if(combat_row.every(elem => {
-            return elem.name !== 'empty' && elem.class === 'combat'
+             return elem.name !== 'empty' && elem.class === 'combat' && elem.type === 'equip'
         })){
+            console.log('row!');
             combat_row.forEach(elem => {
-                elem.unequip(this.player)
+                this.unequipItem(elem)
                 elem.increased_by_row = 10
-                elem.equip(this.player)
+                this.equipItem(elem)
             })
         }
         else {
             combat_row.forEach(elem => {
-                elem.unequip(this.player)
+                this.unequipItem(elem)
                 elem.increased_by_row = 0
-                elem.equip(this.player)
+                this.equipItem(elem)
             })
         }
 
         if(sorcery_row.every(elem => {
-            return elem.name !== 'empty' && elem.class === 'sorcery'
+            return elem.name !== 'empty' && elem.class === 'sorcery' && elem.type === 'equip'
         })){
             sorcery_row.forEach(elem => {
-                elem.unequip(this.player)
+                this.unequipItem(elem)
                 elem.increased_by_row = 10
-                elem.equip(this.player)
+                this.equipItem(elem)
             })
         }
         else {
             sorcery_row.forEach(elem => {
-                elem.unequip(this.player)
+                this.unequipItem(elem)
                 elem.increased_by_row = 0
-                elem.equip(this.player)
+                this.equipItem(elem)
             })
         }
 
         if(movement_row.every(elem => {
-            return elem.name !== 'empty' && elem.class === 'movement'
+            return elem.name !== 'empty' && elem.class === 'movement' && elem.type === 'equip'
         })){
             movement_row.forEach(elem => {
-                elem.unequip(this.player)
+                this.unequipItem(elem)
                 elem.increased_by_row = 10
-                elem.equip(this.player)
+                this.equipItem(elem)
             })
         }
         else {
             movement_row.forEach(elem => {
-                elem.unequip(this.player)
+                this.unequipItem(elem)
                 elem.increased_by_row = 0
-                elem.equip(this.player)
+                this.equipItem(elem)
             })
         }
     }
@@ -98,18 +101,18 @@ export default class Inventory{
         if(weapon_row.length === 3){
             item_class = weapon_row[0].subclass
         }
-        if(weapon_row.every(elem => {  return elem.subclass === item_class })){
+        if(weapon_row.every(elem => {  return elem.subclass === item_class && elem.type === 'equip' })){
             weapon_row.forEach(elem => {
-                elem.unequip(this.player)
+                this.unequipItem(elem)
                 elem.increased_by_column = 10
-                elem.equip(this.player)
+                this.equipItem(elem)
             })
         }
         else {
             weapon_row.forEach(elem => {
-                elem.unequip(this.player)
+                this.unequipItem(elem)
                 elem.increased_by_column = 0
-                elem.equip(this.player)
+                this.equipItem(elem)
             })
         }
 
@@ -119,19 +122,19 @@ export default class Inventory{
         }
 
         if(armour_row.every(elem => {
-            return elem.class === item_class
+            return elem.class === item_class && elem.type === 'equip'
         })){
             armour_row.forEach(elem => {
-                elem.unequip(this.player)
+                this.unequipItem(elem)
                 elem.increased_by_column = 10
-                elem.equip(this.player)
+                this.equipItem(elem)
             })
         }
         else {
             armour_row.forEach(elem => {
-                elem.unequip(this.player)
+                this.unequipItem(elem)
                 elem.increased_by_column = 0
-                elem.equip(this.player)
+                this.equipItem(elem)
             })
         }
 
@@ -141,49 +144,59 @@ export default class Inventory{
         }
 
         if(accessory_row.every(elem => {
-            return elem.class === item_class
+            return elem.class === item_class && elem.type === 'equip'
         })){
             accessory_row.forEach(elem => {
-                elem.unequip(this.player)
+                this.unequipItem(elem)
                 elem.increased_by_column = 10
-                elem.equip(this.player)
+                this.equipItem(elem)
             })
         }
         else {
             accessory_row.forEach(elem => {
-                elem.unequip(this.player)
+                this.unequipItem(elem)
                 elem.increased_by_column = 0
-                elem.equip(this.player)
+                this.equipItem(elem)
             })
         }
 
     }
 
     equipItem(item){
-        let {cell_subclass, cell_class} = this.getEquipCellInfo(item.slot)
-        if(item.subclass !== cell_subclass){
-            item.subclass_penalty = 50
-        }
-        else if(item.class !== cell_class){
-            item.class_penalty = 50
-        }
-        if(item.class_penalty || item.subclass_penalty){
-            if(item.class_penalty && item.type !== cell_subclass){
-                item.type_penalty = 25
+        if(item.type === 'equip' && item.slot < 9){
+            let {cell_subclass, cell_class} = this.getEquipCellInfo(item.slot)
+            if(item.subclass !== cell_subclass){
+                item.subclass_penalty = 50
             }
-            else if(item.subclass_penalty && item.class !== cell_class){
-                item.class_penalty = 25
+            else if(item.class !== cell_class){
+                item.class_penalty = 50
             }
+            if(item.class_penalty || item.subclass_penalty){
+                if(item.class_penalty && item.type !== cell_subclass){
+                    item.type_penalty = 25
+                }
+                else if(item.subclass_penalty && item.class !== cell_class){
+                    item.class_penalty = 25
+                }
+            }
+            item.equip(this.player)
         }
-        item.equip(this.player)
+        else if(item.type === 'skill_gem' && item.slot < 35 && item.slot > 28){
+            item.equip(this.player)
+        }
     }
 
     unequipItem(item){
-        item.unequip(this.player)
-        item.increased_by_row = 0
-        item.increased_by_column = 0
-        item.class_penalty = 0
-        item.subclass_penalty = 0
+        if(item.type === 'equip' && item.slot < 9){
+            item.unequip(this.player)
+            item.increased_by_row = 0
+            item.increased_by_column = 0
+            item.class_penalty = 0
+            item.subclass_penalty = 0
+        }
+        else if(item.type === 'skill_gem' && item.slot < 35 && item.slot > 28){
+            item.unequip(this.player)
+        }
     }
 
     getEquipCellInfo(slot){
@@ -239,36 +252,14 @@ export default class Inventory{
                 this.pull[exchanged_item.slot] = clicked
                 this.pull[clicked.slot] = exchanged_item
 
-                if (clicked.slot < 9 && clicked.type === 'equip') {
-                    this.unequipItem(clicked)
-                }
-                else if(clicked.slot > 28 && clicked.slot < 35 && clicked.type === 'skill_gem'){
-                    this.unequipItem(clicked)
-                }
-
-                if (exchanged_item.slot < 9 && clicked.type === 'equip') {
-                    this.unequipItem(exchanged_item)
-                }
-                else if(exchanged_item.slot > 28 && exchanged_item.slot < 35 && exchanged_item.type === 'skill_gem'){
-                    this.unequipItem(exchanged_item)
-                }
+                this.unequipItem(clicked)
+                this.unequipItem(exchanged_item)
 
                 clicked.slot = exchanged_item.slot
                 exchanged_item.slot = temp_slot
 
-                if (clicked.slot < 9 && clicked.type === 'equip') {
-                    this.equipItem(clicked)
-                }
-                else if(clicked.slot > 28 && clicked.slot < 35 && clicked.type === 'skill_gem'){
-                    this.equipItem(clicked)
-                }
-
-                if (exchanged_item.slot < 9 && clicked.type === 'equip') {
-                    this.equipItem(exchanged_item)
-                }
-                else if(exchanged_item.slot >28 && exchanged_item.slot < 35 && exchanged_item.type === 'skill_gem'){
-                    this.equipItem(exchanged_item)
-                }
+                this.equipItem(clicked)
+                this.equipItem(exchanged_item)
 
                 clicked.clicked = false
             }
@@ -276,22 +267,9 @@ export default class Inventory{
             else {
                 this.pull[slot] = clicked
                 this.pull[clicked.slot] = new EmptyCell(clicked.slot)
-
-                if (clicked.slot < 9 && clicked.type === 'equip') {
-                    this.unequipItem(clicked)
-                }
-                else if(clicked.slot > 28 && clicked.slot < 35 && clicked.type === 'skill_gem'){
-                    this.unequipItem(clicked)
-                }
-
+                this.unequipItem(clicked)
                 clicked.slot = slot
-
-                if (clicked.slot < 9 && clicked.type === 'equip') {
-                    this.equipItem(clicked)
-                }
-                else if(clicked.slot > 28 && clicked.slot < 35 && clicked.type === 'skill_gem'){
-                    this.equipItem(clicked)
-                }
+                this.equipItem(clicked)
             }
             clicked.clicked = false
             this.checkRow()
