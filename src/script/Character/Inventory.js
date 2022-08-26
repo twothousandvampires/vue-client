@@ -28,16 +28,11 @@ export default class Inventory{
     }
 
     checkRow(){
-        let combat_row = this.pull.slice(0,3)
-        let sorcery_row = this.pull.slice(3,6)
-        let movement_row = this.pull.slice(6,9)
+        let combat_row = this.pull.filter(elem => { return elem.slot < 3 && elem.class === 'combat' && elem.type === 'equip'})
+        let sorcery_row = this.pull.filter(elem => { return elem.slot < 6 && elem.slot > 2 && elem.class === 'sorcery' && elem.type === 'equip'})
+        let movement_row = this.pull.filter(elem => { return elem.slot < 9 && elem.slot > 5 && elem.class === 'movement' && elem.type === 'equip'})
 
-        console.log(combat_row)
-
-        if(combat_row.every(elem => {
-             return elem.name !== 'empty' && elem.class === 'combat' && elem.type === 'equip'
-        })){
-            console.log('row!');
+        if(combat_row.length === 3){
             combat_row.forEach(elem => {
                 this.unequipItem(elem)
                 elem.increased_by_row = 10
@@ -52,9 +47,7 @@ export default class Inventory{
             })
         }
 
-        if(sorcery_row.every(elem => {
-            return elem.name !== 'empty' && elem.class === 'sorcery' && elem.type === 'equip'
-        })){
+        if(sorcery_row.length === 3){
             sorcery_row.forEach(elem => {
                 this.unequipItem(elem)
                 elem.increased_by_row = 10
@@ -69,9 +62,7 @@ export default class Inventory{
             })
         }
 
-        if(movement_row.every(elem => {
-            return elem.name !== 'empty' && elem.class === 'movement' && elem.type === 'equip'
-        })){
+        if(movement_row.length === 3){
             movement_row.forEach(elem => {
                 this.unequipItem(elem)
                 elem.increased_by_row = 10
@@ -103,14 +94,14 @@ export default class Inventory{
         }
         if(weapon_row.every(elem => {  return elem.subclass === item_class && elem.type === 'equip' })){
             weapon_row.forEach(elem => {
-                this.unequipItem(elem)
+                this.unequipItem(elem, true)
                 elem.increased_by_column = 10
                 this.equipItem(elem)
             })
         }
         else {
             weapon_row.forEach(elem => {
-                this.unequipItem(elem)
+                this.unequipItem(elem, true)
                 elem.increased_by_column = 0
                 this.equipItem(elem)
             })
@@ -125,14 +116,14 @@ export default class Inventory{
             return elem.class === item_class && elem.type === 'equip'
         })){
             armour_row.forEach(elem => {
-                this.unequipItem(elem)
+                this.unequipItem(elem, true)
                 elem.increased_by_column = 10
                 this.equipItem(elem)
             })
         }
         else {
             armour_row.forEach(elem => {
-                this.unequipItem(elem)
+                this.unequipItem(elem, true)
                 elem.increased_by_column = 0
                 this.equipItem(elem)
             })
@@ -147,14 +138,14 @@ export default class Inventory{
             return elem.class === item_class && elem.type === 'equip'
         })){
             accessory_row.forEach(elem => {
-                this.unequipItem(elem)
+                this.unequipItem(elem, true)
                 elem.increased_by_column = 10
                 this.equipItem(elem)
             })
         }
         else {
             accessory_row.forEach(elem => {
-                this.unequipItem(elem)
+                this.unequipItem(elem, true )
                 elem.increased_by_column = 0
                 this.equipItem(elem)
             })
@@ -163,7 +154,7 @@ export default class Inventory{
     }
 
     equipItem(item){
-        if(item.type === 'equip' && item.slot < 9){
+        if(item.type === 'equip' && item.slot < 9 ){
             let {cell_subclass, cell_class} = this.getEquipCellInfo(item.slot)
             if(item.subclass !== cell_subclass){
                 item.subclass_penalty = 50
@@ -186,13 +177,15 @@ export default class Inventory{
         }
     }
 
-    unequipItem(item){
+    unequipItem(item ,check = false){
         if(item.type === 'equip' && item.slot < 9){
+            let row = check && item.increased_by_row == 10i
             item.unequip(this.player)
             item.increased_by_row = 0
             item.increased_by_column = 0
             item.class_penalty = 0
             item.subclass_penalty = 0
+            if(row) item.increased_by_row = 10
         }
         else if(item.type === 'skill_gem' && item.slot < 35 && item.slot > 28){
             item.unequip(this.player)
