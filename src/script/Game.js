@@ -12,8 +12,6 @@ export default class Game{
         this.fight = new Fight(this)
         this.world = new World(this)
 
-        console.log(initiate_data)
-
         this.char = new Character(initiate_data.character)
         this.world.updateMapData(initiate_data.nodes, this.char.x, this.char.y)
 

@@ -1,12 +1,14 @@
 <script>
+  import AudioPlayer from "../components/AudioPlayer.vue";
   export default {
-
-
-
+    components:{
+      AudioPlayer
+    }
   }
 </script>
 
 <template>
+  <AudioPlayer id="player_panel"></AudioPlayer>
   <main class="wrap">
       <slot>
 
@@ -15,6 +17,14 @@
 </template>
 
 <style scoped>
+#player_panel{
+  z-index: 1000;
+  width: 100px;
+  height: 100px;
+  position: fixed;
+  top:10px;
+  left:10px;
+}
 /* width */
 ::-webkit-scrollbar {
   width: 10px;

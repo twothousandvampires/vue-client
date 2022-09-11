@@ -111,13 +111,11 @@ export default class Request{
         })
     }
 
-    static deleteItem(id, type){
+    static deleteItem(id){
         return axios({method: 'post',
             url : Request.URL + 'item/delete/',
             data : {
-                char_id : localStorage.getItem('char_id'),
                 id : id,
-                type : type
             },
             headers : {
                 'Authorization': 'Bearer ' + Request.TOKEN,

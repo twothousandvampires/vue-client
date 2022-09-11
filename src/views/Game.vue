@@ -38,7 +38,7 @@ export default {
 }
 </script>
 <template>
-  <MainLayout>
+  <MainLayout >
 
     <!-- tower scene -->
 <!--    <div v-if="game?.scene === 'tower'">-->

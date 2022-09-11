@@ -13,7 +13,7 @@ export default {
         <p style="font-size: 24px">Character</p>
         <p style="font-size: 24px">{{stats.get('name')}}</p>
         <p>Increased life : {{stats.get('increased_life')}}</p>
-        <p>Life : {{stats.get('life')}} / {{stats.get('max_life')}}</p>r
+        <p>Life : {{stats.get('life')}} / {{stats.get('max_life')}}</p>
         <p>Stamina : {{stats.get('stamina')}} / {{stats.get('max_stamina')}}</p>
         <p>Stamina regen : {{stats.get('stamina_regeneration')}}</p>
         <p>Energy : {{stats.get('energy')}} / {{stats.get('max_energy')}}</p>
@@ -25,8 +25,8 @@ export default {
       <div id="attack_stats">
         <p style="font-size: 24px">Attack</p>
         <p>Attack damage : {{stats.get('min_attack_damage')}} - {{stats.get('max_attack_damage')}}</p>
-        <p>Critical chance : {{stats.get('attack_critical_chance')}}%</p>
-        <p>Critical multiplier - {{stats.get('attack_critical_multy')}}%</p>
+        <p>Critical chance : {{stats.get('attack_crit_chance')}}%</p>
+        <p>Critical multiplier - {{stats.get('attack_crit_multy')}}%</p>
         <p>Attack speed : {{stats.get('attack_speed')}} ms</p>
         <p>Increased attack speed : {{stats.get('increased_attack_speed')}}%</p>
         <p>Attack range : {{stats.get('attack_range')}}px</p>
@@ -37,7 +37,7 @@ export default {
       <img style="width: 100%" src="/src/assets/img/icons/items/misc/stats_spell_top.gif" alt="">
       <div id="spell_stats">
         <p style="font-size: 24px">Magick</p>
-        <p>Add spell damage : {{stats.get('add_min_spell_damage')}} - {{stats.get('add_max_spell_damage')}}</p>
+        <p>Add spell damage : {{stats.get('additional_min_spell_damage')}} - {{stats.get('additional_max_spell_damage')}}</p>
         <p>Increased spell damage : {{stats.get('increased_spell_damage')}}%</p>
         <p>Spell Leech : {{stats.get('spell_life_leech')}}%</p>
         <p>Increased spell AOE : {{stats.get('increased_spell_aoe')}}px</p>
@@ -55,7 +55,6 @@ export default {
         <p>Increased evade - {{stats.get('increased_evade')}}%</p>
         <p>Evade : {{stats.get('evade')}}</p>
         <p>Increased resist : {{stats.get('increased_resist')}}%</p>
-        <p>Resist : {{stats.get('resist')}}</p>
         <p>Will : {{stats.get('will')}}</p>
       </div>
     </div>

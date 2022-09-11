@@ -24,7 +24,6 @@ export default class Inventory{
         this.is_movement_row = false
         this.checkRow()
         this.checkColumn()
-        console.log(this.pull)
     }
 
     checkRow(){
@@ -179,7 +178,7 @@ export default class Inventory{
 
     unequipItem(item ,check = false){
         if(item.type === 'equip' && item.slot < 9){
-            let row = check && item.increased_by_row == 10i
+            let row = check && item.increased_by_row == 10
             item.unequip(this.player)
             item.increased_by_row = 0
             item.increased_by_column = 0
@@ -271,11 +270,6 @@ export default class Inventory{
         }
     }
     deleteItem(item){
-        if(item.slot_type === 'equip'){
-            this.equip[item.slot] = 'empty'
-        }
-        else {
-            this.pull[this.pull.indexOf(item)] = 'empty'
-        }
+        this.pull[item.slot] = this.getCell(item.slot)
     }
 }
