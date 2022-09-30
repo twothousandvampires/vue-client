@@ -7,10 +7,10 @@ import WorldController from "./World";
 
 export default class Game{
 
+
     constructor(game_context) {
 
     }
-
     async init(){
         this.game_tick = 0
         this.delay = false

@@ -1,6 +1,7 @@
 import StoneSkin from "@/script/Skills/Passive/Combat/StoneSkin";
 import InnerFocus from "@/script/Skills/Passive/Sorcery/InnerFocus";
 import FastMovement from "@/script/Skills/Passive/Movement/FastMovement";
+import RoughLayer from "@/script/Skills/Passive/Combat/RoughLayer";
 
 export default class SkillCreator{
     static createSkill(template){
@@ -11,6 +12,8 @@ export default class SkillCreator{
                 return new InnerFocus(template)
             case 'fast movement':
                 return new FastMovement(template)
+            case 'rough layer':
+                return new RoughLayer(template)
         }
     }
 }

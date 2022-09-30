@@ -111,7 +111,7 @@ export default class Character extends Unit{
 
     critStats(){
 
-        let spell_crit_chance, attack_critical_chance, spell_crit_multy, attack_critical_multy
+        let spell_crit_chance, attack_crit_chance, spell_crit_multy, attack_crit_multy
 
         spell_crit_chance = this.template.spell_crit_chance + (this.spell_crit_chance ? this.spell_crit_chance : 0)
         let increased_spell_crit_chance = this.getIncreased('spell_crit_chance')
@@ -127,28 +127,25 @@ export default class Character extends Unit{
 
         //attack
 
-        attack_critical_chance = this.template.attack_critical_chance + (this.attack_critical_chance ? this.attack_critical_chance : 0)
+        attack_crit_chance = this.template.attack_crit_chance + (this.attack_crit_chance ? this.attack_crit_chance : 0)
 
 
-        let increased_attack_critical_chance = this.getIncreased('attack_critical_chance')
+        let increased_attack_crit_chance = this.getIncreased('attack_crit_chance')
 
-        this.stats.set('attack_critical_chance' , attack_critical_chance)
-        this.stats.set('increased_attack_critical_chance' , increased_attack_critical_chance)
-
-
-        attack_critical_multy = this.template.attack_critical_multy + (this.attack_critical_multy ? this.attack_critical_multy : 0)
-        let increased_attack_critical_multy = this.getIncreased('attack_critical_multy')
-
-        this.stats.set('attack_critical_multy' , Functions.increasedByPercent(attack_critical_multy, increased_attack_critical_multy) )
-        this.stats.set('increased_attack_critical_multy' ,  increased_attack_critical_multy)
+        this.stats.set('attack_crit_chance' , attack_crit_chance)
+        this.stats.set('increased_attack_crit_chance' , increased_attack_crit_chance)
 
 
-        console.log(this.increased_attack_critical_multy)
+        attack_crit_multy = this.template.attack_crit_multy + (this.attack_crit_multy ? this.attack_crit_multy : 0)
+        let increased_attack_crit_multy = this.getIncreased('attack_crit_multy')
+
+        this.stats.set('attack_crit_multy' , Functions.increasedByPercent(attack_crit_multy, increased_attack_crit_multy) )
+        this.stats.set('increased_attack_crit_multy' ,  increased_attack_crit_multy)
     }
 
     spellStats(){
 
-        let additional_spell_damage = this.template.additional_spell_damage + this.additional_spell_damage ? this.additional_spell_damage : 0
+        let additional_spell_damage = this.template.additional_spell_damage + (this.additional_spell_damage || 0)
         this.stats.set('additional_min_spell_damage', additional_spell_damage * 0.5)
         this.stats.set('additional_max_spell_damage', additional_spell_damage * 1.5)
 
@@ -199,7 +196,6 @@ export default class Character extends Unit{
         this.stats.set('name',this.template.name)
 
         let increased_life = this.getIncreased('life')
-        console.log(increased_life)
         this.stats.set('max_life' , Functions.increasedByPercent(this.template.max_life, increased_life))
         this.stats.set('life' , Functions.increasedByPercent(this.template.life, increased_life))
         this.stats.set('increased_life' , increased_life)

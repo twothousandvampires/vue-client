@@ -24,7 +24,6 @@ export default class Inventory{
         this.is_movement_row = false
         this.checkRow()
         this.checkColumn()
-        console.log(this.pull)
     }
 
     checkRow(){
@@ -271,11 +270,6 @@ export default class Inventory{
         }
     }
     deleteItem(item){
-        if(item.slot_type === 'equip'){
-            this.equip[item.slot] = 'empty'
-        }
-        else {
-            this.pull[this.pull.indexOf(item)] = 'empty'
-        }
+        this.pull[item.slot] = this.getCell(item.slot)
     }
 }

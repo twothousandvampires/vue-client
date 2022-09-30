@@ -15,7 +15,7 @@ export default {
     </div>
     <div id="items">
       <div class="inv_item"  v-for="item in char.inv.pull.slice(9,29)" >
-        <div @contextmenu="$emit('contextClick',$event, item)" v-on:mouseover="$emit('mouseover', item)" v-on:mouseleave="$emit('mouseleave')" @click="$emit('clickItem',item)" :title="item.getDescription()" v-bind:class="{clicked: item?.clicked}" class="slot">
+        <div @contextmenu="$emit('contextClick',$event, item)" v-on:mouseover="$emit('mouseover', item)" @click="$emit('clickItem',item)" :title="item.getDescription()" v-bind:class="{clicked: item?.clicked}" class="slot">
           <img :src="item.getImagePath()" alt="">
         </div>
       </div>

@@ -28,12 +28,12 @@
         <RouterLink  to="/" v-if="!auth">Login</RouterLink>
         <p @click="logout" v-else>Logout</p>
         <RouterLink  to="/" v-if="auth">Profile</RouterLink>
-        <RouterLink to="/canvas">Scoreboard</RouterLink>
+<!--        <RouterLink to="/canvas">Scoreboard</RouterLink>-->
       </nav>
     </div>
   </header>
 
-  <RouterView v-bind:auth="auth"/>
+  <RouterView v-bind:auth="this.auth"/>
 
 </template>
 
