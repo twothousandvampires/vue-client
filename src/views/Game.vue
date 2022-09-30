@@ -28,12 +28,9 @@ export default {
     Load
   },
   async mounted() {
-    let ApiResponse = await Request.world(this.char_id)
-    if(ApiResponse.data.success){
-      this.game = new Game(this, ApiResponse.data.data)
+      this.game = new Game(this)
+      this.game.init()
       this.loaded = false
-      this.game.frame()
-    }
   },
 }
 </script>

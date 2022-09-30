@@ -179,13 +179,13 @@ export default class Inventory{
 
     unequipItem(item ,check = false){
         if(item.type === 'equip' && item.slot < 9){
-            let row = check && item.increased_by_row == 10i
+            let row = check && item.increased_by_row == 10
             item.unequip(this.player)
             item.increased_by_row = 0
             item.increased_by_column = 0
             item.class_penalty = 0
             item.subclass_penalty = 0
-            if(row) item.increased_by_row = 10
+            if (row) item.increased_by_row = 10
         }
         else if(item.type === 'skill_gem' && item.slot < 35 && item.slot > 28){
             item.unequip(this.player)

@@ -2,30 +2,30 @@ import Character from "./Character/Character.js";
 import Render from "./Render.js";
 import Input from "./Input.js";
 import Request from "./Request.js";
-import Fight from "./Fight";
-import World from "./World";
+import FightController from "./Fight";
+import WorldController from "./World";
 
 export default class Game{
 
-    constructor(game_context, initiate_data) {
-        this.scene = 'world'
-        this.fight = new Fight(this)
-        this.world = new World(this)
+    constructor(game_context) {
 
-        console.log(initiate_data)
+    }
 
-        this.char = new Character(initiate_data.character)
-        this.world.updateMapData(initiate_data.nodes, this.char.x, this.char.y)
-
-        this.delay = false
-
-        this.inv_is_open = false
-        this.tree_is_open = false
-
-        this.mouse = new Input(game_context.$refs.canvas)
-        this.render = new Render(game_context.$refs.canvas.getContext('2d'))
-
+    async init(){
         this.game_tick = 0
+        this.delay = false
+        this.scene = 'world'
+        this.fight_controller = new FightController(this)
+        this.world_controller = new WorldController(this)
+
+        //to do
+        this.char = new Character(initiate_data.character)
+
+        this.frame();
+    }
+
+    setScene(scene){
+        this.scene = scene
     }
 
     prettifyData(response){
@@ -104,7 +104,6 @@ export default class Game{
                     let start = Date.now()
                     this.fight.act()
                     this.render.drawFight(this.char, this.fight)
-                    // console.log(Date.now() - start)
                     break;
             }
         },50)
