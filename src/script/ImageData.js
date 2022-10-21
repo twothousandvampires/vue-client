@@ -50,7 +50,7 @@ export default class ImageData{
         this['chain light'].src = './src/assets/img/effects/chain_light.png'
 
         this['chel'] = new Image()
-        this['chel'].src = './src/assets/img/characters/chel.png'
+        this['chel'].src = './src/assets/img/characters/grim.png'
 
         this['grim traveler'] = new Image()
         this['grim traveler'].src = './src/assets/img/characters/grim.png'

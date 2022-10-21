@@ -10,6 +10,7 @@ import Status from "./hud/StatusBar";
 export default class Character extends Unit{
 
     constructor(template) {
+
         super(650, 850)
         this.template = template
 
@@ -34,20 +35,16 @@ export default class Character extends Unit{
         this.attack_box = undefined
 
         // size on canvas
-        this.size_x = 90
-        this.size_y = 93
+        this.size_x = 72
+        this.size_y = 72
 
         // sprite size
-        this.sprite_w = 90
-        this.sprite_h = 93
+        this.sprite_w = 96
+        this.sprite_h = 96
 
         // coll box size
         this.box_size_x = 48
         this.box_size_y = 24
-
-
-        this.def_w = this.sprite_w
-        this.def_h = this.sprite_h
 
         this.recovery_timeout = undefined
 
@@ -65,7 +62,7 @@ export default class Character extends Unit{
         this.defended = false
 
         this.speed = 2
-
+        this.setImageState('idle')
     }
 
     createStats(){
@@ -331,68 +328,85 @@ export default class Character extends Unit{
         }
     }
 
-    act(mouse, effect, enemy, tick, proj, map){
-        this.regen(tick)
+    act(fight_context){
+        // this.regen(tick)
 
-
-
-        let input = mouse.getInput()
+        let input = fight_context.mouse.getInput()
         let mouse_cord = {cord_x: input.canvas_x, cord_y: input.canvas_y}
 
-        if(this.frozen || this.stunned){
-            //
-        }
-        else if(this.damaged){
-            let move_x = Math.sin(this.direction_angle)
-            let move_y = Math.cos(this.direction_angle)
-            this.setCord(move_x, move_y, map)
-        }
-        else if(this.is_attack){
-            if(!this.deal_hit && this.frame === 5){
-                this.deal_hit = true
-                let hit = false
-                effect.push(EffectCreator.createEffect('weapon swing', this.attack_box.cord_x, this.attack_box.cord_y, this.attack_box.box_size_x, this.attack_box.box_size_y, this.attack_box.angle))
-                for(let i = 0; i < enemy.length;i ++){
-                    let target = enemy[i]
-                    if(Functions.rectCollision(this.attack_box, target) && !target.damaged && !target.is_dead){
-                        target.damage(Functions.angle(this, target))
-                        Modal.createModal(this.getAttackDamage() ,target.cord_x, target.cord_y)
-                        // return;
-                    }
-                }
-            }
-        }
-        else if(this.is_cast || this.is_scroll || this.is_poution){
+        switch (this.state){
+
+            case 'idle':
+                this.idle(fight_context, input, mouse_cord)
+                break;
+            case 'move':
+                this.move(fight_context, input, mouse_cord)
+                break;
+            case 'run':
+                this.run(fight_context, input, mouse_cord)
+                break;
+            case 'attack':
+                this.attack(fight_context, input, mouse_cord)
+                break;
+            case 'block':
+                this.block(fight_context, input, mouse_cord)
+                break;
 
         }
-        else if(this.defended){
-            if(!input.e){
-                this.idle()
-            }
-        }
-        else {
-            if(input.e){
-                this.stats.set('life', 4033)
-                this.defend()
-            }
-            else if(input.r_click){
-                this.cast(proj,Functions.angle(this, mouse_cord))
-            }
-            else if(input.l_click && this.energy > 2){
-                this.attack(mouse_cord)
-            }
-            else if(this.moveInputIsPressed(input)){
-                if(input[' '] && this.energy > 0.5){
-                    this.run(input, map)
-                }
-                else{
-                    this.move(input, map)
-                }
-            }
-            else if(!this.is_idle){
-                this.idle()
-            }
-        }
+        // if(this.frozen || this.stunned){
+        //     //
+        // }
+        // else if(this.damaged){
+        //     let move_x = Math.sin(this.direction_angle)
+        //     let move_y = Math.cos(this.direction_angle)
+        //     this.setCord(move_x, move_y, map)
+        // }
+        // else if(this.is_attack){
+        //     if(!this.deal_hit && this.frame === 5){
+        //         this.deal_hit = true
+        //         let hit = false
+        //         effect.push(EffectCreator.createEffect('weapon swing', this.attack_box.cord_x, this.attack_box.cord_y, this.attack_box.box_size_x, this.attack_box.box_size_y, this.attack_box.angle))
+        //         for(let i = 0; i < enemy.length;i ++){
+        //             let target = enemy[i]
+        //             if(Functions.rectCollision(this.attack_box, target) && !target.damaged && !target.is_dead){
+        //                 target.damage(Functions.angle(this, target))
+        //                 Modal.createModal(this.getAttackDamage() ,target.cord_x, target.cord_y)
+        //                 // return;
+        //             }
+        //         }
+        //     }
+        // }
+        // else if(this.is_cast || this.is_scroll || this.is_poution){
+        //
+        // }
+        // else if(this.defended){
+        //     if(!input.e){
+        //         this.idle()
+        //     }
+        // }
+        // else {
+        //     if(input.e){
+        //         this.stats.set('life', 4033)
+        //         this.defend()
+        //     }
+        //     else if(input.r_click){
+        //         this.cast(proj,Functions.angle(this, mouse_cord))
+        //     }
+        //     else if(input.l_click && this.energy > 2){
+        //         this.attack(mouse_cord)
+        //     }
+        //     else if(this.moveInputIsPressed(input)){
+        //         if(input[' '] && this.energy > 0.5){
+        //             this.run(input, map)
+        //         }
+        //         else{
+        //             this.move(input, map)
+        //         }
+        //     }
+        //     else if(!this.is_idle){
+        //         this.idle()
+        //     }
+        // }
 
         this.frame_timer ++
         if(this.frame_timer >= this.frame_change_tick){
@@ -400,7 +414,58 @@ export default class Character extends Unit{
             this.frame ++
             if(this.frame >= this.max_frame){
                 this.frame = 0
+                if(this.state == 'attack'){
+                    this.setImageState('idle')
+                }
             }
+        }
+    }
+
+    setImageState(state){
+        this.frame = 0
+        switch (state){
+            case 'idle':
+                this.state = 'idle'
+                this.y_frame_offset = 0
+                this.max_frame = 12
+                this.frame_change_tick = 6
+                break;
+            case 'move':
+                this.state = 'move'
+                this.y_frame_offset = 96
+                this.max_frame = 8
+                this.frame_change_tick = 2
+                break;
+            case 'run':
+                this.state = 'run'
+                this.y_frame_offset = 96
+                this.max_frame = 8
+                this.frame_change_tick = 1
+                break;
+            case 'attack':
+                this.state = 'attack'
+                this.y_frame_offset = 192
+                this.max_frame = 10
+                this.frame_change_tick = 2
+                break;
+            case 'block':
+                this.state = 'block'
+                this.y_frame_offset = 480
+                this.max_frame = 4
+                this.frame_change_tick = 6
+                break;
+            case 'world idle':
+                this.state = 'idle'
+                this.y_frame_offset = 288
+                this.max_frame = 16
+                this.frame_change_tick = 4
+                break;
+            case 'world move':
+                this.state = 'idle'
+                this.y_frame_offset = 384
+                this.max_frame = 8
+                this.frame_change_tick = 2
+                break;
         }
     }
 
@@ -408,13 +473,53 @@ export default class Character extends Unit{
         this.skill_panel.skills[1].use(proj, angle, this.cord_x, this.cord_y)
     }
 
-    idle(){
-        this.resetFrame()
-        this.setSize(90, 93)
-        this.is_idle = true
-        this.y_frame_offset = 0
-        this.max_frame = 9
-        this.frame_change_tick = 7
+    idle(fight_context, input, mouse_cord){
+        let { mouse, effect, enemy, tick, proj, map } = fight_context
+        if(input.l_click){
+            this.setImageState('attack')
+            return
+        }
+        if(this.moveInputIsPressed(input)){
+            this.setImageState('move')
+            return
+        }
+        if(input['e']){
+            this.setImageState('block')
+            return
+        }
+    }
+    move(fight_context, input, mouse_cord){
+
+        if(!this.moveInputIsPressed(input)){
+            this.setImageState('idle')
+            return
+        }
+        if(input[' ']){
+            this.setImageState('run')
+            return
+        }
+        let { mouse, effect, enemy, tick, proj, map } = fight_context
+        this.getMoveAngle(input)
+        let move_x = Math.sin(this.move_angle)
+        this.fliped = move_x <= 0;
+        let move_y = Math.cos(this.move_angle)
+        this.setCord(move_x, move_y, map)
+    }
+    run(fight_context, input, mouse_cord){
+        if(!this.moveInputIsPressed(input)){
+            this.setImageState('idle')
+            return
+        }
+        if(!input[' ']){
+            this.setImageState('move')
+            return
+        }
+        let { mouse, effect, enemy, tick, proj, map } = fight_context
+        this.getMoveAngle(input)
+        let move_x = Math.sin(this.move_angle) * 2
+        this.fliped = move_x <= 0;
+        let move_y = Math.cos(this.move_angle) * 2
+        this.setCord(move_x, move_y, map)
     }
 
     damage(angle){
@@ -429,59 +534,22 @@ export default class Character extends Unit{
     }
 
     attack(mouse){
-        this.energy -= 2
-        this.resetFrame()
-        this.setSize(120,120)
-        this.is_attack = true
-        this.y_frame_offset = 187
-        this.max_frame = 8
-        this.frame_change_tick = 1000/350
-        this.attack_box = this.angleToAttackRect(Functions.angle(this,mouse))
-        this.setRecoveryTimeOut(1000)
+        // if(this.frame)
+        // this.energy -= 2
+        // this.resetFrame()
+        // this.setSize(120,120)
+        // this.is_attack = true
+        // this.y_frame_offset = 187
+        // this.max_frame = 8
+        // this.frame_change_tick = 1000/350
+        // this.attack_box = this.angleToAttackRect(Functions.angle(this,mouse))
+        // this.setRecoveryTimeOut(1000)
     }
 
-    run(input, map){
-        if(!this.is_run){
-            this.resetFrame()
-            this.setSize(90, 93)
-            this.is_run = true
-            this.y_frame_offset = 94
-            this.max_frame = 4
-            this.frame_change_tick = 3
-        }
-        else{
-            this.getMoveAngle(input)
-            let move_x = Math.sin(this.move_angle) * 2
-            this.fliped = move_x <= 0;
-            let move_y = Math.cos(this.move_angle) * 2
-            this.setCord(move_x, move_y, map)
-        }
-    }
-
-    defend(){
-        this.resetFrame()
-        this.setSize(90, 93)
-        this.defended = true
-        this.y_frame_offset = 309
-        this.max_frame = 2
-        this.frame_change_tick = 12
-    }
-
-    move(input ,map){
-        if(!this.is_move){
-            this.resetFrame()
-            this.setSize(90, 93)
-            this.is_move = true
-            this.y_frame_offset = 94
-            this.max_frame = 4
-            this.frame_change_tick = 6
-        }
-        else{
-            this.getMoveAngle(input)
-            let move_x = Math.sin(this.move_angle)
-            this.fliped = move_x <= 0;
-            let move_y = Math.cos(this.move_angle)
-            this.setCord(move_x, move_y, map)
+    block(fight_context, input, mouse_cord){
+        if(!input['e']){
+            this.setImageState('idle')
+            return
         }
     }
 }

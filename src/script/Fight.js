@@ -1,10 +1,13 @@
 import Spawner from "./Enemy/src/Spawner";
 import Functions from "./GameFunctions";
 import Rock from "./Environment/Rock";
+import Render from "@/script/Render";
+import Input from "@/script/Input";
 export default class Fight{
 
     constructor(game) {
         this.game = game
+        this.char = game.char
         this.spawner = new Spawner()
         this.enemy = []
         this.effects = []
@@ -14,6 +17,8 @@ export default class Fight{
             start_x : 200,
             start_y : 370
         }
+        this.mouse = new Input()
+        this.render = new Render
     }
 
     createEnemy(content_count){
@@ -30,7 +35,6 @@ export default class Fight{
         this.spawner.pull = []
         this.game.char.cord_x = this.map.start_x + this.map.width/2
         this.game.char.cord_y = this.map.start_y + this.map.height/2
-        this.scene = 'fight'
         this.createEnemy(JSON.parse(node.content_count))
     }
 
@@ -111,16 +115,17 @@ export default class Fight{
             // },3000)
         }
 
-        this.game.char.act(this.game.mouse ,this.effects, this.enemy, this.game.game_tick, this.projectiles, this.map)
-        this.projectiles.forEach(elem => {
-            elem.act(this.game.char,  this.enemy,this.effects, this.projectiles, this.map)
-        })
-        this.enemy.forEach(elem => {
-            elem.act(this.game.char.act, this)
-        })
-        this.effects.forEach(elem => {
-            elem.act(this.effects)
-        })
+        this.game.char.act(this)
+        // this.projectiles.forEach(elem => {
+        //     elem.act(this.game.char,  this.enemy,this.effects, this.projectiles, this.map)
+        // })
+        // this.enemy.forEach(elem => {
+        //     elem.act(this.game.char.act, this)
+        // })
+        // this.effects.forEach(elem => {
+        //     elem.act(this.effects)
+        // })
+        this.render.drawFight(this)
     }
 
 }

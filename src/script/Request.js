@@ -13,6 +13,14 @@ export default class Request{
         })
     }
 
+    static getCharacter(){
+        let char_id = localStorage.getItem('char_id')
+        return axios({method: 'get', url: Request.URL + 'character/get/'+ char_id, headers: {
+                'Authorization': 'Bearer ' + Request.TOKEN,
+            }
+        })
+    }
+
     static createCharacter(name){
         return axios({method: 'post', url: Request.URL + 'character/create/', headers: {
                 'Authorization': 'Bearer ' + Request.TOKEN,

@@ -7,7 +7,7 @@ export default class Render{
         this.bg_frame = 0
         this.bg_timer = 0
         this.cell_size = 100
-        this.ctx = ctx
+        this.ctx = document.getElementById('game-canvas').getContext('2d')
         this.ctx.imageSmoothingEnabled= false
         this.img_data = new ImageData()
 
@@ -40,13 +40,13 @@ export default class Render{
         // this.ctx.fillStyle = 'black'
     }
 
-    drawWorld(game ,char){
+    drawWorld(map ,char){
         this.ctx.fillStyle = 'black'
         this.ctx.clearRect(0,0,1300,1300)
         this.ctx.fillRect(0,0,1300,1300)
 
 
-        game.map.forEach(row => {
+        map.forEach(row => {
             row.forEach(elem => {
                 if(elem && elem.visited){
                     this.ctx.drawImage(this.img_data.getImage('tile'),elem.tile[0],elem.tile[1],100,100,elem.pretti_x * this.cell_size,elem.pretti_y * this.cell_size, this.cell_size, this.cell_size)
@@ -73,7 +73,14 @@ export default class Render{
             })
         })
 
-        this.ctx.drawImage(this.img_data.getImage('chel'),90 * char.frame,0,90,93,char.pretti_x * this.cell_size + 20,char.pretti_y * this.cell_size, 60, 62)
+        if(char.fliped){
+            this.ctx.save()
+            Functions.flipHorizontally(this.ctx, char.pretti_x * this.cell_size)
+        }
+        this.ctx.drawImage(this.img_data.getImage('chel'),96 * char.frame,char.y_frame_offset,96,96,char.pretti_x * this.cell_size + (!char.fliped ? 20 : -80),char.pretti_y * this.cell_size -20, 72, 72)
+        if(char.fliped){
+            this.ctx.restore()
+        }
         char.frame_timer ++
         if(char.frame_timer >= char.frame_change_tick){
             char.frame_timer = 0
@@ -84,10 +91,10 @@ export default class Render{
         }
     }
 
-    drawFight(char, fight_context){
+    drawFight(fight_context){
         this.ctx.clearRect(0,0,1300,1300)
         this.drawBg(fight_context)
-        let all = [char].concat(fight_context.enemy).concat(fight_context.effects).concat(fight_context.projectiles).concat(fight_context.map.rocks)
+        let all = [fight_context.char].concat(fight_context.enemy).concat(fight_context.effects).concat(fight_context.projectiles).concat(fight_context.map.rocks)
 
         all.sort(function(a,b){
             return a.cord_y - b.cord_y
@@ -112,7 +119,7 @@ export default class Render{
                     elem.sprite_w,
                     elem.sprite_h,
                     elem.cord_x - elem.size_x/2,
-                    elem.cord_y - elem.size_y + elem.box_size_y/2 + (elem.def_h ? (elem.size_y - elem.def_h)/2 : 0),
+                    elem.cord_y - elem.size_y + elem.box_size_y/2,
                     elem.size_x,
                     elem.size_y)
             }

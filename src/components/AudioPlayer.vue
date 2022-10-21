@@ -3,7 +3,7 @@ import Audio from '../script/Audio.js'
 export default {
   data(){
     return {
-      // audio: new Audio(),
+      audio: new Audio(),
     }
   },
   name: "AudioPlayer"

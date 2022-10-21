@@ -1,9 +1,9 @@
 export default class Input {
-    constructor(canvas) {
-        canvas.addEventListener('contextmenu', e => e.preventDefault())
+    constructor() {
+        this.canvas = document.getElementById('game-canvas')
+        this.canvas.addEventListener('contextmenu', e => e.preventDefault())
         this.y = undefined
         this.click = false
-        this.canvas = canvas
         this.pressed ={}
         this.canvas.addEventListener('mousemove',(e)=>{
             this.pressed.canvas_x = e.offsetX
