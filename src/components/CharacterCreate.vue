@@ -1,5 +1,8 @@
 <script>
-import Request from "../script/Request";
+
+import { useUserStore } from "@/stores/user";
+import { mapActions } from 'pinia'
+
 export default {
   data(){
     return{
@@ -7,14 +10,15 @@ export default {
     }
   },
   methods:{
+    ...mapActions(useUserStore, ['createCharacter']),
     inputName(e){
       this.character_name = e.target.value
     },
     async create(){
       if(this.character_name !== ''){
-        await Request.createCharacter(this.character_name)
+        await this.createCharacter(this.character_name)
         location.href = '/'
-      }
+      }a
     }
   },
 }
@@ -23,7 +27,7 @@ export default {
 <template>
   <div class="modal">
     <form>
-      <input class="input" @input="inputName" v-bind:value="character_name" >
+      <input class="input" v-model="character_name">
       <button class="btn" @click.prevent="create">Create</button>
       <p @click="$emit('stopCreating')">Close</p>
     </form>

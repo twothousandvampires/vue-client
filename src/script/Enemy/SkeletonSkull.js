@@ -1,8 +1,8 @@
-import Enemy from "./src/Enemy";
 import Functions from "../GameFunctions";
 import EffectCreator from "../Effects/EffectCreator";
+import Unit from "../scr/Unit";
 
-export default class SkeletonSkull extends Enemy{
+export default class SkeletonSkull extends Unit{
     constructor(x, y) {
         super(x, y)
         this.size_x = 36

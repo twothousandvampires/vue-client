@@ -6,14 +6,14 @@ export default {
     Status
   },
   props : {
-    status : Object
+    status : Array
   }
 }
 </script>
 
 <template>
   <div id="status">
-    <div v-for="item in this.status.bar">
+    <div v-for="item in this.status">
       <Status v-bind:status="item">
 
       </Status>

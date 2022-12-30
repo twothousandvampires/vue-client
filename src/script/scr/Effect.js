@@ -2,17 +2,18 @@ import GameObject from "./GameObject";
 
 export default class Effect extends GameObject{
 
-    constructor(x, y, w, h , angle = undefined) {
+    constructor(x, y, w, h , angle = false) {
         super(x, y)
         this.size_x = w
-        this.size_y = h * 2
+        this.size_y = h
         this.angle = angle
 
         this.box_size_x = w
         this.box_size_y = h
     }
 
-    act(effects){
+    act(fight_context){
+        let {effects} = fight_context
         this.frame_timer ++
         if(this.frame_timer === this.frame_change_tick){
             this.frame_timer = 0

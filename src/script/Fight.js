@@ -7,11 +7,15 @@ export default class Fight{
 
     constructor(game) {
         this.game = game
-        this.char = game.char
+        this.player = game.char
         this.spawner = new Spawner()
         this.enemy = []
         this.effects = []
+        this.effects_before = []
+        this.effects_after = []
         this.projectiles = []
+        this.areas_before = []
+        this.areas_after = []
         this.win = false
         this.map = {
             start_x : 200,
@@ -19,12 +23,18 @@ export default class Fight{
         }
         this.mouse = new Input()
         this.render = new Render
+        this.tick = 0
     }
 
     createEnemy(content_count){
         this.spawner.createPull(content_count)
         this.enemy = this.enemy.concat(this.spawner.getWave(this.map))
     }
+
+    newLog(msg){
+        this.game.loger.newLog(msg)
+    }
+
 
     newFight(node){
         let parsed_node = JSON.parse(node.map)
@@ -103,29 +113,55 @@ export default class Fight{
         return result
     }
 
-    act(){
-        if(Functions.every(3, this.game.game_tick)){
-            this.enemy = this.enemy.concat(this.spawner.getWave(this.map))
-            // setTimeout(()=>{
-            //     Request.win(this.char.id).then(r => {
-            //         console.log(r)
-            //         this.prettifyData(r.data.data)
-            //         this.win = false
-            //     })
-            // },3000)
+    allDead(){
+        return this.enemy.every(elem => {
+           return elem.state === 'dying';
+        })
+    }
+
+    frame(){
+        let start = Date.now()
+        if(Functions.every(3, this.tick)){
+
+            if(this.allDead()){
+                this.game.endFight()
+            }
+            else {
+                this.enemy = this.enemy.concat(this.spawner.getWave(this.map))
+            }
         }
 
-        this.game.char.act(this)
-        // this.projectiles.forEach(elem => {
-        //     elem.act(this.game.char,  this.enemy,this.effects, this.projectiles, this.map)
-        // })
-        // this.enemy.forEach(elem => {
-        //     elem.act(this.game.char.act, this)
-        // })
-        // this.effects.forEach(elem => {
-        //     elem.act(this.effects)
-        // })
+        this.player.act(this)
+
+        this.projectiles.forEach(elem => {
+            elem.act(this)
+        })
+
+        this.enemy.forEach(elem => {
+            elem.act(this)
+        })
+
+        this.effects.forEach(elem => {
+            elem.act(this)
+        })
+        this.effects_before.forEach(elem => {
+            elem.act(this)
+        })
+        this.effects_after.forEach(elem => {
+            elem.act(this)
+        })
+
+        this.areas_before.forEach(elem => {
+            elem.act(this)
+        })
+
+        this.effects_after.forEach(elem => {
+            elem.act(this)
+        })
+        // console.log(this.effects)
         this.render.drawFight(this)
+        // console.log(Date.now() - start)
+        this.tick ++
     }
 
 }

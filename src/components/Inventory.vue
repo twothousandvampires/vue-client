@@ -22,9 +22,11 @@ export default {
     return {
       clicked_item : false,
       over_item : false,
-      clicked_context : false
+      clicked_context : false,
+
     }
   },
+
   methods : {
     clickItem(item){
       if(!this.clicked_item && item.name !== 'empty'){
@@ -50,7 +52,6 @@ export default {
       this.$refs.inspect_skill_gem.item = undefined
     },
     inspectGem(e, item){
-      console.log(item)
       this.$refs.inspect_skill_gem.x = e.pageX
       this.$refs.inspect_skill_gem.y = e.pageY
       this.$refs.inspect_skill_gem.show = true
@@ -67,19 +68,6 @@ export default {
       this.$refs.inspect_item_modal.item = item
       e.preventDefault()
     },
-    async deleteItem(item){
-      let response = await Request.deleteItem(item.id)
-      if(response.data.success){
-        this.char.inv.deleteItem(item)
-      }
-    },
-    createItem(){
-      Request.createItem().then(response =>{
-        if(response.data.success){
-          this.char.inv.pull[response.data.data.item.slot] = ItemCreator.createItem(response.data.data.item)
-        }
-      })
-    },
   },
 }
 </script>
@@ -87,7 +75,7 @@ export default {
   <ItemInspectModal @inspectGem="inspectGem" @deleteItem="deleteItem" @mouseleave="mouseleave" ref="inspect_item_modal"></ItemInspectModal>
   <InspectSkillGem @mouseleave="mouseleave" ref="inspect_skill_gem"></InspectSkillGem>
   <div id="inv_wrap">
-    <PlayerStats v-bind:stats="char.stats"></PlayerStats>
+    <PlayerStats v-bind:player="char"></PlayerStats>
     <PlayerEquip @clickItem="clickItem" v-bind:char="char"></PlayerEquip>
     <PlayerInventory @createItem="createItem" @contextClick="contextClick" @clickItem="clickItem" v-bind:char="char"></PlayerInventory>
   </div>

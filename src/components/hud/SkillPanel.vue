@@ -12,7 +12,7 @@ export default {
 </script>
 
 <template>
-  <div>
+  <div id="skills">
     <div v-for="item in this.skills.skills">
       <Skill v-bind:skill="item">
 
@@ -22,5 +22,10 @@ export default {
 </template>
 
 <style scoped>
-
+  #skills{
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+  }
 </style>

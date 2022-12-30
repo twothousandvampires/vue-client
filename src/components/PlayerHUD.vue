@@ -20,20 +20,24 @@ export default {
   <div id="hud">
     <div id="stats">
       <div>
-        <p>Life - {{char.life}} / {{char.max_life}}</p>
-        <p>{{char.stats.get('life')}}</p>
+        <p>Life - {{char.getStat('life')}} / {{char.getStat('max_life')}}</p>
       </div>
       <div>
         <p>Will - 100/100</p>
       </div>
       <div>
-        <p>Energy - {{Math.floor(char.energy)}}/{{char.max_energy}}</p>
+        <p @click="char.useTorch()">torch - {{char.torch}}</p>
+      </div>
+      <div>
+        <p>Energy - {{Math.floor(char.getStat('energy'))}}/{{char.getStat('max_energy')}}</p>
       </div>
     </div>
-    <div id="player">
-      <StatusBar v-bind:status="this.char.status">
+    <div id="status">
+      <StatusBar v-bind:status="this.char.status.pull">
 
       </StatusBar>
+    </div>
+    <div id="player">
       <Belt v-bind:belt="this.char.belt">
 
       </Belt>
@@ -55,12 +59,18 @@ export default {
     flex-direction: row;
     justify-content: space-around;
   }
+  #status{
+    min-height: 40px;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+  }
   #hud{
     position: fixed;
     top:80%;
     left: auto;
-    width: 600px;
-    height: auto;
+    width:600px;
+    height: 150px;
     background-color: #c8c8c8;
     border: 10px solid #c8c8c8;
     border-image: url("/src/assets/img/border/border_long.png") 10 stretch stretch;

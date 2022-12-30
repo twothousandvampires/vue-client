@@ -1,9 +1,9 @@
-import Enemy from "./src/Enemy.js";
 import ImageData from "../ImageData.js";
 import Functions from "../GameFunctions";
+import Unit from "../scr/Unit";
 let data = new ImageData()
 
-export default class Reaper extends Enemy{
+export default class Reaper extends Unit{
     constructor(x, y, dist) {
         super(x, y ,dist);
         this.size_x = 90 + 200

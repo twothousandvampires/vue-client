@@ -1,13 +1,16 @@
 <script>
 import AccountInfo from "../components/AccountInfo.vue";
 import CharactersInfo from "../components/CharactersInfo.vue";
-import Request from "../script/Request";
 import Load from '../components/Load.vue'
+
+import { mapActions } from 'pinia'
+import { useUserStore } from "@/stores/user";
+
 
 export default {
   data(){
     return{
-      user : undefined,
+
     }
   },
   name: "UserMainInfo.vue",
@@ -16,12 +19,14 @@ export default {
     CharactersInfo,
     Load
   },
+  created() {
+    // userStore.fetchUser()
+  },
   mounted() {
-    Request.getUser().then( r =>{
-      this.user = r.data.data
-    })
+    this.fetchUser()
   }
   ,methods:{
+    ...mapActions(useUserStore, ['fetchUser']),
     deleteCharacter(id){
       this.user.characters = this.user.characters.filter( elem => {
         return elem.id !== id
@@ -32,10 +37,10 @@ export default {
 </script>
 
 <template>
-   <Load v-if="!user"></Load>
+   <Load v-if="false"></Load>
     <div class="profile-wrap" v-else>
-      <AccountInfo v-bind:user="user"/>
-      <CharactersInfo @deleteCharacter="deleteCharacter" v-bind:characters="user.characters"/>
+      <AccountInfo/>
+      <CharactersInfo/>
     </div>
 </template>
 

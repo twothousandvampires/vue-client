@@ -4,6 +4,7 @@ import Input from "./Input.js";
 import Request from "./Request.js";
 import FightController from "./Fight";
 import WorldController from "./World";
+import Log from "./Loger";
 
 export default class Game{
 
@@ -15,7 +16,7 @@ export default class Game{
         this.game_tick = 0
         this.delay = false
         this.scene = 'world'
-
+        this.loger = new Log()
 
         let response = await Request.getCharacter()
         if(response.data.success) {
@@ -29,6 +30,13 @@ export default class Game{
 
     setScene(scene){
         this.scene = scene
+    }
+
+    endFight(){
+        Request.win(this.char.id).then(r => {
+            this.world_controller.prettifyData(r.data.data)
+            this.scene = 'world'
+        })
     }
 
     newFight(node){
@@ -49,8 +57,7 @@ export default class Game{
                     this.world_controller.frame()
                     break;
                 case 'fight':
-                    let start = Date.now()
-                    this.fight_controller.act()
+                    this.fight_controller.frame()
                     break;
             }
         },50)

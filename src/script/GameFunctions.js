@@ -1,31 +1,13 @@
+import Point from "./scr/Point";
+
 export default class Functions{
 
     static distance(from, to){
-        return Math.floor(Math.sqrt(((from.cord_x- to.cord_x) ** 2) + ((from.cord_y - to.cord_y) ** 2)))
+        return Math.floor(Math.sqrt(((from.x - to.x) ** 2)
+                                     + ((from.y - to.y) ** 2)))
     }
 
-    // no need here
-    static colWithWalls(x, y , target , walls){
-
-        let box_x = Math.floor(target.cords.x - (target.box_size_w/2) + x)
-        let box_y = Math.floor(target.cords.y + y)
-        let box_w = target.box_size_w
-        let box_h = target.box_size_h
-
-        for(let i = 0 ; i < walls.length; i ++){
-            let wall = walls[i]
-            let XColl=false;
-            let YColl=false;
-            if ((box_x + box_w > wall[0] * 50) && (box_x < wall[0] * 50 + 50)) XColl = true;
-            if ((box_y + box_h > wall[1] * 50) && (box_y < wall[1] * 50 + 50)) YColl = true;
-            if (XColl&YColl){return true;}
-
-        }
-
-        return false;
-    }
-
-    static increasedByPercent(flat, percent, reverse = false){
+    static increasedByPercent(flat, percent){
         return +((flat * (1 + percent / 100)).toFixed(1))
     }
 
@@ -36,35 +18,14 @@ export default class Functions{
         return +((flat * (1 - percent/100)).toFixed(1))
     }
 
-    static colWithWallsOne(target , walls){
-        let box_x = Math.floor(target.cords.x - (target.box_size_w/2) + 1)
-        let box_y = Math.floor(target.cords.y + 1)
-        let box_w = target.box_size_w
-        let box_h = target.box_size_h
+    static pointInRect(point, rect){
+        rect.x = Math.floor(rect.x - (rect.width / 2))
+        rect.y = Math.floor(rect.y - (rect.height / 2))
 
-        for(let i = 0 ; i < walls.length; i ++){
-            let wall = walls[i]
-            let XColl=false;
-            let YColl=false;
-            if ((box_x + box_w > wall[0] * 50) && (box_x < wall[0] * 50 + 50)) XColl = true;
-            if ((box_y + box_h > wall[1] * 50) && (box_y < wall[1] * 50 + 50)) YColl = true;
-            if (XColl&YColl){return true;}
-
-        }
-
-        return false;
-    }
-
-    static pointInRect(x,y,rect){
-        let rect1_x = Math.floor(rect.cord_x - (rect.box_size_x/2))
-        let rect1_y = Math.floor(rect.cord_y - rect.box_size_y/2)
-        let rect1_w = rect.box_size_x
-        let rect1_h = rect.box_size_y
-
-        if(x > rect1_x && x < rect1_x + rect1_w && y > rect1_y && y < rect1_y + rect1_h){
-            return true
-        }
-        return false
+        return point.x > rect.x
+            && point.x < rect.x + rect.width
+            && point.y > rect.y
+            && point.y < rect.y + rect.height
     }
 
     static msToTick(ms){
@@ -75,28 +36,29 @@ export default class Functions{
         return tick % (20 * second) === 0
     }
 
-    static rectCollision(item , other){
-        let rect1_x = Math.floor(item.cord_x - (item.box_size_x/2))
-        let rect1_y = Math.floor(item.cord_y - (item.box_size_y/2))
-        let rect1_w = item.box_size_x
-        let rect1_h = item.box_size_y
+    static rectCollision(rect1 , rect2){
 
-        let rect2_x = Math.floor(other.cord_x - (other.box_size_x/2))
-        let rect2_y = Math.floor(other.cord_y - (other.box_size_y/2))
-        let rect2_w = other.box_size_x
-        let rect2_h = other.box_size_y
+        rect1.x = Math.floor(rect1.x - (rect1.width / 2))
+        rect1.y = Math.floor(rect1.y - (rect1.height / 2))
 
-        let XColl=false;
-        let YColl=false;
-        if ((rect1_x + rect1_w > rect2_x) && (rect1_x < rect2_x + rect2_w)) XColl = true;
-        if ((rect1_y + rect1_h > rect2_y) && (rect1_y < rect2_y + rect2_h)) YColl = true;
-        if (XColl&YColl){return true;}
+        rect2.x = Math.floor(rect2.x - (rect2.width / 2))
+        rect2.y = Math.floor(rect2.y - (rect2.height / 2))
 
+        let x_coll = false;
+        let y_coll = false;
+
+        if ((rect1.x + rect1.width > rect2.x) && (rect1.x < rect2.x + rect2.width)) x_coll = true;
+        if ((rect1.y + rect1.height > rect2.y) && (rect1.y < rect2.y + rect2.height)) y_coll = true;
+
+        if (x_coll && y_coll) {
+            return true
+        }
         return false
     }
 
     static circleCollision(radius, item , other){
-        return Functions.distance(item, other) < radius
+        console.log("in circles collision")
+        // return Functions.distance(item, other) < radius
     }
 
     static flipHorizontally(context, around){
@@ -105,19 +67,52 @@ export default class Functions{
         context.translate(-around, 0)
     }
 
-    static angle( item , other ){
+    static angle(from, target){
 
-        let angle = Math.atan((item.cord_x-other.cord_x)/(item.cord_y-other.cord_y));
-        if(other.cord_x < item.cord_x && other.cord_y < item.cord_y){
+        let angle = Math.atan((from.x - target.x) / (from.y - target.y))
+
+        if(target.x < from.x && target.y < from.y){
             angle += Math.PI
         }
-        if(other.cord_x > item.cord_x && other.cord_y < item.cord_y){
+        if(target.x > from.x && target.y < from.y){
             angle += Math.PI
         }
-        if(other.cord_x < item.cord_x && other.cord_y > item.cord_y){
+        if(target.x < from.x && target.y > from.y){
             angle += Math.PI*2
         }
 
         return angle
+    }
+
+    static random(max, min = 0){
+        Math.floor(Math.random() * (max - min) + min)
+    }
+
+    static circleRectCollision(circle =  false, rect= false){
+        let x1 = rect.x - rect.width / 2
+        let x2 = rect.x + rect.width / 2
+        let y1 = rect.y - rect.height / 2
+        let y2 = rect.y + rect.height / 2
+
+        if(Functions.distance(new Point(x1, y1), circle.point) < circle.radius) return true
+        if(Functions.distance(new Point(x2, y1), circle.point) < circle.radius) return true
+        if(Functions.distance(new Point(x1, y2), circle.point) < circle.radius) return true
+        if(Functions.distance(new Point(x2, y2), circle.point) < circle.radius) return true
+
+        let line1 = new Point(x1, rect.y)
+        let line2 = new Point(x2, rect.y)
+        let line3 = new Point(rect.x, y1)
+        let line4 = new Point(rect.x, y2)
+
+        if(Functions.distance(line1, circle.point) < circle.radius) return true
+        if(Functions.distance(line2, circle.point) < circle.radius) return true
+        if(Functions.distance(line3, circle.point) < circle.radius) return true
+        if(Functions.distance(line4, circle.point) < circle.radius) return true
+
+        return false
+    }
+
+    static sleep(ms) {
+        return new Promise(resolve => setTimeout(resolve, ms));
     }
 }

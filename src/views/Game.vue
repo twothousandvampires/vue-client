@@ -5,11 +5,12 @@ import MainLayout from "../layouts/MainLayout.vue";
 import Inventory from "../components/Inventory.vue";
 import SkillTree from "../components/SkillTree.vue";
 import Game from "../script/Game.js";
-import Request from "../script/Request.js";
 import RenderSettings from "../components/RenderSettings.vue";
 import PlayerHUD from "../components/PlayerHUD.vue";
 import Load from '../components/Load.vue'
 import AudioPlayer from "../components/AudioPlayer.vue";
+import Loger from '../components/Loger.vue'
+
 export default {
   data(){
     return {
@@ -24,7 +25,8 @@ export default {
     PlayerHUD,
     SkillTree,
     Load,
-    AudioPlayer
+    AudioPlayer,
+    Loger
   },
   mounted() {
     this.game = new Game(this)
@@ -50,13 +52,15 @@ export default {
       </div>
     </div>
 
-    <Inventory v-if="game?.inventoryIsOpen()" v-bind:char="game.char"></Inventory>
+    <Inventory v-if="game?.init && game?.inventoryIsOpen()" v-bind:char="game.char"></Inventory>
 
-    <SkillTree v-if="game?.tree_is_open" v-bind:char="game.char"></SkillTree>
+<!--    <SkillTree v-if="game?.tree_is_open" v-bind:char="game.char"></SkillTree>-->
 
-    <RenderSettings v-if="game?.state === 'fight'" v-bind:render="game.render"></RenderSettings>
+    <RenderSettings v-if="game" v-bind:render="game.fight_controller.render"></RenderSettings>
 
     <PlayerHUD v-if="game?.char" v-bind:char="game.char"></PlayerHUD>
+
+    <Loger v-if="game?.loger" v-bind:log="game.loger"></Loger>
 
   </MainLayout>
 </template>

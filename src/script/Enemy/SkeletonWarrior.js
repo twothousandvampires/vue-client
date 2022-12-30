@@ -1,245 +1,230 @@
-import Enemy from "./src/Enemy.js";
 import Functions from "../GameFunctions";
 import EffectCreator from "../Effects/EffectCreator";
-import SkeletonSkull from "./SkeletonSkull";
+import Skull from './Skull'
+import MeleeBehavior from "./behaviors/MeleeBehavior";
+import UnitData from "../UnitData";
+import Unit from "../scr/Unit";
+import Sprite from "../scr/Sprite";
+import Size from "../scr/Size";
+import Box from "../scr/Box";
+import Point from "../scr/Point";
 
-export default class SkeletonWarrior extends Enemy{
+export default class SkeletonWarrior extends Unit{
     constructor(x, y) {
         super(x, y)
-        this.skull_spawned = Math.random() > 0.5
-        this.size_x = 90
-        this.size_y = 99
-        this.box_size_x = 50
-        this.box_size_y = 25
-        this.is_resurected = false
-        this.sprite_w = 90
-        this.sprite_h = 99
-        this.def_w = this.sprite_w
-        this.def_h = this.sprite_h
-        this.can_charge = true
-        this.wait_between_attack = false
-        this.speed = 2
-        this.img_name = 'skeleton warrior'
-        this.attack_range = 40
-        this.looking_range = 200
-        this.charge_distance = 500
-        this.y_frame_offset = 0
-        this.max_frame = 7
-        this.frame_change_tick = 7 // 7 * 50(game_tick) = 350 ms
-        this.is_charge = false
-        this.life = 2
-        this.attack_box = false
-        this.speed = 2
+        this.sprite = new Sprite(96, 96, 'skeleton warrior')
+        this.size = new Size(96, 96)
+        this.box = new Box(40, 20)
+        this.name = 'skeleton'
+        this.skull_will_spawned = Math.random() > 0.5
+        this.state = undefined
 
-        //ms
-        this.attack_speed = 1800
-        this.idle()
+        this.stats = UnitData.get(this.name)
+        this.behavior = new MeleeBehavior(this)
     }
 
-    resetFrame(){
-        this.is_resurected = false
-        this.frame = 0
-        this.frame_timer = 0
-        this.is_idle = false
-        this.is_move = false
-        this.is_idle_move = false
-        this.is_attack = false
-        this.is_charge = false
-        this.damaged = false
-        this.deal_hit = false
-        this.wait_between_attack = false
-        this.attack_box = false
-    }
-
-    setBehaviorTimer(ms, idle_ms){
-        clearTimeout(this.change_behavior_timeout)
-        this.change_behavior_timeout = setTimeout(()=>{
-            this.idle(idle_ms)
-        }, ms)
-    }
-
-    act(char, fight){
-        let distance_to_char = Functions.distance(this, char)
-        if(this.is_resurected){
-
-        }
-        if(this.is_dead){
-
-        }
-        else if(this.can_change_behavior){
-
-            if(distance_to_char < 50 && !this.wait_between_attack){
-                this.attack(char)
-            }
-            else if(distance_to_char >= 50 && distance_to_char < 300){
-                this.move()
-            }
-            else if(distance_to_char > 200 && distance_to_char < 400 && this.can_charge){
-                this.deriction_angle = Functions.angle(this, char)
-                this.charge()
-            }
-            else if(distance_to_char >= 300 && distance_to_char < 400){
-                this.move()
-            }
-            else {
-                this.deriction_angle = Math.random() * 6.14
-                this.idleMove()
-            }
-            this.can_change_behavior = false
-        }
-
-        else if(this.frozen || this.stunned){
-
-        }
-        else if(this.damaged){
-            let move_x = Math.sin(this.direction_angle)
-            let move_y = Math.cos(this.direction_angle)
-            this.setCord(move_x, move_y, fight.map)
-        }
-        else if(this.is_attack){
-            if(!this.deal_hit && this.frame === 4){
-                this.deal_hit = true
-                fight.effects.push(EffectCreator.createEffect('weapon swing', this.attack_box.cord_x, this.attack_box.cord_y, this.attack_box.box_size_x, this.attack_box.box_size_y, this.attack_box.angle))
-                if(Functions.rectCollision(this.attack_box, char) && !char.damaged){
-                    char.damage(Functions.angle(this, char))
+    setState(state){
+        this.sprite.frame = 0
+        this.behavior.behavior_timer = 0
+        switch (state){
+            case 'idle':
+                if(Math.random() < 0.5){
+                    this.state = 'idle'
+                    this.sprite.y_frame_offset = 0
+                    this.sprite.max_frame = Math.random() < 0.5 ? 8 : 0
+                    this.sprite.frame_change_tick = 6
                 }
-            }
-        }
-        else if(this.is_move){
-            if(distance_to_char < 50){
-                this.attack(char)
-            }
-            else {
-                this.move_angle = Functions.angle(this, char)
-                let move_x = Math.sin(this.move_angle)
-                this.fliped = move_x <= 0;
-                let move_y = Math.cos(this.move_angle)
-                this.setCord(move_x, move_y, fight.map)
-            }
-        }
-        else if(this.is_charge){
-            let move_x = Math.sin(this.deriction_angle)
-            this.fliped = move_x <= 0;
-            let move_y = Math.cos(this.deriction_angle)
-            this.setCord(move_x, move_y, fight.map)
-        }
-        else if(this.is_idle_move){
-            let move_x = Math.sin(this.deriction_angle)
-            this.fliped = move_x <= 0;
-            let move_y = Math.cos(this.deriction_angle)
-            this.setCord(move_x, move_y, fight.map)
-        }
-
-        this.frame_timer ++
-        if(this.frame_timer >= this.frame_change_tick){
-            this.frame_timer = 0
-            if(this.is_resurected){
-                this.frame --
-                if(this.frame < 0){
-                    this.is_dead = false
-                    this.skull_spawned = Math.random() > 0.5
-                    this.idle(1000)
+                else {
+                    this.move_angle = Functions.random(6.24)
+                    this.state = 'move'
+                    this.sprite.y_frame_offset = 96
+                    this.sprite.max_frame = 8
+                    this.sprite.frame_change_tick = 4
                 }
-            }
-            else{
-                this.frame ++
-                if(this.frame >= this.max_frame){
-                    if(this.is_dead){
-                        if(this.skull_spawned && !this.skull_was_spawn){
-                            fight.enemy.push(new SkeletonSkull(this.cord_x, this.cord_y))
-                            this.skull_was_spawn = true
-                        }
-                        this.frame = this.max_frame - 1
-                    }
-                    else {
-                        this.frame = 0
-                    }
-                }
-            }
+                break;
+            case 'move':
+                this.state = 'move'
+                this.sprite.y_frame_offset = 96
+                this.sprite.max_frame = 8
+                this.sprite.frame_change_tick = 4
+                break;
+            case 'attack':
+                this.state = 'attack'
+                this.sprite.y_frame_offset = 192
+                this.sprite.max_frame = 7
+                this.sprite.frame_change_tick = Math.floor((this.getStat('attack_speed')/7)/50)
+                break;
+            case 'dying':
+                this.state = 'dying'
+                this.sprite.y_frame_offset = 192 + 96
+                this.sprite.max_frame = 7
+                this.sprite.frame_change_tick = 3
+                break;
+            case 'resurrect':
+                this.state = 'resurrect'
+                this.sprite.frame = 7
+                this.sprite.y_frame_offset = 192 + 96
+                this.sprite.max_frame = 0
+                this.sprite.frame_change_tick = 3
+                break;
+            case 'dead':
+                this.state = 'dead'
+                this.sprite.frame = this.skull_will_spawned ? 8 : 7
+                this.sprite.y_frame_offset = 192 + 96
+                this.sprite.max_frame = 1
+                this.sprite.frame_change_tick = 10
+                break;
         }
     }
 
-    dead(){
-        this.resetFrame()
-        this.setSize(90, 99)
-        this.is_dead = true
-        this.y_frame_offset = 500
-        this.max_frame = this.skull_spawned ? 8 : 7
-        this.frame_change_tick = 3
+
+
+    act(fight_context){
+        if(!this.state){
+            this.setState(this.behavior.getState(fight_context))
+        }
+        this.status.pull.forEach(elem => {
+            elem.act(fight_context)
+        })
+
+        this.behavior.behavior_timer ++
+        this.sprite.frame_timer ++
+
+        switch (this.state){
+            case 'idle':
+                this.idle(fight_context)
+                break;
+            case 'move':
+                this.move(fight_context)
+                break;
+            case 'attack':
+                this.attack(fight_context)
+                break;
+            case 'dying':
+                this.dying(fight_context)
+                break;
+            case 'dead':
+                this.dying(fight_context)
+                break;
+            case 'resurrect':
+                this.resurrect(fight_context)
+                break;
+        }
     }
 
     damage(angle){
-        this.resetFrame()
-        this.damaged = true
-        this.life--
-        if(this.life <= 0 ){
-            clearTimeout(this.change_behavior_timeout)
-            this.dead()
-            return
+
+    }
+
+    idle(fight_context){
+        if(this.behavior_timer > 50){
+            this.setState(this.behavior.getState(fight_context))
         }
-        this.direction_angle = angle
-        this.y_frame_offset = 300
-        this.max_frame = 2
-        this.frame_change_tick = 1
-        this.setBehaviorTimer(1000, 500)
+        if(this.frame_timer >= this.frame_change_tick){
+            this.frame_timer = 0
+            this.frame ++
+            if(this.frame >= this.max_frame){
+                this.frame = 0
+            }
+        }
     }
 
-    idle(ms = Math.random() * (2500 - 1000) + 1000){
-        this.resetFrame()
-        this.setSize(90, 99)
-        this.is_idle = true
-        this.y_frame_offset = 0
-        this.max_frame = 7
-        this.frame_change_tick = 7
-        this.change_behavior_timeout = setTimeout(()=>{
-            this.can_change_behavior = true
-        },ms)
+    getAttackRadius(){
+       return {
+            point: new Point(this.x, this.y),
+            radius: this.stats.getStat('attack_range')
+        }
     }
 
-    attack(char){
-        this.resetFrame()
-        this.is_attack = true
-        this.y_frame_offset = 199
-        this.max_frame = 6
-        this.attack_box = this.angleToAttackRect(Functions.angle(this, char))
-        this.frame_change_tick = 2000/350
-        this.wait_between_attack = true
-        this.setBehaviorTimer(2000)
+    playerInAttackRadius(player){
+        return  Functions.circleRectCollision(this.getAttackRadius(), player.getBoxRect())
     }
 
-    move(){
-        this.resetFrame()
-        this.is_move = true
-        this.y_frame_offset = 100
-        this.max_frame = 4
-        this.frame_change_tick = 6
-        this.setBehaviorTimer(3000)
+    attack(fight_context){
+        let player = fight_context.player
+
+        if(!this.deal_hit && this.sprite.frame === 6 && this.playerInAttackRadius(player)){
+            this.deal_hit = true
+            player.takeDamage(this.getDamage())
+        }
+        if(this.frame_timer >= this.frame_change_tick){
+            this.frame_timer = 0
+            this.frame ++
+            if(this.frame >= this.max_frame){
+                this.setState('idle')
+                this.deal_hit = false
+            }
+        }
     }
 
-    idleMove(){
-        this.resetFrame()
-        this.is_idle_move = true
-        this.y_frame_offset = 100
-        this.max_frame = 4
-        this.frame_change_tick = 6
-        this.setBehaviorTimer(3000)
+    getDamage(){
+        return  {
+            'type': 'physical',
+            'value': 10,
+            'force': true,
+            'source': this
+        }
     }
 
-    charge(){
-        this.resetFrame()
-        this.is_charge = true
-        this.can_charge = false
-        this.y_frame_offset = 400
-        this.max_frame = 2
-        this.frame_change_tick = 3
-        setTimeout(()=>{
-            this.can_charge  = true
-        },10000)
-        this.setBehaviorTimer(3000)
+    resurrect(fight_context){
+        if(this.frame_timer >= this.frame_change_tick){
+            this.frame_timer = 0
+            this.frame --
+            if(this.frame <= this.max_frame){
+                this.setState('idle')
+            }
+        }
     }
 
-    resurect(){
-        this.is_resurected = true
-        this.frame = 8
+    move(fight_context){
+        let player = fight_context.player
+
+        if(this.move_angle){
+            this.behavior_timer ++
+            if(this.behavior_timer >= 20){
+                this.move_angle = undefined
+                this.setState(this.behavior.getState(fight_context))
+                return
+            }
+        }
+        else {
+            if(this.playerInAttackRadius(player)){
+                this.setState('attack')
+                return
+            }
+
+        }
+        let angle = Functions.angle(this.point, player.point)
+        let move_x = Math.sin(angle)
+        this.fliped = move_x <= 0;
+        let move_y = Math.cos(angle)
+        this.setCord(move_x, move_y, fight_context)
+        if(this.frame_timer >= this.frame_change_tick){
+            this.frame_timer = 0
+            this.frame ++
+            if(this.frame >= this.max_frame){
+                this.frame = 0
+            }
+        }
+    }
+
+    dying(fight_context){
+        if(this.frame_timer >= this.frame_change_tick){
+            this.frame_timer = 0
+            this.frame ++
+            if(this.frame >= this.max_frame){
+                if(this.skull_will_spawned){
+                    fight_context.enemy.push((new Skull(this.cord_x, this.cord_y)))
+                }
+                this.setState('dead')
+            }
+        }
+    }
+    dead(fight_context){
+
+    }
+
+    takeDamage(){
+        this.setState('dying')
     }
 }

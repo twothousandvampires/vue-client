@@ -1,13 +1,14 @@
 export default class Node{
 
-    constructor(template, char_x, char_y){
+    constructor(template, char){
         this.x = template.x
         this.y  = template.y
-        this.pretti_x = template.x - char_x + 6
-        this.pretti_y = template.y - char_y + 6
-        this.tile = this.getTile(template)
-        this.visited = template.visited
+        this.pretti_x = template.x - char.x + 6
+        this.pretti_y = template.y - char.y + 6
+        this.visited = template.visited || (this.pretti_x === char.pretti_x && this.pretti_y === char.pretti_y)
         this.type = template.type
+        this.light = false
+        this.tile = this.getTile(template)
         if(template.content_type){
             this.frame_timer = 0
             this.frame = 0
@@ -45,7 +46,37 @@ export default class Node{
         }
     }
 
+    setLightSource(source){
+        this.light = true
+        this.mist_timer = 0
+        this.mist_frame = 0
+        this.mist_max_frame = 8
+        switch (source){
+            case 's':
+                this.mist_offsets = this.mist_offsets.filter(elem => {
+                    return elem !== 200
+                })
+                break;
+            case 'n':
+                this.mist_offsets = this.mist_offsets.filter(elem => {
+                    return elem !== 0
+                })
+                break;
+            case 'w':
+                this.mist_offsets = this.mist_offsets.filter(elem => {
+                    return elem !== 300
+                })
+                break;
+            case 'e':
+                this.mist_offsets = this.mist_offsets.filter(elem => {
+                    return elem !== 100
+                })
+                break;
+        }
+    }
+
     getTile(node){
+        this.mist_offsets = []
         let x,y
         if(node.n_link && node.s_link && node.w_link && node.e_link){
             x = 0
@@ -54,41 +85,56 @@ export default class Node{
         else if(node.n_link && node.s_link && node.w_link){
             x = 300
             y = 200
+            this.mist_draw_offset = 14
+            this.mist_offsets = [0, 200, 300]
         }
         else if(node.n_link && node.s_link && node.e_link){
             x = 200
             y = 200
+            this.mist_offsets = [0, 100, 200]
         }
         else if(node.w_link && node.e_link && node.n_link){
             x = 100
             y = 200
+            this.mist_draw_offset = 14
+            this.mist_offsets = [0, 100, 300]
+
         }else if(node.w_link && node.e_link && node.s_link){
             x = 0
             y = 200
+            this.mist_offsets = [100, 200, 300]
         }
         else if(node.n_link && node.s_link){
             x = 100
             y = 100
+            this.mist_offsets = [0, 200]
         }
         else if(node.w_link && node.e_link){
             x = 0
             y = 100
+            this.mist_offsets = [100, 300]
         }
         else if(node.n_link && node.e_link){
+            this.mist_draw_offset = 12
             x = 500
             y = 100
+            this.mist_offsets = [0, 100]
         }
         else if(node.w_link && node.n_link){
             x = 400
+            this.mist_draw_offset = 12
             y = 100
+            this.mist_offsets = [0, 300]
         }
         else if(node.s_link && node.e_link){
             x = 200
             y = 100
+            this.mist_offsets = [200, 100]
         }
         else if(node.w_link && node.s_link){
             x = 300
             y = 100
+            this.mist_offsets = [200, 300]
         }
         else if(node.w_link){
             x = 0

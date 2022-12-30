@@ -1,14 +1,19 @@
 <script>
 import CharacterCreate from "./CharacterCreate.vue";
+import { useUserStore } from "@/stores/user";
+import { mapState } from 'pinia';
 
 export default {
   data(){
     return {
-      character_creating : false
+      character_creating : false,
     }
   },
-  props:{
-    user : Object
+  mounted() {
+
+  },
+  computed: {
+    ...mapState(useUserStore,['user'])
   },
   methods:{
     createSwitch(){
@@ -23,7 +28,7 @@ export default {
 
 <template>
     <div class="acc-info-wrap">
-      <h1 class="acc-name">{{ user.name }}</h1>
+      <h1 class="acc-name">{{ this.user.name }}</h1>
       <button @click="createSwitch" >Create character</button>
     </div>
     <CharacterCreate @stopCreating="createSwitch" v-if="character_creating"/>

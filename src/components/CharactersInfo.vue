@@ -1,24 +1,25 @@
 <script>
 import CharacterSingleInfo from "./CharacterSingleInfo.vue";
+import {mapState} from "pinia/dist/pinia";
+import { useUserStore } from "@/stores/user";
+
 export default {
-  props:{
-    characters : Array
-  },
   components:{
     CharacterSingleInfo
   },
   methods :{
-    deleteCharacter(id){
-      this.$emit('deleteCharacter', id)
-    }
-  }
+
+  },
+  computed: {
+    ...mapState(useUserStore,['user'])
+  },
 }
 </script>
 
 <template>
   <div class="characters-wrap">
-    <div class="character" v-for="character in characters">
-        <CharacterSingleInfo @deleteCharacter="deleteCharacter" v-bind:char="character"/>
+    <div class="character" v-for="character in this.user.characters">
+        <CharacterSingleInfo v-bind:char="character"/>
     </div>
   </div>
 </template>

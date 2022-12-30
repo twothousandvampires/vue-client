@@ -21,11 +21,27 @@ export default class Request{
         })
     }
 
+    static torch(){
+        let char_id = localStorage.getItem('char_id')
+        return axios({method: 'get', url: Request.URL + 'character/torch/'+ char_id, headers: {
+                'Authorization': 'Bearer ' + Request.TOKEN,
+            }
+        })
+    }
+
     static createCharacter(name){
         return axios({method: 'post', url: Request.URL + 'character/create/', headers: {
                 'Authorization': 'Bearer ' + Request.TOKEN,
             }, data : {
                 name : name,
+            }
+        })
+    }
+
+    static getItemList(){
+        return axios({method:'get', url : Request.URL +'item',
+            headers: {
+                'Authorization': 'Bearer ' + Request.TOKEN,
             }
         })
     }
@@ -82,6 +98,19 @@ export default class Request{
         })
     }
 
+    static deleteAllItems(char_id){
+        return axios({method: 'delete',
+            url : Request.URL + 'item/delete_all/',
+            data : {
+                char_id : char_id
+            },
+            headers : {
+                'Authorization': 'Bearer ' + Request.TOKEN,
+            }
+        })
+    }
+
+
     static win(char_id){
         return axios({method: 'post',
             url : Request.URL + 'character/win/',
@@ -95,11 +124,12 @@ export default class Request{
         })
     }
 
-    static createItem(){
+    static createItem(item_name){
         return axios({method: 'post',
             url : Request.URL + 'item/create/',
             data : {
                 char_id : localStorage.getItem('char_id'),
+                item_name: item_name
             },
             headers : {
                 'Authorization': 'Bearer ' + Request.TOKEN,

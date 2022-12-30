@@ -1,7 +1,10 @@
 import SkeletonArcher from "../SkeletonArcher";
 import SkeletonWarrior from "../SkeletonWarrior";
 import SkeletonWizard from "../SkeletonWizard";
-
+import Ghost from "../Ghost";
+import PileOfSkull from "../PileOfSkull";
+import GiantUndead from "../GiantUndead";
+import Lich from "../Lich";
 export default class Spawner{
 
     constructor() {
@@ -11,17 +14,28 @@ export default class Spawner{
 
     createPull(content_count){
         content_count.forEach(elem => {
-            elem.count *= 10
             while (elem.count){
                 switch (elem.name){
                     case 'skeleton warrior':
-                        this.pull.push(new SkeletonWarrior(0,0))
+                        this.pull.push(new SkeletonWarrior())
                         break;
                     case 'skeleton archer':
-                        this.pull.push(new SkeletonArcher(0,0))
+                        this.pull.push(new SkeletonArcher())
                         break;
                     case 'skeleton mage':
-                        this.pull.push(new SkeletonWizard(0,0))
+                        this.pull.push(new SkeletonWizard())
+                        break;
+                    case 'ghost':
+                        this.pull.push(new Ghost())
+                        break;
+                    case 'pile of skull':
+                        this.pull.push(new PileOfSkull())
+                        break;
+                    case 'giant undead':
+                        this.pull.push(new GiantUndead())
+                        break;
+                    case 'lich':
+                        this.pull.push(new Lich())
                         break;
                 }
                 elem.count--
@@ -30,8 +44,10 @@ export default class Spawner{
     }
 
     getWave(map){
+
         let count = this.pull.length >= 8 ? 8 : this.pull.length
         let result = []
+        let wave = 1
         for(let i = 0; i < count;i++){
             let enemy = this.pull[Math.floor(Math.random() * this.pull.length)]
             let cords = this.getCords(i, map)
@@ -39,6 +55,7 @@ export default class Spawner{
             enemy.cord_y = cords[1]
             result.push(enemy)
             this.pull.splice(this.pull.indexOf(enemy),1)
+            wave ++
         }
         return result ? result : false
     }

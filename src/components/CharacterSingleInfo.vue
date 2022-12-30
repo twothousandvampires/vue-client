@@ -1,22 +1,22 @@
 <script>
 import Request from "../script/Request";
+import {mapActions, mapState} from "pinia/dist/pinia";
+import { useUserStore } from "@/stores/user";
 
 export default {
   props : {
     char : Object
   },
   methods : {
+    ...mapActions(useUserStore, ['deleteCharacter']),
     play(id){
       localStorage.setItem('char_id', id)
       location.href = '/game'
     },
-    async deleteCharacter(char_id){
-      let ApiResponse = await Request.deleteCharacter(char_id)
-      if(ApiResponse.data.success){
-        this.$emit('delete_char', char_id)
-      }
-    }
-  }
+  },
+  computed: {
+    ...mapState(useUserStore,['user'])
+  },
 }
 </script>
 
@@ -31,7 +31,7 @@ export default {
     </div>
     <div id="info-bottom">
       <button  @click.prevent="play(char.id)">Play</button>
-      <button  @click.prevent="deleteCharacter(char.id)">Delete</button>
+      <button  @click.prevent="this.deleteCharacter(char.id)">Delete</button>
     </div>
   </div>
 </template>

@@ -1,17 +1,60 @@
 <script>
+import Request from "../script/Request";
+import ItemCreator from "@/script/Items/ItemCreator";
 export default {
   name: "PlayerInventory",
   props: {
     char: Object
+  },
+  data(){
+    return {
+      item_list: undefined,
+      item_to_create: undefined
+    }
+  },
+  async mounted() {
+    let response = await Request.getItemList()
+    this.item_list = response.data
+  },
+  methods: {
+    async deleteAllItems(){
+      let response = await Request.deleteAllItems(this.char.id)
+      if(response.data.success){
+        this.char.inv.clear()
+      }
+    },
+    async deleteItem(item){
+      let response = await Request.deleteItem(item.id)
+      if(response.data.success){
+        this.char.inv.deleteItem(item)
+      }
+    },
+    createItem(){
+      Request.createItem(this.item_to_create).then(response => {
+        if (response.data.success) {
+          this.char.inv.pull[response.data.data.item.slot] = ItemCreator.createItem(response.data.data.item)
+        }
+      })
+    }
   }
 }
 </script>
 <template>
   <div id="inv">
     <div id ="utility">
-      <p @click="$emit('createItem')">
+      <p @click="createItem">
         create item
       </p>
+      <p @click="deleteAllItems">
+        delete all
+      </p>
+      <div>
+        <select v-model="item_to_create">
+          <option  v-for="item_name in item_list" :value="item_name">
+            {{item_name}}
+          </option>
+        </select>
+      </div>
     </div>
     <div id="items">
       <div class="inv_item"  v-for="item in char.inv.pull.slice(9,29)" >

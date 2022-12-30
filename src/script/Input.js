@@ -29,6 +29,9 @@ export default class Input {
         })
         window.addEventListener('keydown',(e)=>{
             // e.preventDefault()
+            if(e.key == ' '){
+                e.preventDefault()
+            }
             this.pressed[e.key] = true
         })
         window.addEventListener('keyup',(e)=>{

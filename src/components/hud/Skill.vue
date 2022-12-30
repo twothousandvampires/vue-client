@@ -8,7 +8,9 @@ export default {
 </script>
 
 <template>
-  <div>{{this.skill.name}}</div>
+  <div>
+    <img :src="this.skill.img_path">
+  </div>
 </template>
 
 <style scoped>

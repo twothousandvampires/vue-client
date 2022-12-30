@@ -1,17 +1,19 @@
 import Functions from "../GameFunctions"
 import Inventory from "./Inventory"
 import Unit from "../scr/Unit"
-import EffectCreator from "../Effects/EffectCreator"
-import Modal from "../Modal.js"
 import Belt from "./hud/Belt";
 import SkillPanel from "./hud/SkillPanel";
-import Status from "./hud/StatusBar";
+import Request from "../Request";
+import ChainLight from "../Skills/ChainLight";
+
+
 
 export default class Character extends Unit{
 
     constructor(template) {
 
         super(650, 850)
+        this.id = template.id
         this.template = template
 
         this.stats = new Map()
@@ -23,37 +25,39 @@ export default class Character extends Unit{
         this.pretti_y = 6
 
         this.skill_panel = new SkillPanel(this)
-        this.status = new Status(this)
         this.belt = new Belt(this)
 
-
+        this.opacity = 1
         this.inv = new Inventory(this, template.items)
 
-        this.createStats()
+        // this.skill = new StepOfAnotherWorld()
+        this.stats = {}
+        this.createStats(template)
         this.img_name = 'grim traveler'
 
         this.attack_box = undefined
 
         // size on canvas
-        this.size_x = 72
-        this.size_y = 72
+        this.size_x = 96
+        this.size_y = 96
 
         // sprite size
         this.sprite_w = 96
         this.sprite_h = 96
 
         // coll box size
-        this.box_size_x = 48
-        this.box_size_y = 24
+        this.box_size_x = 40
+        this.box_size_y = 20
 
         this.recovery_timeout = undefined
+        this.direction_angle = false
 
         this.y_frame_offset = 0
         this.max_frame = 9
         this.frame_change_tick = 7 // 7 * 50(game_tick) = 350 ms
 
 
-
+        this.damaged_time = 0
 
         this.is_cast = false
         this.is_poution = false
@@ -63,16 +67,56 @@ export default class Character extends Unit{
 
         this.speed = 2
         this.setImageState('idle')
+        this.attack_range = 50
+
+        this.attack_speed = 1800
+
+        this.invisible = false
+        this.energy_low = 0
+        this.chance_to_block = 50
+
     }
 
-    createStats(){
-        this.createCharacterStats()
-        this.createAttackStats()
-        this.createSpeedStats()
-        this.regenerationStats()
-        this.spellStats()
-        this.critStats()
-        this.defendStats()
+    enoughEnergy(needed){
+        return this.stats.energy - needed >= 0
+    }
+
+    useTorch(){
+        Request.torch()
+    }
+
+    createStats(template){
+        this.id = template.id
+        this.name = template.name
+        this.torch = template.torch
+
+        this.stats.armour = template.armour
+        this.stats.speed = template.movement_speed
+        this.stats.attack_range = template.attack_range
+        this.stats.attack_speed = 200
+        this.stats.min_attack_damage = template.min_attack_damage
+        this.stats.max_attack_damage = template.max_attack_damage
+        this.stats.evade = template.evade
+        this.stats.cast_speed = template.cast_speed
+        this.stats.max_life = template.max_life
+        this.stats.life = template.life
+        this.stats.max_energy = template.max_energy
+        this.stats.energy = template.energy
+        this.stats.will = template.will
+        this.stats.energy_regen = template.stamina_regeneration
+        this.stats.attack_block = template.attack_block
+        this.stats.spell_block = template.spell_block
+        this.stats.more_speed = 0
+
+        // this.energy = 100
+        // this.max_energy = 100
+        // this.createCharacterStats()
+        // this.createAttackStats()
+        // this.createSpeedStats()
+        // this.regenerationStats()
+        // this.spellStats()
+        // this.critStats()
+        // this.defendStats()
     }
 
     defendStats(){
@@ -237,24 +281,7 @@ export default class Character extends Unit{
     }
 
     getState(){
-        if(this.is_idle){
-            return 'idle';
-        }
-        else if(this.is_attack){
-            return 'attack'
-        }
-        else if(this.is_move){
-            return 'move'
-        }
-        else if(this.is_run){
-            return 'run'
-        }
-        else if(this.damaged){
-            return 'damaged'
-        }
-        else if(this.defended){
-            return 'defend'
-        }
+
     }
 
     getMoveAngle(input){
@@ -292,47 +319,56 @@ export default class Character extends Unit{
         return input.w || input.s || input.a || input.d
     }
 
-    resetFrame(){
-        this.frame = 0
-        this.frame_timer = 0
-        this.is_move = false
-        this.is_run = false
-        this.is_attack = false
-        this.is_poution = false
-        this.is_scroll = false
-        this.is_cast = false
-        this.is_idle = false
-        this.damaged = false
-        this.defended = false
-        this.attack_box = false
-        this.deal_hit = false
-    }
-
-    setRecoveryTimeOut(ms){
-        clearTimeout(this.recovery_timeout)
-        this.recovery_timeout = setTimeout(()=>{
-            this.idle()
-        },ms)
-    }
-
     regen(tick){
-        if( (this.is_run ) && tick%10 === 0){
-            this.energy -= 0.5
-        }
 
-        if(!this.is_run && !this.is_attack && tick%20 === 0 && this.energy < this.max_energy){
-            this.energy += this.energy_regeneration
-            if(this.energy > this.max_energy){
-                this.energy = this.max_energy
+        if(this.stats.energy <=5 ){
+            this.energy_low ++
+            if(this.energy_low >= 5){
+                this.setImageState('dyspnea')
+                this.energy_low = 0
             }
         }
+
+        if( this.state === 'run' ){
+            if(!this.enoughEnergy(5)){
+                this.setImageState('move')
+            }
+            else {
+                this.stats.energy -= 5
+            }
+        }
+        else {
+            if(this.stats.energy + 1 <= 100){
+                this.stats.energy += this.getStat('energy_regen')
+            }
+        }
+        // if(!this.is_run && !this.is_attack && tick%20 === 0 && this.energy < this.max_energy){
+        //     this.energy += this.energy_regeneration
+        //     if(this.energy > this.max_energy){
+        //         this.energy = this.max_energy
+        //     }
+        // }
     }
 
     act(fight_context){
-        // this.regen(tick)
+
+        if(fight_context.tick % 20 === 0){
+            this.regen(fight_context.tick)
+        }
+
 
         let input = fight_context.mouse.getInput()
         let mouse_cord = {cord_x: input.canvas_x, cord_y: input.canvas_y}
+
+        if(input['z']){
+            fight_context.enemy.forEach(elem=>{
+                elem.setState('dying')
+            })
+        }
+
+        this.status.pull.forEach(elem => {
+            elem.act(fight_context)
+        })
 
         switch (this.state){
 
@@ -350,6 +386,15 @@ export default class Character extends Unit{
                 break;
             case 'block':
                 this.block(fight_context, input, mouse_cord)
+                break;
+            case 'damaged':
+                this.damaged(fight_context, input, mouse_cord)
+                break;
+            case 'cast':
+                this.cast(fight_context, input, mouse_cord)
+                break;
+            case 'dyspnea':
+                this.dyspnea(fight_context, input, mouse_cord)
                 break;
 
         }
@@ -414,8 +459,10 @@ export default class Character extends Unit{
             this.frame ++
             if(this.frame >= this.max_frame){
                 this.frame = 0
-                if(this.state == 'attack'){
+                if(this.state == 'attack' || this.state == 'cast'){
                     this.setImageState('idle')
+                    this.deal_hit = false
+                    this.casted = false
                 }
             }
         }
@@ -446,13 +493,31 @@ export default class Character extends Unit{
                 this.state = 'attack'
                 this.y_frame_offset = 192
                 this.max_frame = 10
-                this.frame_change_tick = 2
+                this.frame_change_tick = Math.floor((this.stats.attack_speed/10)/50)
                 break;
             case 'block':
                 this.state = 'block'
                 this.y_frame_offset = 480
                 this.max_frame = 4
                 this.frame_change_tick = 6
+                break;
+            case 'damaged':
+                this.state = 'damaged'
+                this.y_frame_offset = 7 * 96
+                this.max_frame = 2
+                this.frame_change_tick = 1
+                break;
+            case 'cast':
+                this.state = 'cast'
+                this.y_frame_offset = 6 * 96
+                this.max_frame = 11
+                this.frame_change_tick = 3
+                break;
+            case 'dyspnea':
+                this.state = 'dyspnea'
+                this.y_frame_offset = 8 * 96
+                this.max_frame = 4
+                this.frame_change_tick = 3
                 break;
             case 'world idle':
                 this.state = 'idle'
@@ -469,13 +534,39 @@ export default class Character extends Unit{
         }
     }
 
-    cast(proj, angle){
-        this.skill_panel.skills[1].use(proj, angle, this.cord_x, this.cord_y)
+    cast(fight_context, input, mouse_cord){
+        if(this.frame >= 7 && !this.casted){
+            this.casted = true
+            this.skill_panel.skills[this.casted_skill].cast(fight_context, mouse_cord)
+        }
+        // this.phased = true
+        // this.opacity = 0.7
+        // for(let i = 0; i < fight_context.enemy.length;i++){
+        //     fight_context.enemy[i].attack_speed = 8000
+        // }
+    }
+
+    dyspnea(fight_context, input, mouse_cord){
+        if(this.energy >= 10){
+            this.setImageState('idle')
+        }
     }
 
     idle(fight_context, input, mouse_cord){
         let { mouse, effect, enemy, tick, proj, map } = fight_context
+        if(input['1'] || input['2']){
+            this.attack_point = mouse_cord
+            if(input['1']){
+                this.casted_skill = 0
+            }
+            else if(input['2']){
+                this.casted_skill = 1
+            }
+            this.setImageState('cast')
+            return
+        }
         if(input.l_click){
+            this.attack_point = mouse_cord
             this.setImageState('attack')
             return
         }
@@ -488,22 +579,33 @@ export default class Character extends Unit{
             return
         }
     }
-    move(fight_context, input, mouse_cord){
 
-        if(!this.moveInputIsPressed(input)){
-            this.setImageState('idle')
-            return
+
+
+    move(fight_context, input, mouse_cord){
+        if(this.direction_angle){
+            let move_x = Math.sin(this.direction_angle)
+            this.fliped = move_x <= 0;
+            let move_y = Math.cos(this.direction_angle)
+            this.setCord(move_x, move_y, fight_context)
         }
-        if(input[' ']){
-            this.setImageState('run')
-            return
+        else {
+            if(!this.moveInputIsPressed(input)){
+                this.setImageState('idle')
+                return
+            }
+            if(input[' '] && this.enoughEnergy(2)){
+                this.stats.energy -=2
+                this.setImageState('run')
+                return
+            }
+            let { mouse, effect, enemy, tick, proj, map } = fight_context
+            this.getMoveAngle(input)
+            let move_x = Math.sin(this.move_angle)
+            this.fliped = move_x <= 0;
+            let move_y = Math.cos(this.move_angle)
+            this.setCord(move_x, move_y, fight_context)
         }
-        let { mouse, effect, enemy, tick, proj, map } = fight_context
-        this.getMoveAngle(input)
-        let move_x = Math.sin(this.move_angle)
-        this.fliped = move_x <= 0;
-        let move_y = Math.cos(this.move_angle)
-        this.setCord(move_x, move_y, map)
     }
     run(fight_context, input, mouse_cord){
         if(!this.moveInputIsPressed(input)){
@@ -519,31 +621,39 @@ export default class Character extends Unit{
         let move_x = Math.sin(this.move_angle) * 2
         this.fliped = move_x <= 0;
         let move_y = Math.cos(this.move_angle) * 2
-        this.setCord(move_x, move_y, map)
+        this.setCord(move_x, move_y, fight_context)
     }
 
-    damage(angle){
-        this.resetFrame()
-        this.setSize(90,93)
-        this.damaged = true
-        this.direction_angle = angle
-        this.y_frame_offset = 399
-        this.max_frame = 2
-        this.frame_change_tick = 1
-        this.setRecoveryTimeOut(1000)
+    takeDamage(source){
+        this.life -= source.value
+        if(source.force){
+            this.setImageState('damaged')
+            this.move_angle = Functions.angle(source.source, this)
+        }
     }
 
-    attack(mouse){
-        // if(this.frame)
-        // this.energy -= 2
-        // this.resetFrame()
-        // this.setSize(120,120)
-        // this.is_attack = true
-        // this.y_frame_offset = 187
-        // this.max_frame = 8
-        // this.frame_change_tick = 1000/350
-        // this.attack_box = this.angleToAttackRect(Functions.angle(this,mouse))
-        // this.setRecoveryTimeOut(1000)
+    damaged(fight_context, input, mouse_cord){
+        this.damaged_time ++
+        if(this.damaged_time >= 20){
+            this.setImageState('idle')
+            this.damaged_time = 0
+        }
+        let move_x = Math.sin(this.move_angle)
+        let move_y = Math.cos(this.move_angle)
+        this.setCord(move_x, move_y, fight_context)
+    }
+
+    attack(fight_context, input, mouse_cord){
+        if(this.frame === 6 && !this.deal_hit){
+            this.deal_hit = true
+            fight_context.newLog('you attack')
+            for(let i = 0; i < fight_context.enemy.length;i++){
+                if(Functions.distance(mouse_cord, this) < this.getStat('attack_range') && Functions.pointInRect(this.attack_point.cord_x, this.attack_point.cord_y, fight_context.enemy[i])){
+                    fight_context.enemy[i].takeDamage(this)
+                    break
+                }
+            }
+        }
     }
 
     block(fight_context, input, mouse_cord){
@@ -551,5 +661,22 @@ export default class Character extends Unit{
             this.setImageState('idle')
             return
         }
+    }
+
+    wasHit(source, fight_context){
+        if(this.state == 'block'){
+            let total_block_chance = this.chance_to_block
+            if(source.tags.includes('spell')){
+                total_block_chance /= 2
+            }
+            if(source.tags.includes('aoe')){
+                total_block_chance /= 2
+            }
+            if(Math.random() * 100 < total_block_chance){
+                fight_context.newLog('you blocked ' + '(' + source.name + ')')
+                return false
+            }
+        }
+        return true
     }
 }

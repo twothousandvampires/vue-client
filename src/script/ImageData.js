@@ -16,14 +16,47 @@ export default class ImageData{
         this['fire_ball'] = new Image()
         this['fire_ball'].src = './src/assets/img/projectiles/fireball.png'
 
+        this['fear_skull'] = new Image()
+        this['fear_skull'].src = './src/assets/img/projectiles/fear_skull.png'
+
+        this['fear'] = new Image()
+        this['fear'].src = './src/assets/img/status/fear.png'
+
+        this['ghost_grip'] = new Image()
+        this['ghost_grip'].src = './src/assets/img/status/ghost_grip.png'
+
+        this['fury_of_the_dead'] = new Image()
+        this['fury_of_the_dead'].src = './src/assets/img/status/fury_of_the_dead.png'
+
+        this['magic_explosion'] = new Image()
+        this['magic_explosion'].src = './src/assets/img/effects/magic_explosion.png'
+
+        this['soul_vortex'] = new Image()
+        this['soul_vortex'].src = './src/assets/img/effects/soul_vortex.png'
+
         this['skeleton warrior'] = new Image()
-        this['skeleton warrior'].src = './src/assets/img/enemy/skeleton_warrior.png'
+        this['skeleton warrior'].src = './src/assets/img/enemy/skeleton_warrior1.png'
+
+        this['ghost'] = new Image()
+        this['ghost'].src = './src/assets/img/enemy/ghost.png'
+
+        this['skull'] = new Image()
+        this['skull'].src = './src/assets/img/enemy/skull.png'
+
+        this['lich'] = new Image()
+        this['lich'].src = './src/assets/img/enemy/lich.png'
 
         this['skeleton archer'] = new Image()
-        this['skeleton archer'].src = './src/assets/img/enemy/skeleton_archer.png'
+        this['skeleton archer'].src = './src/assets/img/enemy/skeleton_archer1.png'
 
         this['skeleton wizard'] = new Image()
-        this['skeleton wizard'].src = './src/assets/img/enemy/skeleton_wizard.png'
+        this['skeleton wizard'].src = './src/assets/img/enemy/skeleton_wizard1.png'
+
+        this['pile_of_skull'] = new Image()
+        this['pile_of_skull'].src = './src/assets/img/enemy/pile_of_skull.png'
+
+        this['giant undead'] = new Image()
+        this['giant undead'].src = './src/assets/img/enemy/giant_undead.png'
 
         this['undying squad'] = new Image()
         this['undying squad'].src = './src/assets/img/world/undying_squad.png'
@@ -39,6 +72,12 @@ export default class ImageData{
 
         this['fire explosion'] = new Image()
         this['fire explosion'].src = './src/assets/img/effects/explosion_fire.png'
+
+        this['raise_the_undead'] = new Image()
+        this['raise_the_undead'].src = './src/assets/img/effects/raise_the_undead.png'
+
+        this['mist'] = new Image()
+        this['mist'].src = './src/assets/img/effects/black_mist.png'
 
         this['weapon swing'] = new Image()
         this['weapon swing'].src = './src/assets/img/effects/weapon_swing.png'

@@ -55,11 +55,11 @@ export default class Equip extends Item{
         let total = this.getTotal()
         this.props.forEach(elem => {
             let value = total ? Functions.increasedByPercent(elem.value, total) : elem.value
-            if(player[elem.stat]){
-                player[elem.stat] = +(+player[elem.stat] + +value).toFixed(2)
+            if(player.stats[elem.stat]){
+                player.stats[elem.stat] = +(+player.stats[elem.stat] + +value).toFixed(2)
             }
             else {
-                player[elem.stat] = value
+                player.stats[elem.stat] = value
             }
         })
         this.equiped = true
@@ -69,7 +69,7 @@ export default class Equip extends Item{
         let total = this.getTotal()
         this.props.forEach(elem => {
             let value = total ? Functions.increasedByPercent(elem.value, total) : elem.value
-            player[elem.stat] = +(+player[elem.stat] - +value).toFixed(2)
+            player.stats[elem.stat] = +(+player.stats[elem.stat] - +value).toFixed(2)
         })
         this.equiped = false
     }

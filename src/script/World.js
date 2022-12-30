@@ -30,6 +30,7 @@ export default class WorldController{
 
     async init(){
         let response = await Request.world(this.char.id)
+        console.log(response.data)
         if(response.data.success){
             this.updateMapData(response.data.data)
         }
@@ -39,12 +40,41 @@ export default class WorldController{
         this.map = [[],[],[],[],[],[],[],[],[],[],[],[],[]]
     }
 
+    newLog(msg){
+        this.game.loger.newLog(msg)
+    }
+
     updateMapData(data){
         this.clearMap()
         data.forEach(elem =>{
-            elem = new Node(elem, this.char.x, this.char.y)
+            elem = new Node(elem, this.char)
             this.map[elem.pretti_y][elem.pretti_x] = elem
         })
+        for(let i = 0; i < this.map.length; i++){
+            let map_row = this.map[i]
+            for (let j = 0; j < map_row.length; j++){
+                let node = this.map[i][j]
+                if(node?.visited){
+
+                    if(this.map[i - 1] && this.map[i - 1][j]){
+                        let n_node = this.map[i - 1][j]
+                        n_node.setLightSource('s')
+                    }
+                    if(this.map[i + 1] && this.map[i + 1][j]){
+                        let s_node = this.map[i + 1][j]
+                        s_node.setLightSource('n')
+                    }
+                    if(this.map[i] && this.map[i][j - 1]){
+                        let w_node = this.map[i][j - 1]
+                        w_node.setLightSource('e')
+                    }
+                    if(this.map[i] && this.map[i][j + 1]){
+                        let e_node = this.map[i][j + 1]
+                        e_node.setLightSource('w')
+                    }
+                }
+            }
+        }
     }
 
 
@@ -114,6 +144,16 @@ export default class WorldController{
             case 1:
                 this.scene = 'fight'
                 this.game.newFight(response.node)
+                break;
+            case 2:
+                if(!response.item.slot){
+                    this.newLog('You founded item, but have no slot')
+                }
+                else {
+                    this.newLog('You founded item(' + response.item.name + ')')
+                    this.char.inv.pull[response.item.slot] =  this.char.inv.createItem(response.item)
+                }
+                this.updateMapData(response.nodes, this.char.x, this.char.y)
                 break;
             case 4:
                 this.scene = 'tower'

@@ -26,6 +26,12 @@ export default class Inventory{
         this.checkColumn()
     }
 
+    clear(){
+        for(let i = 9; i <= 28; i++){
+            this.pull[i] = this.getCell(i)
+        }
+    }
+
     checkRow(){
         let combat_row = this.pull.filter(elem => { return elem.slot < 3 && elem.class === 'combat' && elem.type === 'equip'})
         let sorcery_row = this.pull.filter(elem => { return elem.slot < 6 && elem.slot > 2 && elem.class === 'sorcery' && elem.type === 'equip'})
