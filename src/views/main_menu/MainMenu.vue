@@ -1,0 +1,27 @@
+<script>
+  import MainLayout from '@/layouts/MainLayout.vue'
+  import LoginView from "./components/LoginView.vue";
+  import Profile from "./components/Profile.vue";
+
+  export default {
+    props : {
+      auth : Boolean
+    },
+    components : {
+      LoginView,
+      MainLayout,
+      Profile
+    },
+  }
+</script>
+
+<template>
+  <MainLayout>
+    <Profile v-if="auth"/>
+    <LoginView v-else />
+  </MainLayout>
+</template>
+
+<style>
+
+</style>

@@ -29,7 +29,6 @@ export const useUserStore = defineStore(
                     this.user = data.data.data
                 }
                 catch (error) {
-                    console.log(error)
                 }
             },
 

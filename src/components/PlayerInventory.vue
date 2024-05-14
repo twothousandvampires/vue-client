@@ -1,6 +1,6 @@
 <script>
-import Request from "../script/Request";
-import ItemCreator from "@/script/Items/ItemCreator";
+import ItemService from "@/views/game/components/game_canvas/services/ItemService";
+import ItemFactory from "@/views/game/components/game_canvas/src/Scr/factories/ItemFactory";
 export default {
   name: "PlayerInventory",
   props: {
@@ -9,16 +9,21 @@ export default {
   data(){
     return {
       item_list: undefined,
-      item_to_create: undefined
+      item_to_create: undefined,
+      spell_list: [],
+      skill_name: undefined
     }
   },
   async mounted() {
-    let response = await Request.getItemList()
+    let response = await ItemService.getItemList()
     this.item_list = response.data
+
+    response = await ItemService.getSpellList()
+    this.spell_list = response.data
   },
   methods: {
     async deleteAllItems(){
-      let response = await Request.deleteAllItems(this.char.id)
+      let response = await ItemService.deleteAllItems(this.char.id)
       if(response.data.success){
         this.char.inv.clear()
       }
@@ -29,10 +34,10 @@ export default {
         this.char.inv.deleteItem(item)
       }
     },
-    createItem(){
-      Request.createItem(this.item_to_create).then(response => {
+    async createItem(){
+      ItemService.createItem(this.item_to_create.name, this.skill_name?.name).then(response => {
         if (response.data.success) {
-          this.char.inv.pull[response.data.data.item.slot] = ItemCreator.createItem(response.data.data.item)
+          this.char.inv.pull[response.data.data.item.slot] = ItemFactory.createItem(response.data.data.item, this.char)
         }
       })
     }
@@ -40,7 +45,8 @@ export default {
 }
 </script>
 <template>
-  <div id="inv">
+
+<div id="inv">
     <div id ="utility">
       <p @click="createItem">
         create item
@@ -50,8 +56,13 @@ export default {
       </p>
       <div>
         <select v-model="item_to_create">
-          <option  v-for="item_name in item_list" :value="item_name">
-            {{item_name}}
+          <option v-for="item in item_list" :value="item">
+            {{item.name}}
+          </option>
+        </select>
+        <select v-model="skill_name" v-if="item_to_create && item_to_create.type === 2">
+          <option v-for="spell in spell_list" :value="spell">
+            {{spell.name}}
           </option>
         </select>
       </div>

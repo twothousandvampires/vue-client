@@ -6,23 +6,24 @@ export default {
     Skill
   },
   props :{
-    skills : Object
+    skill : Object
+  },
+  mounted() {
   }
 }
 </script>
 
 <template>
   <div id="skills">
-    <div v-for="item in this.skills.skills">
-      <Skill v-bind:skill="item">
+      <Skill v-if="skill" v-bind:skill="skill">
 
       </Skill>
-    </div>
   </div>
 </template>
 
 <style scoped>
   #skills{
+    min-width: 100%;
     width: 100%;
     display: flex;
     flex-direction: row;

@@ -1,5 +1,5 @@
 <script>
-  import Request from "./script/Request";
+  import Request from "./services/AccountService";
   export default {
     data(){
       return{
@@ -32,9 +32,7 @@
       </nav>
     </div>
   </header>
-
   <RouterView v-bind:auth="this.auth"/>
-
 </template>
 
 <style>
@@ -54,6 +52,18 @@
 }
 .item-context p{
   cursor: pointer;
+}
+
+.game-modal{
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  width: fit-content;
+  font-size: 12px;
+  color: black;
+  background-color: transparent;
+  position: absolute;
 }
 
 .modal{

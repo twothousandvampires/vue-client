@@ -13,8 +13,8 @@ export default {
 
 <template>
   <div id="status">
-    <div v-for="item in this.status">
-      <Status v-bind:status="item">
+    <div  v-for="[key, value] in this.status">
+      <Status v-bind:status="value">
 
       </Status>
     </div>

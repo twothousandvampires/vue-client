@@ -1,0 +1,13 @@
+import Sprite from "../../../Scr/sprite/UnitSprite";
+
+export default class FearSkullSprite extends Sprite{
+    constructor(owner) {
+        super(owner)
+        this.width = 40
+        this.height = 40
+        this.img = new Image()
+        this.img.src = './src/assets/img/projectiles/fear_skull.png'
+        this.frame_timer_max = 1
+        this.max_frame = 9
+    }
+}

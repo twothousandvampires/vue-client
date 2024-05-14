@@ -1,9 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import LoginView from '../views/LoginView.vue'
-import MainMenu from "../views/MainMenu.vue";
-import World from "../views/Game.vue";
-
-
+import LoginView from '../views/main_menu/components/LoginView.vue'
+import MainMenu from "../views/main_menu/MainMenu.vue";
+import World from "../views/game/Game.vue";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -17,11 +15,6 @@ const router = createRouter({
       path: '/game',
       name: 'game',
       component: World
-    },
-    {
-      path: '/login',
-      name: 'login',
-      component: LoginView
     },
   ]
 })

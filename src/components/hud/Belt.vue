@@ -13,8 +13,8 @@ export default {
 
 <template>
   <div id="belt">
-    <div v-for="item in this.belt.cells">
-      <BeltCell v-bind:cell="item"></BeltCell>
+    <div v-for="(item, index) in this.belt.cells">
+      <BeltCell v-bind:num="index" v-bind:cell="item"></BeltCell>
     </div>
   </div>
 </template>
@@ -22,6 +22,7 @@ export default {
 <style scoped>
   #belt{
     display: flex;
-    flex-direction: row;
+    flex-direction: column;
+    align-items: center;
   }
 </style>
