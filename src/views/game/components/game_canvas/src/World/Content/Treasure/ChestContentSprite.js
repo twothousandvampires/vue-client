@@ -4,7 +4,7 @@ export default class ChestContentSprite extends ContentSprite{
     constructor() {
         super();
         this.img = new Image()
-        this.img.src = 'src/assets/img/world/treasure.png'
+        this.img.src = this.src_img_url + 'treasure.png'
         this.frame_timer_max = 3
         this.width = 90
         this.height = 90

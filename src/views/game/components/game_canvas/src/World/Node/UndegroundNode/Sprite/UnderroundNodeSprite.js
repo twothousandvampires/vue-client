@@ -5,8 +5,7 @@ export default class UndergroundNodeSprite extends NodeSprite{
         super(node)
         this.width = 100
         this.height = 100
-        this.img = new Image()
-        this.img.src = './src/assets/img/world/underground_tiles.png'
+        this.img_name = 'underground_tiles'
         this.setTile()
     }
 

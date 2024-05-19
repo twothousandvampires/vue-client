@@ -3,8 +3,7 @@ import ContentSprite from "../ContentSprite";
 export default class UndeadContentSprite extends ContentSprite{
     constructor() {
         super();
-        this.img = new Image()
-        this.img.src = 'src/assets/img/world/undying_squad.png'
+        this.img_name = 'undying_squad'
         this.frame_timer_max = 6
         this.width = 90
         this.height = 90
