@@ -1,6 +1,13 @@
+import GameConfig from "@/views/game/components/game_canvas/src/GameConfig";
 export default class ImageData{
-
+    static list = [
+        {
+            name: 'grim',
+            format: 'png'
+        }
+    ]
     constructor() {
+        this.img_map = new Map()
         // Environment
         this['rock'] = new Image()
         this['rock'].src = './src/assets/img/rocks/rock.png'
@@ -100,10 +107,18 @@ export default class ImageData{
         this['wandering clot end'] = new Image()
         this['wandering clot end'].src = './src/assets/img/effects/wandering_clot_end.png'
 
+        this.load()
+
     }
 
     getImage(name){
-        return this[name]
+        return this.img_map.get(name)
     }
-
+    load(){
+        ImageData.list.forEach(elem => {
+            let img = new Image()
+            img.src = GameConfig.img_url + elem.name + '.' + elem.format
+            this.img_map.set(elem.name, img)
+        })
+    }
 }

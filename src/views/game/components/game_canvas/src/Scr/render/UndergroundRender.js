@@ -51,7 +51,7 @@ export default class UndergroundRender extends Render{
             this.ctx.save()
             Functions.flipHorizontally(this.ctx, char.pretti_x * this.cell_size)
         }
-        this.ctx.drawImage(this.img_data.getImage('chel'),96 * char.sprite.frame,char.sprite.y_frame_offset,96,96,char.pretti_x * this.cell_size + (!char.fliped ? 20 : -80),char.pretti_y * this.cell_size -20, 72, 72)
+        this.ctx.drawImage(this.img_data.getImage('grim'),96 * char.sprite.frame,char.sprite.y_frame_offset,96,96,char.pretti_x * this.cell_size + (!char.fliped ? 20 : -80),char.pretti_y * this.cell_size -20, 72, 72)
         if(char.fliped){
             this.ctx.restore()
         }
