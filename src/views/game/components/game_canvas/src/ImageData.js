@@ -1,13 +1,23 @@
-import GameConfig from "@/views/game/components/game_canvas/src/GameConfig";
+import GameConfig from "./GameConfig";
 export default class ImageData{
-    static list = [
+
+    static img_list = [
         {
             name: 'grim',
+            format: 'png'
+        },
+        {
+            name: 'underground_tiles',
+            format: 'png'
+        },
+        {
+            name: 'undying_squad',
             format: 'png'
         }
     ]
     constructor() {
         this.img_map = new Map()
+        this.load()
         // Environment
         this['rock'] = new Image()
         this['rock'].src = './src/assets/img/rocks/rock.png'
@@ -106,9 +116,14 @@ export default class ImageData{
 
         this['wandering clot end'] = new Image()
         this['wandering clot end'].src = './src/assets/img/effects/wandering_clot_end.png'
+    }
 
-        this.load()
-
+    load(){
+        ImageData.img_list.forEach(elem => {
+            let img = new Image()
+            img.src = GameConfig.img_src_url + elem.name + '.' + elem.format
+            this.img_map.set(elem.name, img)
+        })
     }
 
     getImage(name){

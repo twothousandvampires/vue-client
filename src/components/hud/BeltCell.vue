@@ -1,10 +1,12 @@
 <script>
+import {useGameConfigStore} from "../../stores/game_config";
 export default {
   name: "BeltCall",
   props :{
     num: Number,
-    cell : Object
+    cell : Object,
   },
+
   computed:{
     createCellImg: function (){
       if(this.cell){
@@ -12,7 +14,7 @@ export default {
       }
       else {
         if(this.num === 0){
-          return "src/assets/img/icons/hud/belt_1.png"
+          return useGameConfigStore().getImgUrl + '/belt_1.png'
         }
         else if(this.num === 1){
           return "src/assets/img/icons/hud/belt_2.png"

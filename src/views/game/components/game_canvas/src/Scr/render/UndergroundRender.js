@@ -15,10 +15,10 @@ export default class UndergroundRender extends Render{
             row.forEach(elem => {
                 if(elem.visited || elem.light){
                     let sprite = elem.sprite
-                    this.ctx.drawImage(sprite.img, sprite.frame * sprite.width, sprite.y_frame_offset, sprite.width, sprite.height, elem.pretti_x * sprite.width, elem.pretti_y * sprite.height, sprite.width, sprite.height)
+                    this.ctx.drawImage(this.img_data.getImage(sprite.img_name), sprite.frame * sprite.width, sprite.y_frame_offset, sprite.width, sprite.height, elem.pretti_x * sprite.width, elem.pretti_y * sprite.height, sprite.width, sprite.height)
                     if(elem.content_sprite){
                         let content_sprite = elem.content_sprite
-                        this.ctx.drawImage(content_sprite.img,
+                        this.ctx.drawImage(this.img_data.getImage(content_sprite.img_name),
                             content_sprite.frame * content_sprite.width,
                             content_sprite.y_frame_offset,
                             content_sprite.width,
