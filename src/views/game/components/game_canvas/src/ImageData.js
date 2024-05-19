@@ -118,19 +118,11 @@ export default class ImageData{
         this['wandering clot end'].src = './src/assets/img/effects/wandering_clot_end.png'
     }
 
-    load(){
-        ImageData.img_list.forEach(elem => {
-            let img = new Image()
-            img.src = GameConfig.img_src_url + elem.name + '.' + elem.format
-            this.img_map.set(elem.name, img)
-        })
-    }
-
     getImage(name){
         return this.img_map.get(name)
     }
     load(){
-        ImageData.list.forEach(elem => {
+        ImageData.img_list.forEach(elem => {
             let img = new Image()
             img.src = GameConfig.img_url + elem.name + '.' + elem.format
             this.img_map.set(elem.name, img)
