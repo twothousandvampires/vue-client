@@ -8,6 +8,7 @@ export default class Sprite{
         this.frame_timer_max = 0
         this.sprite_loop_end = false
         this.reversed = false
+        this.src_img_url = 'http://89.111.155.67/images/'
     }
 
     isSpriteLoopEnd(){

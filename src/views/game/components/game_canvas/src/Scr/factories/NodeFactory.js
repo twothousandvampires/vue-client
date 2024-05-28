@@ -2,10 +2,12 @@ import UndergroundNode from "../../World/Node/UndegroundNode/UndergroundNode";
 import UndeadContentSprite from "../../World/Content/Enemy/UndeadContentSprite";
 import ChestContentSprite from "../../World/Content/Treasure/ChestContentSprite";
 import ScrollContentSprite from "../../World/Content/Treasure/ScrollContentSprite";
+import CrystalVeinContentSprite  from "../../World/Content/Treasure/CrystalVeinContentSprite";
 
 const ENEMY_TYPE_UNDYING = 1
 const TREASURE_TYPE_CHEST = 1
 const TREASURE_TYPE_SCROLL = 2
+const TREASURE_TYPE_CRYSTAL_VEIN = 3
 
 export default class NodeFactory{
 
@@ -41,6 +43,9 @@ export default class NodeFactory{
                 break;
             case TREASURE_TYPE_SCROLL:
                 node.content_sprite = new ScrollContentSprite()
+                break;
+            case TREASURE_TYPE_CRYSTAL_VEIN:
+                node.content_sprite = new CrystalVeinContentSprite()
                 break;
         }
     }

@@ -142,31 +142,38 @@ export default {
 <template>
   <div v-if="this.show" id="inspect-skill-gem" :style="{ top: y + 'px', left: x + 'px', width: width + 'px', height: height + 'px' }">
     <div>
-      <p @click="close" style="cursor: pointer">Close</p>
+      <p @click="close" style="cursor: pointer; font-size: 28px">close</p>
     </div>
     <div style="display: flex; flex-direction: row; justify-content: space-between">
       <div>
-        <p>{{item.name}}</p>
-        <p>Gem class: {{item.getClassString()}}</p>
+        <p>item name: <span class="value">{{item.name}}</span></p>
+        <p>gem class:  <span class="value">{{item.getClassString()}}</span></p>
       </div>
       <div>
-        <p>Quality: {{item.getQualityString()}}</p>
-        <p>Gem type: {{item.getTypeString()}}</p>
+        <p>quality: <span class="value">{{item.getQualityString()}}</span></p>
+        <p>gem type: <span class="value">{{item.getTypeString()}}</span></p>
       </div>
+    </div>
+    <div>
+      <p>upgrade amplification cost: <span class="value">{{item.getUpgradeAmpExpCost()}}</span></p>
+      <p>maximum amplifications: <span class="value">{{item.getMaxAmp()}}</span></p>
+      <p v-if="skill.is_active_skill">reduce mana cost: <span class="value">{{item.getReduceManaCost()}}</span></p>
+      <p>increase skill effect: <span class="value">{{item.getIncreaseSkillEffect()}}</span></p>
     </div>
     <div class="main-skill">
       <div style="padding: 6px">
-        <img @click="upgradeSkill" width="120" height="120" :src="skill.img_path">
+        <img @click="upgradeSkill" width="120" height="120" :src="skill.getImgPath()">
       </div>
       <div>
         <p style="font-size: 32px; color: #2c3e50" >{{skill.name}}</p>
         <p>level: {{skill.level}}</p>
         <div class="skill-wrap">
-          <div >
-            <span v-html="skill.getDescription()">
-
-            </span>
+          <div>
+            <span v-html="skill.getSkillDescription()"></span>
           </div>
+        </div>
+        <div style="font-style: italic; font-size: 14px">
+          &quot<span v-html="skill.getDescription()"></span>&quot
         </div>
       </div>
     </div>
@@ -186,8 +193,8 @@ export default {
           </div>
         </div>
       </div>
-      <div class="offer">
-        <p v-if="skill.available_amplifications.size === 0" id="unlock" @click="unlockAmplifications">Unlock upgrade</p>
+      <div class="offer" style="display: flex">
+        <p v-if="skill.available_amplifications.size === 0" style="margin-top: 10px" id="unlock" @click="unlockAmplifications">unlock amplifications</p>
         <div class="skill-child" v-for="[key, value] in skill.available_amplifications">
           <p>{{value.name}}({{value.level}})</p>
           <div class="skill-wrap">
@@ -206,6 +213,9 @@ export default {
   </div>
 </template>
 <style scoped>
+  .unlock_amp_button{
+
+  }
   .bottom{
     display: flex;
     flex-direction: row;
@@ -234,7 +244,7 @@ export default {
     font-size: 24px;
     display: flex;
     flex-direction: row;
-    justify-content: space-between;
+    justify-content: flex-start;
   }
   #inspect-skill-gem{
     overflow-y: auto;
@@ -250,5 +260,8 @@ export default {
   }
   #inspect-skill-gem::-webkit-scrollbar {
     display: none;  /* Safari and Chrome */
+  }
+  .value{
+    color: rgb(44, 62, 80);
   }
 </style>

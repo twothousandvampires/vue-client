@@ -6,7 +6,6 @@ import Input from "../components/game_canvas/src/Singltons/Input";
 import CharacterService from "../services/CharacterService";
 import { useGameConfigStore } from "@/stores/game_config";
 import { useLogStore } from "@/stores/log";
-
 export default class Game{
 
     constructor(char) {

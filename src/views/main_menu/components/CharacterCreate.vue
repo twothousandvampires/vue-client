@@ -17,7 +17,7 @@ export default {
     async create(){
       if(this.character_name !== ''){
         await this.createCharacter(this.character_name)
-        location.href = '/'
+        location.href = '/game'
       }
     }
   },

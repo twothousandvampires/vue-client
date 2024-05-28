@@ -1,5 +1,5 @@
 <script>
-import {useGameConfigStore} from "../../stores/game_config";
+import config from '/config.js'
 export default {
   name: "BeltCall",
   props :{
@@ -14,16 +14,16 @@ export default {
       }
       else {
         if(this.num === 0){
-          return useGameConfigStore().getImgUrl + '/belt_1.png'
+          return config.img_url + '/belt_1.png'
         }
         else if(this.num === 1){
-          return "src/assets/img/icons/hud/belt_2.png"
+          return config.img_url +'/belt_2.png'
         }
         else if(this.num === 2){
-          return "src/assets/img/icons/hud/belt_3.png"
+          return config.img_url +'/belt_3.png'
         }
         else if(this.num === 3){
-          return "src/assets/img/icons/hud/belt_4.png"
+          return config.img_url +'/belt_4.png'
         }
       }
     }

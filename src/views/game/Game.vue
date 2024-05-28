@@ -27,12 +27,10 @@ export default {
 }
 </script>
 <template>
-  <MainLayout >
     <div>
       <Load v-if="!game"></Load>
       <GameCanvas v-else :game="game"></GameCanvas>
     </div>
-  </MainLayout>
 </template>
 
 <style scoped>

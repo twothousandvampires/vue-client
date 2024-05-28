@@ -1,6 +1,6 @@
 export default class Request{
 
-    static URL = 'http://127.0.0.1:8000/api/'
+    static URL = 'http://89.111.155.67/api/'
 
     static TOKEN = localStorage.getItem('token') ? localStorage.getItem('token') : ''
 

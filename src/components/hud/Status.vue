@@ -10,8 +10,8 @@ export default {
 
 <template>
   <div>
-    <div :title="this.status.name">
-      <img id="status-image" :src="this.status.img_path">
+    <div :title="this.status.name + '(' + this.status.duration + ')'">
+      <img id="status-image" :src="this.status.getStatusBarImgPath()">
     </div>
   </div>
 </template>

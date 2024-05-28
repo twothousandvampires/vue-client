@@ -10,7 +10,8 @@ export default {
     ...mapActions(useUserStore, ['deleteCharacter']),
     play(id){
       localStorage.setItem('char_id', id)
-      location.href = '/game/world'
+      localStorage.setItem('world', '1')
+      location.reload()
     },
   },
   computed: {

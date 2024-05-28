@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia'
 
-const URL = 'http://127.0.0.1:8000/api/'
+const URL = 'http://89.111.155.67/api/'
 const TOKEN = localStorage.getItem('token') ? localStorage.getItem('token') : ''
 
 

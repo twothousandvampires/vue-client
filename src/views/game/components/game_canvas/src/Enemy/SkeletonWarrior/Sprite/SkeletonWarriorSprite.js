@@ -6,8 +6,7 @@ export default class SkeletonWarriorSprite extends Sprite{
         super(owner);
         this.width = 100
         this.height = 100
-        this.img = new Image()
-        this.img.src = './src/assets/img/enemy/skeleton.png'
+        this.img_name = 'skeleton'
         this.end_attack_frame = 9
     }
 
