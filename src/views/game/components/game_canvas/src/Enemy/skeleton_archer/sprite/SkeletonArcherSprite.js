@@ -6,8 +6,7 @@ export default class SkeletonArcherSprite extends Sprite{
         super(owner);
         this.width = 100
         this.height = 100
-        this.img = new Image()
-        this.img.src = './src/assets/img/enemy/skeleton_archer_new.png'
+        this.img_name = 'skeleton_archer_new'
         this.end_attack_frame = 8
     }
 

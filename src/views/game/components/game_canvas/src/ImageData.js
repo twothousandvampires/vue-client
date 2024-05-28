@@ -1,4 +1,4 @@
-import GameConfig from "./GameConfig";
+import config from "/config.js";
 export default class ImageData{
 
     static img_list = [
@@ -13,7 +13,31 @@ export default class ImageData{
         {
             name: 'undying_squad',
             format: 'png'
-        }
+        },
+        {
+            name: 'skeleton',
+            format: 'png'
+        },
+        {
+            name: 'skeleton_archer_new',
+            format: 'png'
+        },
+        {
+            name: 'background',
+            format: 'png'
+        },
+        {
+            name: 'arrow',
+            format: 'png'
+        },
+        {
+            name: 'crystal_vein',
+            format: 'png'
+        },
+        {
+            name: 'treasure',
+            format: 'png'
+        },
     ]
     constructor() {
         this.img_map = new Map()
@@ -21,9 +45,6 @@ export default class ImageData{
         // Environment
         this['rock'] = new Image()
         this['rock'].src = './src/assets/img/rocks/rock.png'
-
-        this['background'] = new Image(),
-        this['background'].src = './src/assets/img/bgs/4.png'
 
         //enemy
 
@@ -116,19 +137,16 @@ export default class ImageData{
 
         this['wandering clot end'] = new Image()
         this['wandering clot end'].src = './src/assets/img/effects/wandering_clot_end.png'
-
-    }
-
-    load(){
-        ImageData.img_list.forEach(elem => {
-            let img = new Image()
-            img.src = GameConfig.img_src_url + elem.name + '.' + elem.format
-            this.img_map.set(elem.name, img)
-        })
     }
 
     getImage(name){
         return this.img_map.get(name)
     }
-
+    load(){
+        ImageData.img_list.forEach(elem => {
+            let img = new Image()
+            img.src = config.img_url + elem.name + '.' + elem.format
+            this.img_map.set(elem.name, img)
+        })
+    }
 }

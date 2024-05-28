@@ -5,6 +5,8 @@ import FallingRocks from "../../Skills/Sorcery/FallingRocks/FallingRocks";
 import WildWind from "../../Skills/Sorcery/WildWind/WildWind";
 import FireCoil from "../../Skills/Sorcery/FireCoil/FireCoil";
 import IcyNova from "@/views/game/components/game_canvas/src/Skills/Sorcery/IcyNova/IcyNova";
+import ShieldUp from "@/views/game/components/game_canvas/src/Skills/Combat/ShieldUp/ShieldUp";
+import StoneSkin from "@/views/game/components/game_canvas/src/Skills/Combat/StoneSkin/StoneSkin";
 export default class GemSkillFactory {
     constructor() {
 
@@ -26,7 +28,10 @@ export default class GemSkillFactory {
                 return new FireCoil(...prop_args)
             case 'icy nova':
                 return new IcyNova(...prop_args)
+            case 'shield up':
+                return new ShieldUp(...prop_args)
+            case 'stone skin':
+                return new StoneSkin(...prop_args)
         }
-
     }
 }

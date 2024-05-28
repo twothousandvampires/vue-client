@@ -5,8 +5,7 @@ export default class ArrowSprite extends Sprite{
         super(owner);
         this.width = 27
         this.height = 30
-        this.img = new Image()
-        this.img.src = './src/assets/img/projectiles/arrow.png'
+        this.img_name = 'arrow'
         this.frame_timer_max = 1
         this.max_frame = 10
     }

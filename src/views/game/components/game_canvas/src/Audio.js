@@ -10,14 +10,14 @@ export default class Music{
             album: 'Ethereal Hymns Split (2021)',
             artist: 'Piva',
             folder_name: 'Elminster_x_Piva',
-            music_src: 'Elminster_x_Piva/Piva - The Majestic Kingdom.mp3'
+            music_src: 'Elminster_x_Piva/The Majestic Kingdom.mp3'
         },
         {
             song_name: 'Ode To Louise Claude De Saint-Martin',
             album: 'Split (2021)',
             artist: 'Mystery Science',
             folder_name: 'Magicians_Spellbook_&_Elminster_&_Fogmoon_Tower_&_Mystery_Science',
-            music_src: 'Magicians_Spellbook_&_Elminster_&_Fogmoon_Tower_&_Mystery_Science/Mystery Science - Ode To Louise Claude De Saint-Martin.mp3'
+            music_src: 'Magicians_Spellbook_&_Elminster_&_Fogmoon_Tower_&_Mystery_Science/Ode To Louise Claude De Saint-Martin.mp3'
         }
     ]
 

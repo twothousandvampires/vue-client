@@ -2,22 +2,26 @@
   import MainLayout from '@/layouts/MainLayout.vue'
   import LoginView from "./components/LoginView.vue";
   import Profile from "./components/Profile.vue";
+  import Game from "@/views/game/Game.vue";
 
   export default {
     props : {
-      auth : Boolean
+      auth : Boolean,
+      world: Boolean
     },
     components : {
       LoginView,
       MainLayout,
-      Profile
+      Profile,
+      Game
     },
   }
 </script>
 
 <template>
   <MainLayout>
-    <Profile v-if="auth"/>
+    <Game v-if="world"></Game>
+    <Profile v-else-if="auth"/>
     <LoginView v-else />
   </MainLayout>
 </template>

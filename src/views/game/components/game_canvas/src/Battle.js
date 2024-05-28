@@ -54,6 +54,7 @@ export default class Battle extends Fight{
         this.areas.push(area)
     }
     fightEnd(){
+        this.player.is_in_figth = false
         this.game.endFight()
     }
     init(node){
