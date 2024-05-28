@@ -1,6 +1,6 @@
 export default {
 
-    URL: 'http://127.0.0.1:8000/api/',
+    URL: 'http://89.111.155.67/api/',
     TOKEN: localStorage.getItem('token') ? localStorage.getItem('token') : '',
 
     getCharacter(){

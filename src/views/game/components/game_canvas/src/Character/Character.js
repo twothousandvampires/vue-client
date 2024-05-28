@@ -63,7 +63,6 @@ export default class Character extends Unit{
         this.reduce_spell_damage = 0
         this.increased_damage = 0
         this.reduce_damage = 0
-
     }
     parseStats(template){
         for(let stat in template){

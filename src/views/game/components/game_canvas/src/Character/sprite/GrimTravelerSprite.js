@@ -7,7 +7,7 @@ export default class GrimTravelerSprite extends UnitSprite{
         this.width = 96
         this.height = 96
         this.img = new Image()
-        this.img.src = './src/assets/img/characters/grim.png'
+        this.img.src = this.src_img_url + 'grim.png'
     }
     setImgState(){
         switch (this.owner.state){
