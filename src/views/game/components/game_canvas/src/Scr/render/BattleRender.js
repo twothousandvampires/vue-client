@@ -59,12 +59,12 @@ export default class BattleRender extends Render{
             if(elem.angle){
                 this.ctx.translate(elem.point.x, elem.point.y);
                 this.ctx.rotate(-elem.angle);
-                this.ctx.drawImage(elem.sprite.img, elem.sprite.width * elem.sprite.frame, 0 ,elem.sprite.width ,elem.sprite.height,- elem.size_x/2 , - elem.size_y/2 , elem.size_x  , elem.size_y );
+                this.ctx.drawImage(this.img_data.getImage(elem.sprite.img_name), elem.sprite.width * elem.sprite.frame, 0 ,elem.sprite.width ,elem.sprite.height,- elem.size_x/2 , - elem.size_y/2 , elem.size_x  , elem.size_y );
                 this.ctx.rotate(elem.angle);
                 this.ctx.translate(-elem.point.x, -elem.point.y);
             }
             else {
-                this.ctx.drawImage(elem.sprite.img,
+                this.ctx.drawImage(this.img_data.getImage(elem.sprite.img_name),
                     elem.sprite.width * elem.sprite.frame,
                     elem.sprite.y_frame_offset,
                     elem.sprite.width,

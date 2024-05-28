@@ -8,7 +8,7 @@ export default class LuminousArc extends Skill{
 
     constructor(template, player, gem) {
         super(template, player, gem)
-        this.img_path = 'src/assets/img/icons/skill/luminous_arc.gif'
+        this.img_name = 'luminous_arc.gif'
         this.init()
     }
     set(){
@@ -27,7 +27,7 @@ export default class LuminousArc extends Skill{
         if(this.amplifications.has('inexhaustible charge')){
             this.chain_limit += this.amplifications.get('inexhaustible charge').level * 1
         }
-        this.description = `Jumps between enemies and damages them. 
+        this.skill_description = `Jumps between enemies and damages them. 
                            Damage: ${this.min_damage} -  ${this.max_damage}
                            Chain limit: ${this.chain_limit}
                            Chain range: ${this.chain_range}

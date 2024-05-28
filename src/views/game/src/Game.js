@@ -25,6 +25,7 @@ export default class Game{
         }
         this.frame_id = requestAnimationFrame(()=>this.frame())
         this.initiated = true
+
         this.log.addLog('journey is started!')
     }
 

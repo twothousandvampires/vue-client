@@ -1,54 +1,53 @@
 <script>
-
+import config from '/config.js'
 export default {
   data(){
     return {
       muted: false,
       is_played: false,
-      bg_music_folder: './src/music/background/',
       song: false,
       music_pull: [
         {
           song_name: 'The Majestic Kingdom',
           album: 'Ethereal Hymns Split (2021)',
           artist: 'Piva',
-          folder_name: 'Elminster_x_Piva',
-          music_src: 'Elminster_x_Piva/Piva - The Majestic Kingdom.mp3'
+          music_src: 'The Majestic Kingdom.mp3',
+          logo_src: 'Ethereal Hymns Split (2021)_logo.jpg'
         },
         {
           song_name: 'Ode To Louise Claude De Saint-Martin',
           album: 'Split (2021)',
           artist: 'Mystery Science',
-          folder_name: 'Magicians_Spellbook_&_Elminster_&_Fogmoon_Tower_&_Mystery_Science',
-          music_src: 'Magicians_Spellbook_&_Elminster_&_Fogmoon_Tower_&_Mystery_Science/Mystery Science - Ode To Louise Claude De Saint-Martin.mp3'
+          music_src: 'Ode To Louise Claude De Saint-Martin.mp3',
+          logo_src: 'Magicians_Spellbook_&_Elminster_&_Fogmoon_Tower_&_Mystery_Science_logo.jpg'
         },
         {
           song_name: 'Doorways Obscured by Wisps',
           album: 'Illusory Realms',
           artist: 'Keys to Oneiria',
-          folder_name: 'Keys_to_Oneiria',
-          music_src: 'Keys_to_Oneiria/Doorways Obscured by Wisps.mp3'
+          music_src: 'Doorways Obscured by Wisps.mp3',
+          logo_src: 'Keys_to_Oneiria_logo.jpg'
         },
         {
           song_name: 'To Call Upon the Fog',
           album: 'In the Kingdom of Fog(Split)',
           artist: 'Fogweaver',
-          folder_name: 'Fog_Castle_x_Foglord_x_Fogweaver',
-          music_src: 'Fog_Castle_x_Foglord_x_Fogweaver/Fogweaver - To Call Upon the Fog.mp3'
+          music_src: 'To Call Upon the Fog.mp3',
+          logo_src: 'Fog_Castle_x_Foglord_x_Fogweaver_logo.jpg'
         },
         {
           song_name: 'Sanctuary of the Gemcarvers',
           album: 'In the Kingdom of Fog(Split)',
           artist: 'Fog Castle',
-          folder_name: 'Fog_Castle_x_Foglord_x_Fogweaver',
-          music_src: 'Fog_Castle_x_Foglord_x_Fogweaver_1/Fog Castle - Sanctuary of the Gemcarvers.mp3'
+          music_src: 'Sanctuary of the Gemcarvers.mp3',
+          logo_src: 'Fog_Castle_x_Foglord_x_Fogweaver_logo.jpg'
         },
         {
           song_name: 'A Patterning Spell',
           album: 'Magelight',
           artist: 'Fogweaver',
-          folder_name: 'Fogweaver',
-          music_src: 'Fogweaver/Fogweaver - A Patterning Spell.mp3'
+          music_src: 'A Patterning Spell.mp3',
+          logo_src: 'Fogweaver_logo.jpg'
         }
       ]
     }
@@ -88,16 +87,12 @@ export default {
       this.muted = !this.muted
     }
   },
-  name: "AudioPlayer",
-  components: {
-
-  },
   computed:{
     getSrc: function (){
-      return  this.bg_music_folder +  this.song.music_src
+      return config.music_url + this.song.music_src
     },
     getImgSrc: function (){
-      return  this.bg_music_folder +  this.song.folder_name + '/logo.jpg'
+      return config.img_url + this.song.logo_src
     }
   }
 }

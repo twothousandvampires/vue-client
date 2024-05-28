@@ -44,13 +44,14 @@ export default {
       <div>
         <Skill v-if="this.char.selected_skill" :skill="this.char.selected_skill"></Skill>
       </div>
-      <div style="display: flex;flex-direction: column">
+      <div v-if="char.is_in_figth" style="display: flex;flex-direction: column">
         <div>
-              <span v-for="point in char.action_points">
-                <img width="40" height="40" src="@/assets/img/icons/misc/action_sign.png" alt="">
-              </span>
+          <p>turns</p>
         </div>
-        <div style="cursor: pointer" @click="char.endTurn" title="next turn(space)">
+        <div>
+          {{char.action_points}}
+        </div>
+        <div  style="cursor: pointer" @click="char.endTurn" title="next turn(space)">
           <img src="@/assets/img/icons/misc/next_turn.gif" @click="this.char.endTurn">
         </div>
       </div>
@@ -62,7 +63,13 @@ export default {
 </template>
 
 <style scoped>
-
+  .turn{
+    height: 25px;
+    width: 25px;
+    background-color: black;
+    border-radius: 50%;
+    display: inline-block;
+  }
   #stats{
     display: flex;
     flex-direction: row;

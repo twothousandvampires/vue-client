@@ -27,13 +27,18 @@ export default class Gem extends Item{
         super(template)
         this.details = template.details
         this.skill = GemSkillFactory.create(template.skill, this, player)
-        this.props = template.props
     }
     getUpgradeAmpExpCost(){
-        return this.props.find(elem => elem.prop_name === 'upgrade_amp_exp_cost').value
+        return this.details.amplification_upgrade_cost
     }
     getMaxAmp(){
-        return this.props.find(elem => elem.prop_name === 'max_amp').value
+        return this.details.maximum_number_of_amplifications
+    }
+    getReduceManaCost(){
+        return this.details.reduce_mana_cost
+    }
+    getIncreaseSkillEffect(){
+        return this.details.increase_skill_effect
     }
      equip(player){
         player.addSkill(this.skill)

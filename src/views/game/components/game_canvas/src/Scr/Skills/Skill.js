@@ -1,6 +1,5 @@
-import Functions from "../../GameFunctions";
 import SkillAddsCreator from "../../Scr/factories/SkillAmplificationFactory";
-
+import config from '/config.js'
 export default class Skill{
     constructor(template, player, gem = false) {
         this.gem = gem
@@ -12,6 +11,7 @@ export default class Skill{
         this.crit_chance = 0
         this.id = template.id
         this.name = template.name
+        this.is_active_skill = template.is_active_skill
 
         template.children.forEach(elem =>{
             if(+elem.level === 0){
@@ -60,5 +60,13 @@ export default class Skill{
     }
     getTotalCriticalMultiplier(){
         return this.player.spell_crit_multiplier + this.spell_crit_multiplier
+    }
+
+    getImgPath(){
+        return config.img_url + this.img_name
+    }
+
+    getSkillDescription(){
+        return this.skill_description
     }
 }

@@ -7,7 +7,6 @@ import Input from "../Singltons/Input";
 import Point from "../Scr/Point";
 import GrimTravelerSprite from "./sprite/GrimTravelerSprite";
 import Damage from "../Scr/Damage";
-import GameConfig from "../GameConfig";
 import PlayerDefaultAttack from "@/views/game/components/game_canvas/src/Skills/Combat/PlayerDefaultAttack";
 import DamageSource from "@/views/game/components/game_canvas/src/Scr/DamageSource";
 
@@ -359,6 +358,9 @@ export default class Character extends Unit{
         }
     }
     endTurn(){
+        this.status.forEach((v,k,map) => {
+            v.endTurn()
+        })
         this.turn = false
         this.figth_context.next(this)
     }
@@ -456,6 +458,9 @@ export default class Character extends Unit{
             this.setIdle()
             this.dyspnea_count = 0
         }
+        this.status.forEach((v,k,map) => {
+            v.newTurn()
+        })
         this.turn = true
         this.regeneration()
         this.calculateActionPoints()
@@ -566,6 +571,7 @@ export default class Character extends Unit{
         if(this.dead) return
 
         let chance_to_block = this.attack_block
+        alert(chance_to_block)
         if(damage.options?.area_damage) chance_to_block /= 2
 
         if(Math.random() * 100 < chance_to_block){
@@ -718,6 +724,7 @@ export default class Character extends Unit{
     prepareToFight(fight){
         this.figth_context = fight
         this.fliped = false
+        this.is_in_figth = true
         this.setIdle()
         fight.player = this
 

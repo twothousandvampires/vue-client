@@ -3,11 +3,11 @@
   export default {
     data(){
       return{
-        auth : !!localStorage.getItem('token')
+        auth : !!localStorage.getItem('token'),
+        world : !!localStorage.getItem('world')
       }
     },
     mounted() {
-
     },
     methods:{
       logout(){
@@ -16,6 +16,10 @@
           window.location.href = '/'
         })
       },
+      to_profile(){
+        localStorage.removeItem('world')
+        window.location.href = '/'
+      }
     },
   }
 </script>
@@ -25,14 +29,13 @@
   <header>
     <div class="wrapper">
       <nav>
-        <RouterLink  to="/" v-if="!auth">Login</RouterLink>
+        <RouterLink to="/" v-if="!auth">Login</RouterLink>
         <p @click="logout" v-else>Logout</p>
-        <RouterLink  to="/" v-if="auth">Profile</RouterLink>
-<!--        <RouterLink to="/canvas">Scoreboard</RouterLink>-->
+        <p @click="to_profile" v-if="world">Profile</p>
       </nav>
     </div>
   </header>
-  <RouterView v-bind:auth="this.auth"/>
+  <RouterView v-bind:world="this.world" v-bind:auth="this.auth"/>
 </template>
 
 <style>
