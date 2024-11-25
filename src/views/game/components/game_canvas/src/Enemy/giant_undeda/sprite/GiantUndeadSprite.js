@@ -6,15 +6,14 @@ export default class GiantUndeadSprite extends Sprite{
         super(owner);
         this.width = 108
         this.height = 108
-        this.img = new Image()
-        this.img.src = './src/assets/img/enemy/giant_undead.png'
+        this.img_name = 'giant_undead'
     }
 
     setImgState(){
         switch (this.owner.state){
             case Unit.STATE_IDLE:
                 this.y_frame_offset = 0
-                this.max_frame = Math.random() < 0.5 ? 9 : 0
+                this.max_frame = 9
                 this.frame_timer_max = 6
                 break;
             case Unit.STATE_MOVE:

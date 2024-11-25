@@ -19,19 +19,10 @@ export default class Inventory{
     static ITEM_TYPE_GEM = 2
     static ITEM_TYPE_USED = 3
 
-    constructor(player, items) {
+    constructor(player) {
 
         this.player = player
         this.pull = []
-        for(let i = 0; i <= 38; i++){
-            this.pull[i] = this.createCell(i)
-        }
-        items.forEach(elem =>{
-            let item = this.createItem(elem)
-            this.pull[item.slot] = item
-            this.equipItem(item)
-        })
-
         this.is_combat_row = false
         this.is_sorcery_row = false
         this.is_movement_row = false
@@ -40,11 +31,10 @@ export default class Inventory{
         this.is_accessory_column = false
         this.checkRow()
         this.checkColumn()
-        console.log(this.pull)
     }
 
     clear(){
-        for(let i = 9; i <= 28; i++){
+        for(let i = 9; i <= 32; i++){
             this.pull[i] = this.createCell(i)
         }
     }
@@ -124,14 +114,8 @@ export default class Inventory{
         else if([2,5,8].includes(cell_id)){
             return Inventory.CELL_TYPE_ACCESSORY
         }
-        else if(cell_id >= 9 && cell_id < 29){
+        else if(cell_id >= 9 && cell_id < 33){
             return Inventory.CELL_TYPE_INVENTORY
-        }
-        else if(cell_id >= 29 && cell_id < 35){
-            return Inventory.CELL_TYPE_GEM
-        }
-        else {
-            return Inventory.CELL_TYPE_BELT
         }
     }
     createItem(template){
@@ -141,7 +125,7 @@ export default class Inventory{
     async change(clicked, slot) {
         let ApiResponse = await axios({
             method: 'post',
-            url: 'http://127.0.0.1:8000/api/item/change/',
+            url: 'http://127.0.0.1:8000/api/item/change/' + this.player.id,
             data: {
                 from: clicked.slot,
                 to: slot,
@@ -162,14 +146,17 @@ export default class Inventory{
             this.unequipItem(elem)
         })
         this.pull = []
-        for(let i = 0; i <= 38; i++){
+        for(let i = 0; i <= 32; i++){
             this.pull[i] = this.createCell(i)
         }
         items.forEach(elem =>{
-            let item = this.createItem(elem)
+            let item = this.createItem(elem, this.player)
             this.pull[item.slot] = item
             this.equipItem(item)
         })
+    }
+    deleteFromPull(item){
+        this.pull[item.slot] = this.createCell(item.slot)
     }
     async deleteItem(item){
         let ApiResponse = await axios({

@@ -5,7 +5,7 @@ export default class Stun extends Status{
     constructor(duration = 3000) {
         super()
         this.name = 'stun'
-        this.img_path = 'src/assets/img/icons/skill/step_of_another_world.png'
+        this.img_path = 'src/assets/img/icons/skill/instincts.png'
         this.duration = Functions.msToTick(duration)
         this.sprite = new StunSprite()
     }

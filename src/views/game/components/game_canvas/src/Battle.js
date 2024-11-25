@@ -1,117 +1,150 @@
 import Functions from "./GameFunctions";
 import BattleRender from "./Scr/render/BattleRender";
 import EnemyFactory from "./Scr/factories/EnemyFactory";
-import Point from "./Scr/Point";
-import BigCaveRock from "./Environment/BigCaveRock/BigCaveRock";
-import MediumCaveRock from "./Environment/MediumCaveRock/MediumCaveRock";
-import SmallCaveRock from "./Environment/SmallCaveRock/SmallCaveRock";
-import BigStalagmite from "./Environment/BigStalagmite/BigStalagmite";
-import MediumStalagmite from "./Environment/MediumStalagmite/MediumStalagmite";
-import SmallStalagmite from "./Environment/SmallStalagmite/SmallStalagmite";
 import Fight from "./Fight";
-import Unit from "./Scr/Unit";
+import {useLogStore} from "@/stores/log";
+import Enemy from "@/views/game/components/game_canvas/src/Enemy/src/Enemy";
 
-
-const enemy_creator = new EnemyFactory()
 export default class Battle extends Fight{
 
     constructor(node, game) {
         super(game)
-        this.pull = []
-
-        this.win = false
-
-        this.map = {
-            start_x : 370,
-            start_y : 370,
-            player_cell: 16
-        }
-
-        this.render = new BattleRender()
+        this.enemy_creator = new EnemyFactory()
+        this.player_cell = 16
+        this.enemy_slots = [5, 12, 19, 26, 33,6, 13, 20, 27, 34,7, 14, 21, 28, 35]
+        this.cell_w = 50
+        this.cell_h = 75
+        this.log = useLogStore()
         this.tick = 0
         this.columns = 7
         this.rows = 5
         this.turn_queue = []
+        this.enemy_pull = []
+        this.summons = []
+        this.render = new BattleRender(this)
         this.init(node)
+
     }
     getPlayerCell(){
-        return this.cells.find(elem => elem.num === this.map.player_cell)
+        return this.cells.find(elem => elem.num === this.player_cell)
     }
-    checkWin(){
-        if(this.enemy.every(elem =>{
-            return  elem.isDead()
-        })){
-            setTimeout(() => {
-                this.fightEnd()
-            }, 5000)
+    pushSummon(summon){
+        let cells = this.cells.filter(elem => !elem.content && !this.enemy_slots.includes(elem.num))
+        let cell = cells[Math.floor(Math.random() * cells.length)]
+        if(cell){
+            cell.content = summon
+            summon.setCellCords(cell, this.cell_w, this.cell_h)
+            summon.num = cell.num
+            this.turn_queue.push(summon)
+            this.summons.push(summon)
         }
     }
+    pushEnemyInFreeSlot(enemy_name, cell = undefined){
+        let free = this.getFreeCells()
+        if(!cell){
+            cell = free[Math.floor(Math.random() * free.length)]
+        }
+        if(cell){
+            let g = 0
+            if(typeof enemy_name === 'string'){
+                g = this.enemy_creator.create(enemy_name, this)
+            }
+            else{
+                g = enemy_name
+            }
+            cell.content = g
+            g.setCellCords(cell, this.cell_w, this.cell_h)
+            g.num = cell.num
+            this.turn_queue.push(g)
+            this.enemy_pull.push(g)
+        }
+    }
+    async start(){
 
-    addEffect(effect){
-        this.effects.push(effect)
+        this.turn_queue.push(this.player)
+
+        let enemy_with_aura = this.turn_queue.filter(elem => elem.auras.length)
+
+        enemy_with_aura.forEach(elem => {
+            elem.auras.forEach(aura => {
+                aura.affect(this.turn_queue)
+                Functions.createModal(elem, aura.name)
+            })
+        })
+
+        this.sortBySpeed()
+
+        this.turn_queue[0].startTurn(this.turn_queue, this.player)
+    }
+    getEnemies(){
+        return this.turn_queue.filter(elem => elem instanceof Enemy)
+    }
+    addEffect(effect, cell_num){
+        effect.addCell(this.cells.find(elem => elem.num === cell_num))
+        if(effect.type === 'ground'){
+            this.ground_effects.push(effect)
+        }
+        else {
+            this.effects.push(effect)
+        }
     }
     addArea(area){
         this.areas.push(area)
     }
     fightEnd(){
+        this.sendHP()
         this.player.is_in_figth = false
         this.game.endFight()
     }
     init(node){
         this.generateCells()
         this.player.prepareToFight(this)
-
         let content = JSON.parse(node.content.content)
-
-        this.map.width = content.map.width
-        this.map.height = content.map.height
-
         this.createPull(content.enemy.groups)
     }
     generateCells(){
+        let total_w = this.columns * this.cell_w
+        let total_h = this.rows * this.cell_h
+
+        let x = 1300/2 - total_w / 2
+        let y = 1300/2 - total_h / 2
+
         this.cells = []
         let num = 1
         for(let i = 0; i < this.rows; i++){
             for(let j = 0; j < this.columns; j++){
                 this.cells.push({
                     content: undefined,
-                    width: 75,
-                    height: 120,
+                    width: this.cell_w,
+                    height: this.cell_h ,
                     num: num,
-                    x: j * 75 + this.map.start_x,
-                    y: i * 120 + this.map.start_y
+                    x: j * this.cell_w + x,
+                    y: i * this.cell_h + y
                 })
                 num++
             }
         }
     }
-    createPull(enemy_array){
+    async createPull(enemy_array){
         enemy_array.forEach(elem => {
             elem.forEach(g => {
-                let e = enemy_creator.create(g.name, this)
+                let e = this.enemy_creator.create(g.name, this)
                 e.num = g.num
-                this.pull.push(e)
+                this.turn_queue.push(e)
+                this.enemy_pull.push(e)
+                let cell = this.cells.find(cell => cell.num === e.num)
+                if(cell){
+                    cell.content = e
+                    e.setCellCords(cell, this.cell_w, this.cell_h)
+                }
             })
         })
-
-        this.turn_queue.push(this.player)
-
-        this.pull.sort(()=>Math.random()-0.5)
-
-        this.pull.forEach(elem => {
-            this.enemy.push(elem)
-            this.turn_queue.push(elem)
-
-            let cell = this.cells.find(cell => cell.num === elem.num)
-            if(cell){
-                cell.content = elem
-                elem.setCellCords(cell)
-            }
-        })
-
-        this.sortBySpeed()
-        this.turn_queue[0].startTurn()
     }
+
+    getFreeCells(){
+        return this.cells.filter(cell => !cell.content && this.enemy_slots.includes(cell.num))
+    }
+
     getTargetByPoint(point){
         let target = false
         this.cells.some(elem => {
@@ -125,18 +158,157 @@ export default class Battle extends Fight{
         this.turn_queue.sort((a,b) => b.speed - a.speed)
     }
     checkLine(num){
-        if(num % 7){
-            return !this.cells[num - 2].content || this.cells[num - 2].content.isDead()
-                &&  !this.cells[num - 3].content || this.cells[num - 2].content.isDead()
+        let first = this.cells.find(elem => elem.num === num - 1)
+        let second = this.cells.find(elem => elem.num === num - 2)
+
+        if( (!first.content || first.content.isDead()) && (!second.content || second.content.isDead())){
+            return true
         }
         else{
-            return !this.cells[num - 2].content || this.cells[num - 2].content.isDead()
+            return false
         }
     }
+    getEnemiesInSquare(item){
+        let result = [item]
 
-    async next(enemy, delay = 1000){
-        let i = this.turn_queue.indexOf(enemy)
-        let next = this.turn_queue[i + 1]
+        let up =this.turn_queue.find(elem => elem.num === item.num - 7)
+        if(up) result.push(up)
+
+        let down =this.turn_queue.find(elem => elem.num === item.num + 7)
+        if(down) result.push(down)
+
+        let right =this.turn_queue.find(elem => elem.num === item.num + 1)
+        if(right) result.push(right)
+
+        let left =this.turn_queue.find(elem => elem.num === item.num - 1)
+        if(left) result.push(left)
+
+
+        let up_left =this.turn_queue.find(elem => elem.num === item.num - 8)
+        if(up_left) result.push(up_left)
+
+        let up_right =this.turn_queue.find(elem => elem.num === item.num - 6)
+        if(up_right) result.push(up_right)
+
+        let down_left =this.turn_queue.find(elem => elem.num === item.num + 6)
+        if(down_left) result.push(down_left)
+
+        let down_right =this.turn_queue.find(elem => elem.num === item.num + 8)
+        if(down_right) result.push(down_right)
+
+        return result
+    }
+    getTargetsUpperAndBottom(enemy){
+        let result = [enemy]
+        let upper = this.turn_queue.find(elem => elem.num === enemy.num - 8)
+        if(upper){
+            result.push(upper)
+        }
+        if(!upper){
+            upper = this.turn_queue.find(elem => elem.num === enemy.num - 7)
+            if(upper){
+                result.push(upper)
+            }
+        }
+        if(!upper){
+            upper = this.turn_queue.find(elem => elem.num === enemy.num - 6)
+            if(upper){
+                result.push(upper)
+            }
+        }
+
+        let below = this.turn_queue.find(elem => elem.num === enemy.num + 6)
+        if(below){
+            result.push(below)
+        }
+        if(!below){
+            below = this.turn_queue.find(elem => elem.num === enemy.num + 7)
+            if(below){
+                result.push(below)
+            }
+        }
+        if(!below){
+            below = this.turn_queue.find(elem => elem.num === enemy.num + 8)
+            if(below){
+                result.push(below)
+            }
+        }
+
+        return result
+    }
+    getFirstEnemiesInLines(){
+        let result =[]
+        let f_line_index = [5, 6, 7]
+
+        for(let i = 0; i < f_line_index.length; i++){
+            let enemy = this.turn_queue.find(elem => elem.num === f_line_index[i])
+            if(enemy){
+                result.push(enemy)
+                break
+            }
+        }
+
+        let s_line_index = [12, 13, 14]
+
+        for(let i = 0; i < s_line_index.length; i++){
+            let enemy = this.turn_queue.find(elem => elem.num === s_line_index[i])
+            if(enemy){
+                result.push(enemy)
+                break
+            }
+        }
+
+        let t_line_index = [19, 20, 21]
+
+        for(let i = 0; i < t_line_index.length; i++){
+            let enemy = this.turn_queue.find(elem => elem.num === t_line_index[i])
+            if(enemy){
+                result.push(enemy)
+                break
+            }
+        }
+
+        let fo_line_index = [26, 27, 28]
+
+        for(let i = 0; i < fo_line_index.length; i++){
+            let enemy = this.turn_queue.find(elem => elem.num === fo_line_index[i])
+            if(enemy){
+                result.push(enemy)
+                break
+            }
+        }
+
+        let fi_line_index = [33, 34, 35]
+
+        for(let i = 0; i < fi_line_index.length; i++){
+            let enemy = this.turn_queue.find(elem => elem.num === fi_line_index[i])
+            if(enemy){
+                result.push(enemy)
+                break
+            }
+        }
+
+        return result
+    }
+    clearCellContent(content){
+        let cell = this.cells.find(elem => elem.num === content.num)
+        cell.content = undefined
+        this.enemy_pull = this.enemy_pull.filter(elem => elem != content)
+    }
+    deleteFromQueue(item){
+        this.turn_queue = this.turn_queue.filter(elem => elem != item)
+    }
+    async next(unit){
+        await Functions.sleep(500)
+        if(this.player.dead) return
+
+        if(this.enemy_pull.every(elem => elem.isDead())){
+            this.fightEnd()
+            return
+        }
+
+        let index = this.turn_queue.indexOf(unit)
+        let next = this.turn_queue[index + 1]
 
 
         if(!next){
@@ -144,193 +316,8 @@ export default class Battle extends Fight{
             next = this.turn_queue[0]
         }
 
-        await Functions.sleep(delay)
-        next.startTurn()
+        next.startTurn(this.enemy_pull, this.player)
     }
-    getWave(){
-        for(let i = 0; i < 8; i++){
-            let cords = this.getCords(i, this.map)
-            let cord_x = cords[0]
-            let cord_y = cords[1]
-
-            let e = this.pull.pop()
-            if(!e){
-                return
-            }
-
-            e.point = new Point(cord_x, cord_y)
-
-            this.addEnemyToBattle(e)
-        }
-    }
-    addEnemyToBattle(e){
-        if(!this.checkFrame(e)){
-            return
-        }
-
-        e.stacked = this.checkPlace(e)
-        e.env_stacked = this.checkEnvironmentPlace(e)
-
-        this.enemy.push(e)
-    }
-
-    checkEnvironmentPlace(object){
-        for(let i = 0; i < this.map.environment.length; i++){
-            let rock = this.map.environment[i]
-            if(Functions.rectCollision(rock, object)){
-                return true
-            }
-        }
-
-        return false
-    }
-
-    checkFrame(object){
-        return object.point.x > this.map.start_x && object.point.x < this.map.start_x + this.map.width
-            && object.point.y > this.map.start_y && object.point.y < this.map.start_y + this.map.height
-    }
-
-    checkPlace(object){
-        let all = this.enemy.concat(this.player)
-        for(let i = 0; i < all.length; i++){
-            let enemy = all[i]
-            if(enemy[i] === this || enemy.stacked || enemy.phased || enemy.state === Unit.STATE_DEAD || enemy.state === Unit.STATE_DYING){
-                continue
-            }
-            if(Functions.rectCollision(enemy, object)){
-                return true
-            }
-        }
-
-        return false
-    }
-
-    getCords(i, map){
-        switch (i){
-            case 0:
-                return [map.start_x + 50, map.start_y + 50]
-            case 1:
-                return [map.start_x + map.width/2, map.start_y + 50]
-            case 2:
-                return [map.start_x + map.width - 50, map.start_y + 50]
-            case 3:
-                return [map.start_x + 50, map.start_y + map.height/2]
-            case 4:
-                return [map.start_x + map.width - 50, map.start_y + map.height/2]
-            case 5:
-                return [map.start_x + 50, map.height + map.start_y - 50]
-            case 6:
-                return [map.start_x + map.width/2, map.height + map.start_y - 50]
-            case 7:
-                return [map.start_x + map.width- 50, map.height + map.start_y- 50]
-        }
-    }
-    getRock(rock) {
-        let min_x, min_y, max_x, max_y
-        let rock_width = rock.size_x
-        let rock_height = rock.size_y
-        let zone = Math.floor(Math.random() * 7)
-        switch (zone) {
-            case 0:
-                min_x = this.map.start_x + 100 + rock_width / 2
-                min_y = this.map.start_y + rock_height / 2
-                max_x = this.map.start_x + this.map.width / 2 - 50 - rock_width / 2
-                max_y = this.map.start_y + 100
-                break;
-            case 1:
-                min_x = this.map.start_x + this.map.width / 2 + 50 + rock_width / 2
-                min_y = this.map.start_y + rock_height / 2
-                max_x = this.map.start_x + this.map.width - 100 - rock_width / 2
-                max_y = this.map.start_y + 100
-                break;
-            case 2:
-                min_x = this.map.start_x + rock_width / 2
-                min_y = this.map.start_y + 100 + rock_height / 2
-                max_x = this.map.start_x + this.map.width - rock_width / 2
-                max_y = this.map.start_y + this.map.height / 2 - 50 - rock_height / 2
-                break;
-            case 3:
-                min_x = this.map.start_x + 100 + rock_width / 2
-                min_y = this.map.start_y + this.map.height / 2 - 50
-                max_x = this.map.start_x + this.map.width / 2 - 50 - rock_width / 2
-                max_y = this.map.start_y + this.map.height / 2 + 50
-                break;
-            case 4:
-                min_x = this.map.start_x + this.map.width / 2 + 50 + rock_width / 2
-                min_y = this.map.start_y + this.map.height / 2 - 50
-                max_x = this.map.start_x + this.map.width - 100 - rock_width / 2
-                max_y = this.map.start_y + this.map.height / 2 + 50
-                break;
-            case 5:
-                min_x = this.map.start_x + rock_width / 2
-                min_y = this.map.start_y + this.map.height / 2 + 50 + rock_height / 2
-                max_x = this.map.start_x + this.map.width - rock_width / 2
-                max_y = this.map.start_y + this.map.height - 100 - rock_height / 2
-                break;
-            case 6:
-                min_x = this.map.start_x + 100 + rock_width / 2
-                min_y = this.map.start_y + this.map.height - 100
-                max_x = this.map.start_x + this.map.width / 2 - 50 - rock_width / 2
-                max_y = this.map.start_y + this.map.height - rock_height / 2
-                break;
-            case 7:
-                min_x = this.map.start_x + this.map.width / 2 + 50 + rock_width / 2
-                min_y = this.map.start_y + this.map.height - 100
-                max_x = this.map.start_x + this.map.width - 100 - rock_width / 2
-                max_y = this.map.start_y + this.map.height - rock_height / 2
-                break;
-        }
-
-        let random_x = Math.floor(Math.random() * (max_x - min_x) + min_x)
-        let random_y = Math.floor(Math.random() * (max_y - min_y) + min_y)
-
-        rock.point = new Point(random_x, random_y)
-        this.map.environment.push(rock)
-    }
-
-    generateRocks(){
-
-        let small_stalagmite_count = Math.floor(Math.random() * 8)
-        let medium_stalagmite_count = Math.floor(Math.random() * 4)
-        let big_stalagmite_count = Math.floor(Math.random() * 2)
-
-
-        let big_rock_count = Math.floor(Math.random() * 2)
-        let medium_rock_count = Math.floor(Math.random() * 4)
-        let small_rock_count = Math.floor(Math.random() * 8)
-
-        for(let i = 0; i < small_rock_count; i++){
-           this.getRock(new SmallCaveRock(0, 0))
-        }
-
-        for(let i = 0; i < medium_rock_count; i++){
-            this.getRock(new MediumCaveRock(0, 0))
-        }
-
-        for(let i = 0; i < big_rock_count; i++){
-            this.getRock(new BigCaveRock(0, 0))
-        }
-
-
-        for(let i = 0; i < small_stalagmite_count; i++){
-            this.getRock(new SmallStalagmite(0, 0))
-        }
-
-        for(let i = 0; i < medium_stalagmite_count; i++){
-            this.getRock(new MediumStalagmite(0, 0))
-        }
-
-        for(let i = 0; i < big_stalagmite_count; i++){
-            this.getRock(new BigStalagmite(0, 0))
-        }
-    }
-
-    allDead(){
-        return this.enemy.every(elem => {
-           return elem.state === 'dying';
-        })
-    }
-
     sendHP(){
         axios({
             method: 'post',
@@ -351,45 +338,23 @@ export default class Battle extends Fight{
             this.sendHP()
         }
 
-
         this.player.act()
 
-        this.projectiles.forEach(elem => {
+        this.enemy_pull.forEach(elem => {
             elem.act(this)
         })
-
-        // this.cells.forEach(cell => {
-        //     if(cell.content){
-        //         console.log(cell.content)
-        //         cell.content.act()
-        //     }
-        // })
-
-        this.enemy.forEach(elem => {
-            elem.act()
+        this.summons.forEach(elem => {
+            elem.act(this)
         })
 
         this.effects.forEach(elem => {
-            elem.act()
-        })
-        this.effects_before.forEach(elem => {
-            elem.act(this)
-        })
-        this.effects_after.forEach(elem => {
             elem.act(this)
         })
 
-        this.areas_before.forEach(elem => {
+        this.ground_effects.forEach(elem => {
             elem.act(this)
         })
 
-        this.areas.forEach(elem => {
-            elem.act(this)
-        })
-
-        this.areas_after.forEach(elem => {
-            elem.act(this)
-        })
         this.render.draw(this)
 
         this.tick ++

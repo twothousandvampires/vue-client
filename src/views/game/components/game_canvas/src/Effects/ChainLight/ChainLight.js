@@ -11,7 +11,6 @@ export default class LuminousArcEffect extends Effect{
 
         this.angle = angle
         this.sprite = new ChainLightSprite(this)
-        console.log(this)
     }
 
 }

@@ -1,6 +1,7 @@
+import Config from "../../../../config.js";
 export default {
 
-    URL: 'http://89.111.155.67/api/',
+    URL: Config.app_url,
     TOKEN: localStorage.getItem('token') ? localStorage.getItem('token') : '',
 
     getCharacter(){
@@ -18,6 +19,52 @@ export default {
             }
         })
     },
+    async setStarted(player_id){
+        return axios({
+            method: 'post',
+            url: this.URL + 'character/set_started/' + player_id,
+            headers: {
+                'Authorization': 'Bearer ' + localStorage.getItem('token'),
+            }
+        });
+    },
+    async upgradeItemQuality(player_id, option_id){
+        let data = await axios({
+            method: 'post',
+            url: this.URL + 'item/upgrade_quality/' + player_id + '/' + option_id,
+            headers: {
+                'Authorization': 'Bearer ' + localStorage.getItem('token'),
+            }
+        });
+
+        return data.data
+    },
+    async addPropertyOnItem(player_id, option_id){
+        let data = await axios({
+            method: 'post',
+            url: this.URL + 'item/add_property/' + player_id + '/' + option_id,
+            data :{
+                prop_type: 'all'
+            },
+            headers: {
+                'Authorization': 'Bearer ' + localStorage.getItem('token'),
+            }
+        });
+
+        return data.data
+
+    },
+    async upgradeItemEffect(player_id, option_id){
+        let data = await axios({
+            method: 'post',
+            url: this.URL + 'item/upgrade_effect/' + player_id + '/' + option_id,
+            headers: {
+                'Authorization': 'Bearer ' + localStorage.getItem('token'),
+            }
+        });
+
+        return data.data
+    },
     move(x, y, char_id){
         return axios({method: 'post',
             url: this.URL + 'character/' + char_id +'/move/',
@@ -29,5 +76,105 @@ export default {
                 y : y,
             }
         })
-    }
+    },
+    async torch(char_id){
+        let data = await axios({method: 'post',
+            url: this.URL + 'character/torch/' + char_id,
+            headers: {
+                'Authorization': 'Bearer ' + this.TOKEN
+            },
+        })
+
+        return data.data
+    },
+    useItems(ids, player){
+        let data = axios({
+            method: 'post',
+            url: this.URL + 'character/use_items/' + player.id,
+            data : {
+                data: ids
+            },
+            headers: {
+                'Authorization': 'Bearer ' + localStorage.getItem('token'),
+            }
+        });
+
+        return data.data
+    },
+
+    async unlockPassives(id){
+         let data = await axios({
+            method: 'post',
+            url: this.URL + 'character/get_passives/' + id,
+            headers: {
+                'Authorization': 'Bearer ' + localStorage.getItem('token'),
+            }
+        });
+        return data.data
+    },
+
+    async learnPassive(player_id, id){
+        let data = await axios({
+            method: 'post',
+            url: this.URL + 'character/learn_passive/' + player_id + '/' + id,
+            headers: {
+                'Authorization': 'Bearer ' + localStorage.getItem('token'),
+            }
+        });
+
+        return data.data.data
+    },
+    async upgradePassive(player_id, passive_id){
+        let data = await axios({
+            method: 'post',
+            url: this.URL + 'character/upgrade_passive/' + player_id + '/' + passive_id,
+            headers: {
+                'Authorization': 'Bearer ' + localStorage.getItem('token'),
+            }
+        });
+
+        return data.data
+    },
+
+    async getSkillsForLearning(player_id, item_id){
+        let data = await axios({
+            method: 'post',
+            url: this.URL + 'skill/get_skills/' + player_id + '/' + item_id,
+            headers: {
+                'Authorization': 'Bearer ' + localStorage.getItem('token'),
+            }
+        });
+
+        return data.data
+    },
+
+    async learnSkill(player_id, skill_id){
+        let data = await axios({
+            method: 'post',
+            url: this.URL + 'skill/learn_skill/' + player_id,
+            data: {
+                skill_id: skill_id
+            },
+            headers: {
+                'Authorization': 'Bearer ' + localStorage.getItem('token'),
+            }
+        });
+
+        return data.data
+    },
+
+     async upgradeSkill(player_id, skill_id){
+         let data = await axios({
+             method: 'post',
+             url: this.URL + 'skill/upgrade_skill/' + player_id,
+             data: {
+                 skill_id: skill_id
+             },
+             headers: {
+                 'Authorization': 'Bearer ' + localStorage.getItem('token'),
+             }
+         });
+
+         return data.data
+     }
 }

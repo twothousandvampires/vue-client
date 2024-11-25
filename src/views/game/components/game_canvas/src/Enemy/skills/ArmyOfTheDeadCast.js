@@ -1,6 +1,6 @@
 import SkeletonWizard from "../skeleton_wizard/SkeletonWizard";
 import SkeletonWarrior from "../SkeletonWarrior/SkeletonWarrior";
-import SkeletonArcher from "../skeleton_archer/SkeletonArcher";
+import SkeletonArcher from "../skeletonArcher/SkeletonArcher";
 import GiantUndead from "../giant_undeda/GiantUndead";
 
 export default class ArmyOfTheDeadCast {

@@ -28,12 +28,10 @@ export default {
     justify-content: space-around;
   }
   .character{
-    background-color: dimgrey;
+    background-color: #2d1b1e;
     padding: 10px;
     min-width: 200px;
     min-height: 320px;
-    border: 25px solid #2c3e50;
-    border-image: url("/src/assets/img/border/border_big.png") 95 stretch stretch;
   }
 
 </style>

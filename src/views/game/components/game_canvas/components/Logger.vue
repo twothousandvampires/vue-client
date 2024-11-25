@@ -14,17 +14,26 @@ export default {
   },
   computed:{
     ...mapState(useLogStore, ['getLog'])
-  }
+  },
+  watch:{
+    getLog: {
+      handler(){
+        setTimeout(()=>{
+          document.getElementById('dd').lastElementChild.scrollIntoView()
+        }, 500)
+      },
+      deep: true
+    }
+  },
 }
 </script>
 <template>
   <div @click="test" id="logger">
-    <ul>
-      <li v-for="log_item in this.getLog">
+    <ul id="dd">
+      <li :id="'log_msg' + index" v-for="(log_item, index) in this.getLog">
         {{log_item}}
       </li>
     </ul>
-
   </div>
 </template>
 <style scoped>
@@ -36,8 +45,10 @@ export default {
  }
  ul{
    padding-inline-start: 4px!important;
+   overflow-y: auto;
  }
   #logger{
+    overflow-y: auto;
     font-size: 12px;
     position: fixed;
     top: 0;

@@ -6,8 +6,7 @@ export default class LichSprite extends Sprite{
         super(owner);
         this.width = 108
         this.height = 108
-        this.img = new Image()
-        this.img.src = './src/assets/img/enemy/lich.png'
+        this.img_name = 'lich'
     }
     setImgState(){
         switch (this.owner.state){

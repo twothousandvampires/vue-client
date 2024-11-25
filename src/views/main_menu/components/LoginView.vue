@@ -69,7 +69,7 @@ export default {
 </script>
 <template>
   <div>
-    <audio ref="audio" src="./src/music/background/Fog_Castle_x_Foglord_x_Fogweaver/Fogweaver%20-%20To%20Call%20Upon%20the%20Fog.mp3"></audio>
+    <audio ref="audio" src="./src/assets/music/To Call Upon the Fog.mp3"></audio>
     <div>
       <img src="/src/assets/img/main.gif" alt="">
     </div>

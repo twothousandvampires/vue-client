@@ -3,21 +3,44 @@ import Functions from "../../GameFunctions";
 import Input from "@/views/game/components/game_canvas/src/Singltons/Input";
 
 export default class BattleRender extends Render{
-    constructor() {
+    constructor(fight_context) {
         super();
+        this.fight_context = fight_context
         this.show_box = false
         this.show_state = false
         this.show_attack_range = false
-
         this.can_w = 900
         this.can_h = 900
 
+        this.showItemsAndSpells()
     }
+    showItemsAndSpells(){
 
+    }
     drawBg(context){
-        this.ctx.drawImage(this.img_data.getImage('background'),0,0,900,900,context.map.start_x - 25,context.map.start_y - 25,context.map.width + 50,context.map.height +50)
+        this.ctx.drawImage(this.img_data.getImage('background'),
+            0,
+            0,
+            450,
+            450,
+            1300/2 - 450/2,
+            1300/2 - 450/2,
+            450,
+            450,
+        )
     }
-
+    updateCellInfo(content, player){
+        let info = content.getInfo()
+        let div = document.getElementById('cell_info')
+        player.cursored_target = content
+        div.style.visibility = 'visible'
+        div.innerText = info
+    }
+    closeCellInfo(player){
+        let div = document.getElementById('cell_info')
+        player.cursored_target = undefined
+        div.style.visibility = 'hidden'
+    }
     draw(fight_context){
         let input = Input.getInput()
         let cells = fight_context.cells
@@ -32,24 +55,29 @@ export default class BattleRender extends Render{
 
         this.ctx.clearRect(0,0,1300,1300)
         this.drawBg(fight_context)
-        let all = fight_context.effects_before.concat(fight_context.areas_before)
 
-        let to_sort = [fight_context.player].concat(fight_context.enemy).concat(fight_context.effects).concat(fight_context.projectiles).concat(fight_context.areas)
+        let all = fight_context.ground_effects
+
+        let to_sort = [fight_context.player].concat(fight_context.enemy_pull).concat(fight_context.summons).concat(fight_context.effects)
 
         to_sort.sort(function(a,b){
             return a.point.y - b.point.y
         })
 
-        all = all.concat(to_sort).concat(fight_context.effects_after).concat(fight_context.areas_after)
+        all = all.concat(to_sort)
 
-        if(cell){
+        if(!cell || !cell.content){
+            this.closeCellInfo(fight_context.player)
+        }
+        else if(cell){
             this.ctx.strokeStyle = "green";
             this.ctx.lineWidth = 15;
             this.ctx.strokeRect(cell.x, cell.y, cell.width, cell.height);
+            this.updateCellInfo(cell.content, fight_context.player)
         }
 
         all.forEach(elem =>{
-            if(elem.opacity != 1){
+            if(elem.opacity !== 1){
                 this.ctx.globalAlpha = elem.opacity
             }
             if(elem.fliped){
@@ -67,10 +95,10 @@ export default class BattleRender extends Render{
                 this.ctx.drawImage(this.img_data.getImage(elem.sprite.img_name),
                     elem.sprite.width * elem.sprite.frame,
                     elem.sprite.y_frame_offset,
-                    elem.sprite.width,
-                    elem.sprite.height,
+                    elem.sprite.width - 1,
+                    elem.sprite.height - 1,
                     elem.point.x - elem.size_x/2,
-                    elem.point.y - elem.size_y + elem.box_size_y/2,
+                    elem.point.y - elem.size_y/2 + elem.sprite.draw_y_offset,
                     elem.size_x,
                     elem.size_y)
             }
@@ -78,63 +106,8 @@ export default class BattleRender extends Render{
             if(elem.fliped){
                 this.ctx.restore()
             }
-            // this.ctx.font = "48px serif";
-            // this.ctx.fillText(elem.stacked ? '1' : '0', elem.point.x, elem.point.y - 100)
-            if(this.show_box){
-                this.ctx.fillStyle = 'black'
-                this.ctx.fillRect(elem.point.x - elem.box_size_x/2,elem.point.y - elem.box_size_y/2, elem.box_size_x, elem.box_size_y)
-            }
-            // if(elem.radius){
-            //     this.ctx.beginPath();
-            //     this.ctx.arc(elem.point.x, elem.point.y, elem.radius, 0, 2*Math.PI, false);
-            //     this.ctx.fillStyle = 'yellow';
-            //     this.ctx.fill();
-            //     this.ctx.lineWidth = 1;
-            //     this.ctx.strokeStyle = 'yellow';
-            //     this.ctx.stroke();
-            // }
-            if(this.show_attack_range && elem.state === 'attack'){
-                this.ctx.beginPath();
-                this.ctx.arc(elem.point.x, elem.point.y, elem.getAttackRange(), 0, 2*Math.PI, false);
-                this.ctx.fillStyle = 'red';
-                this.ctx.fill();
-                this.ctx.lineWidth = 1;
-                this.ctx.strokeStyle = 'red';
-                this.ctx.stroke();
-
-                // if(elem.radius){
-                //     this.ctx.beginPath();
-                //     this.ctx.arc(elem.point.x, elem.point.y, elem.getAttackRange(), 0, 2*Math.PI, false);
-                //     this.ctx.fillStyle = 'yellow';
-                //     this.ctx.fill();
-                //     this.ctx.lineWidth = 1;
-                //     this.ctx.strokeStyle = 'yellow';
-                //     this.ctx.stroke();
-                // }
-
-            }
-            if(this.show_state){
-                this.ctx.fillStyle = 'yellow'
-                this.ctx.fillText(elem.state,elem.point.x,elem.point.y - elem.box_size_y/2 -100,)
-            }
-
             if(elem.opacity !== 1){
                 this.ctx.globalAlpha = 1
-            }
-            if(elem.status){
-                elem.status.forEach(status => {
-                    if(status.sprite){
-                        this.ctx.drawImage(status.sprite.img,
-                            status.sprite.width * status.sprite.frame,
-                            status.sprite.y_frame_offset,
-                            status.sprite.width,
-                            status.sprite.height,
-                            status.sprite.point.x  - status.sprite.size_x/2,
-                            status.sprite.point.y - status.sprite.size_y/2,
-                            status.sprite.size_x,
-                            status.sprite.size_y )
-                        }
-                })
             }
         })
 

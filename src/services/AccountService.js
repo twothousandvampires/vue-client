@@ -1,7 +1,7 @@
+import Config from "../../config.js";
 export default {
 
-    URL: 'http://89.111.155.67/backend/public/api/',
-
+    URL: Config.app_url,
     TOKEN: localStorage.getItem('token') ? localStorage.getItem('token') : '',
 
      login(email, pass) {

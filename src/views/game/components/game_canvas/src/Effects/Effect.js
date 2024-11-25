@@ -2,14 +2,8 @@ import GameObject from "../Scr/GameObject";
 
 export default class Effect extends GameObject{
 
-    constructor(context, x, y, w, h , angle = false) {
-        super(context, x, y)
-        this.size_x = w
-        this.size_y = h
-        this.angle = angle
-
-        this.box_size_x = w
-        this.box_size_y = h
+    constructor(context) {
+        super(context)
     }
 
     act(){

@@ -5,6 +5,7 @@ import RenderSettings from "./components/RenderSettings.vue";
 import Inventory from "./components/Inventory.vue";
 import Logger from "@/views/game/components/game_canvas/components/Logger.vue";
 import BattleTools from "@/views/game/components/game_canvas/components/BattleTools.vue";
+import FightPrepare from "@/views/game/components/game_canvas/components/FightPrepare.vue";
 export default {
   name: "GameCanvas",
   data(){
@@ -16,6 +17,7 @@ export default {
     game: Object
   },
   components:{
+    FightPrepare,
     AudioPlayer,
     PlayerHUD,
     RenderSettings,
@@ -58,12 +60,30 @@ export default {
 <!--    <RenderSettings v-bind:render="game.scene?.render"></RenderSettings>-->
 <!--    <BattleTools v-bind:f_context="game.scene"></BattleTools>-->
     <PlayerHUD v-bind:char="char"></PlayerHUD>
+<!--    <FightPrepare v-bind:game="this.game" v-if="this.game.prepare_for_battle"></FightPrepare>-->
     <Logger></Logger>
+    <div style="visibility: hidden; position: fixed; top: 20%; left: 50%;transform: translate(-50%, -50%);text-align: center" id="cell_info"></div>
+    <div v-if="char.figth_context" style="display: flex;flex-direction: column;position: fixed; top: 85%; left: 50%;transform: translate(-50%, -50%);text-align: center" id="spells_and_items">
+      <div id="items">
+        <div @click="char.selectToUse(item)" v-for="item in char.getItems((elem) => { return elem.uses_in_fight})" style="margin: 2px;border: 5px solid; display: flex; flex-direction: row;justify-content: center;align-items: center" :style="item.selected ? 'border: 5px solid #00e699' :''">
+          <img :title="item.getDescription()" width="60" height="60" :src="item.getImagePath()" alt="">
+        </div>
+      </div>
+      <div id="spells">
+        <div @click="char.selectToUse(skill)" v-for="skill in char.skill_pull" style="margin: 2px;border: 5px solid; display: flex; flex-direction: row;justify-content: center;align-items: center" :style="skill.selected ? 'border: 5px solid #00e699' :''">
+          <img :title="skill.getDescription()" width="60" height="60" :src="skill.getImagePath()" alt="">
+        </div>
+      </div>
+    </div>
   </div>
 
 </template>
 
 <style scoped>
+  #items, #spells{
+    display: flex;
+    flex-direction: row;
+  }
   #canvas-wrap{
     overflow: hidden;
   }

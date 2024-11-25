@@ -18,7 +18,7 @@ export default class SkeletonWarriorSprite extends Sprite{
         switch (this.owner.state){
             case Unit.STATE_IDLE:
                 this.y_frame_offset = 0
-                this.max_frame = Math.random() < 0.5 ? 8 : 0
+                this.max_frame = 8
                 this.frame_timer_max = 6
                 break;
             case Unit.STATE_MOVE:

@@ -27,137 +27,112 @@ export default {
 </script>
 <template>
   <div id="equip">
-    <div style="height: 10%; display: flex;align-items: center;justify-content: center">
-      <p @click.prevent="page=!page" style="cursor: pointer">
-        {{page ? 'gem and belt' : 'equip'}}
-      </p>
-    </div>
     <div id="player_equip" v-if="page">
-      <div class="equip_block" v-bind:class="{ is_row_combat: char.inv.is_combat_row}">
-        <p>combat</p>
-        <div style="display: flex;flex-direction: row;justify-content: space-between;width: 80%">
-          <div v-for="item in char.inv.pull.slice(0,3)" class="equip_cell_wrap" :key="item.id" v-bind:class="{is_column: this.checkColumn(item, char.inv)}">
-            <div class="equip_cell" @click="$emit('clickItem', item)" :title="item.getDescription()" v-bind:class="{ clicked: item?.clicked}">
-              <img :src="item.getImagePath()" alt="">
-            </div>
-          </div>
+      <div class="equip_cell">
+        <div v-if="char.inv.is_combat_row && char.inv.is_sorcery_row && char.inv.is_movement_row && char.inv.is_weapon_column && char.inv.is_armour_column && char.inv.is_armour_column">
+          <img width="60" height="60" src="/src/assets/img/overpower.gif" alt="">
         </div>
-      </div >
-      <div class="equip_block" v-bind:class="{ is_row_combat: char.inv.is_sorcery_row}">
-        <p>wizardry</p>
-        <div style="display: flex;flex-direction: row;justify-content: space-between;width: 80%">
-          <div v-for="item in char.inv.pull.slice(3,6)" class="equip_cell_wrap" v-bind:class="{is_column: this.checkColumn(item, char.inv)}">
-            <div  class="equip_cell" @click="$emit('clickItem', item)" :title="item.getDescription()" v-bind:class="{ clicked: item?.clicked}">
-              <img :src="item.getImagePath()" alt="">
-            </div>
-          </div>
+        <div v-else>
+          <img width="60" height="60" src="/src/assets/img/no_overpower.png" alt="">
         </div>
       </div>
-      <div class="equip_block" v-bind:class="{ is_row_combat: char.inv.is_movement_row}">
-        <p>movement</p>
-        <div style="display: flex;flex-direction: row;justify-content: space-between;width: 80%">
-          <div v-for="item in char.inv.pull.slice(6,9)" class="equip_cell_wrap" v-bind:class="{is_column: this.checkColumn(item, char.inv)}">
-            <div  class="equip_cell" @click="$emit('clickItem', item)" :title="item.getDescription()" v-bind:class="{ clicked: item?.clicked}">
-              <img :src="item.getImagePath()" alt="">
-            </div>
+      <div class="equip_cell">
+        <div v-if="!char.inv.is_weapon_column">
+          <img width="60" height="60" src="/src/assets/img/no_weapon_column.png" alt="">
+        </div>
+        <div v-else>
+          <img title="all items in this column have 20% more effect" width="60" height="60" src="/src/assets/img/weapon_column.gif" alt="">
+        </div>
+      </div>
+      <div class="equip_cell">
+        <div v-if="!char.inv.is_armour_column">
+          <img width="60" height="60" src="/src/assets/img/no_armour_column.png" alt="">
+        </div>
+        <div v-else>
+          <img title="all items in this column have 20% more effect" width="60" height="60" src="/src/assets/img/armour_column.gif" alt="">
+        </div>
+      </div>
+      <div class="equip_cell">
+        <div v-if="!char.inv.is_accessory_column">
+          <img width="60" height="60" src="/src/assets/img/no_accessory_column.png" alt="">
+        </div>
+        <div v-else>
+          <img title="all items in this column have 20% more effect" width="60" height="60" src="/src/assets/img/accessory_column.gif" alt="">
+        </div>
+      </div>
+
+        <div class="equip_cell">
+          <div v-if="!char.inv.is_combat_row">
+            <img width="60" height="60" src="/src/assets/img/no_battle_line.png" alt="">
           </div>
+          <div v-else>
+            <img title="all items in this row have 20% more effect" width="60" height="60" src="/src/assets/img/battle_line.gif" alt="">
+          </div>
+        </div>
+
+        <div v-for="item in char.inv.pull.slice(0,3)" class="equip_cell" @click="$emit('clickItem', item)" v-bind:class="{ clicked: item?.clicked}">
+          <img @mouseleave="$emit('mouseleave')" @mouseenter="$emit('mouseenter',$event, item)" :src="item.getImagePath()" alt="">
+        </div>
+
+        <div class="equip_cell">
+          <div v-if="!char.inv.is_sorcery_row">
+            <img width="60" height="60" src="/src/assets/img/no_sorcery_line.png" alt="">
+          </div>
+          <div v-else>
+            <img title="all items in this row have 20% more effect" width="60" height="60" src="/src/assets/img/sorcery_line.gif" alt="">
+          </div>
+        </div>
+
+        <div v-for="item in char.inv.pull.slice(3,6)" class="equip_cell" @click="$emit('clickItem', item)" v-bind:class="{ clicked: item?.clicked}">
+          <img @mouseleave="$emit('mouseleave')" @mouseenter="$emit('mouseenter',$event, item)" :src="item.getImagePath()" alt="">
+        </div>
+
+        <div class="equip_cell">
+          <div v-if="!char.inv.is_movement_row">
+            <img width="60" height="60" src="/src/assets/img/no_movement_line.png" alt="">
+          </div>
+          <div v-else>
+            <img title="all items in this row have 20% more effect" width="60" height="60" src="/src/assets/img/movement_line.gif" alt="">
+          </div>
+        </div>
+
+        <div v-for="item in char.inv.pull.slice(6,9)" class="equip_cell" @click="$emit('clickItem', item)" v-bind:class="{ clicked: item?.clicked}">
+          <img @mouseleave="$emit('mouseleave')" @mouseenter="$emit('mouseenter',$event, item)" :src="item.getImagePath()" alt="">
         </div>
       </div>
     </div>
-    <div id="player_bag_and_belt" v-else>
-      <div id="bag">
-        <div v-for="item in char.inv.pull.slice(29,35)"
-             @contextmenu="$emit('contextClick',$event, item)"
-             class="gem_cell" @click="$emit('clickItem', item)"
-             :title="item.getDescription()"
-             v-bind:class="{ clicked: item?.clicked}">
-          <img :src="item.getImagePath()" alt="">
-        </div>
-      </div>
-      <div id="belt">
-        <div v-for="item in char.inv.pull.slice(35,39)" class="equip_cell" @click="$emit('clickItem', item)" :title="item.getDescription()" v-bind:class="{ clicked: item?.clicked}">
-          <img :src="item.getImagePath()" alt="">
-        </div>
-      </div>
-    </div>
-  </div>
 </template>
 <style scoped>
   .equip_cell img{
-    max-width: 120px;
-    max-height: 120px;
-  }
-  #player_bag_and_belt{
-    height: 90%;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-around;
-  }
-  #bag{
-    display: flex;
-    flex-direction: row;
-    justify-content: space-around;
-  }
-  #belt{
-    display: flex;
-    flex-direction: row;
-    justify-content: space-around;
+    width: 60px;
+    height: 60px;
   }
   #equip{
-    width: 40%;
-    background-color: #E8E8E8;
+    background-color: #00994d;
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
-    height: 100%;
   }
   #player_equip{
-    display: flex;flex-direction: column;justify-content: space-between;height: 90%;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 6px;
+    grid-template-rows: repeat(4, 1fr);
   }
   .equip_block{
-    border: 25px solid  #E8E8E8;
-    /*border-image: url('/src/assets/img/border/equip_block_border.png') 39 stretch stretch;*/
-    padding: 10px 5px;
     align-items: center;
     display: flex;
     flex-direction: row;
-    justify-content: space-between;
+    justify-content: space-around;
   }
   .equip_cell{
-    background-color: #B0B0B0;
-    min-height: 120px;
-    min-width: 120px;
+    min-height: 60px;
+    min-width: 60px;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-  }
-  .equip_cell_wrap{
-    border: 6px solid gray;
-  }
-  .gem_cell{
-    min-height: 80px;
-    min-width: 80px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-  }
-  .is_row_combat{
-    border: 25px solid;
-    border-image: url('/src/assets/img/border/combat_equip_border.png') 39 stretch stretch;
-  }
-  .is_column{
-    border-color: #484848;
   }
   .clicked{
-    border: 10px solid;
-    border-image: url('/src/assets/img/border/equip_clicked_border.png') 16 stretch stretch;
-  }
-  .is_row_sorcery{
-    border: 2px blue solid;
-  }
-  .is_row_movement{
-    border: 2px green solid;
+
   }
 </style>

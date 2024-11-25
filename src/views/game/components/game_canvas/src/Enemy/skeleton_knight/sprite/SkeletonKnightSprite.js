@@ -6,14 +6,13 @@ export default class SkeletonKnightSprite extends Sprite{
         super(owner);
         this.width = 96
         this.height = 96
-        this.img = new Image()
-        this.img.src = './src/assets/img/enemy/skeleton_knight.png'
+        this.img_name = 'skeleton_knight'
     }
     setImgState(){
         switch (this.owner.state){
             case Unit.STATE_IDLE:
                 this.y_frame_offset = 0
-                this.max_frame = Math.random() < 0.5 ? 10 : 0
+                this.max_frame = 10
                 this.frame_timer_max = 6
                 break;
             case Unit.STATE_MOVE:

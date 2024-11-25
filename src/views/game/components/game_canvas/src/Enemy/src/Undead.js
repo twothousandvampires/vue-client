@@ -6,10 +6,14 @@ export default class Undead extends Enemy{
     constructor(context, x, y) {
         super(context, x, y)
         this.type = 'undead'
+        this.resist = 0
+        this.piercing_damage_resist = 0
+        this.cutting_damage_resist = 0
+        this.crushing_damage_resist = 2
     }
 
     canResurrect(){
-        return this.state === Unit.STATE_DEAD && !this.skull_will_appear
+        return this.state === Unit.STATE_DEAD
     }
 
     resurrectState(){
@@ -20,10 +24,10 @@ export default class Undead extends Enemy{
 
     resurrectAct(){
         if(this.sprite.isSpriteLoopEnd()){
-            this.skull_will_appear = Math.random() > 0.5
-            this.life = this.max_life
+            this.figth_context.turn_queue.push(this)
             this.dead = false
-            this.getState()
+            this.life = this.max_life
+            this.idleState()
         }
     }
 }

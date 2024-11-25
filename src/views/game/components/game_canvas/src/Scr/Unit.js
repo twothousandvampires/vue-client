@@ -1,5 +1,7 @@
 import GameObject from "./GameObject";
 import Functions from "../GameFunctions";
+import Point from "@/views/game/components/game_canvas/src/Scr/Point";
+
 export default class Unit extends GameObject{
 
     static STATE_IDLE = 1
@@ -19,127 +21,172 @@ export default class Unit extends GameObject{
     static STATE_FROZEN = 15
     static STATE_STUNNED = 16
 
-    static MIN_ATTACK_SPEED = 100
-
     constructor(context, x, y) {
         super(context, x, y);
-        this.can_move = true
         this.can_attack = true
         this.can_cast = true
         this.can_action = true
+
         this.fliped = false
-        this.struck = false
-        this.casted = false
-        this.dead = false
-
-        this.phased = false
-        this.inmaterial = false
-
-        this.increased_attack_range = 0
-        this.reduced_attack_range = 0
+        this.dead = 0
 
         //critical
-        this.crit_chance = 0
-        this.spell_crit_chance = 0
-        this.attack_crit_chance = 0
-
-        this.crit_multi = 0
+        this.will = 0
+        this.auras = []
 
         //defend
         this.evade = 0
         this.armour = 0
-        this.increased_armour = 0
-        this.reduced_armour = 0
         this.attack_block = 0
         this.spell_block = 0
-        this.resistance = 0
-        this.increased_resistance = 0
-        this.reduced_resistance = 0
+        this.resist = 0
 
         this.speed = 0
-
-        //attack
-        this.increased_attack_damage = 0
-        this.reduced_attack_damage = 0
-
-        //speed
-        this.increased_speed = 0
-        this.reduced_speed = 0
-        this.increased_attack_speed = 0
-
-        //spell
-        this.min_spell_damage = 0
-        this.max_spell_damage = 0
-        this.increased_spell_aoe = 0
-        this.spell_leech = 0
-        this.cast_speed = 0
-
-        //regen
-        this.min_attack_damage = 0
-        this.max_attack_damage = 0
-
-
-        this.increased_damage = 0
-        this.reduced_damage = 0
+        this.blind = 0
+        this.life_leech = 0
+        this.attack_crit_chance = 5
+        this.spell_crit_chance = 5
         this.status = new Map();
-    }
 
+        this.magic_damage = 0
+        this.physical_damage = 0
+    }
+    resetState(){
+        this.sprite.reset()
+    }
+    idleAct(fight_context){
+
+    }
+    deadAct() {
+
+    }
+    successfulAttack(){
+
+    }
+    deadState(){
+        this.state = Unit.STATE_DEAD
+        this.resetState()
+        this.stateAct = this.deadAct
+    }
+    dyingAct(){
+        if (this.sprite.isSpriteLoopEnd()) {
+            this.deadState()
+        }
+    }
+    setDyingState(){
+        this.figth_context.deleteFromQueue(this)
+        this.dead = true
+        this.state =  Unit.STATE_DYING
+        this.resetState()
+        this.stateAct = this.dyingAct
+    }
+    idleState(ms = 0){
+        this.state = Unit.STATE_IDLE
+        this.resetState()
+        this.stateAct = this.idleAct
+    }
+    takeDirectDamage(damage){
+        this.reduceLife(damage)
+    }
+    init(){
+        this.idleState()
+        this.sprite.init()
+    }
+    setCellCords(cell, cell_w, cell_h){
+        this.point = new Point(cell.x + cell_w / 2, cell.y + cell_h/2)
+    }
+    isPhysicalCrit(){
+        return Math.random() <= this.attack_crit_chance / 100
+    }
+    isMagicCrit(){
+        if(!this.magic_damage) return false
+        return Math.random() <= this.spell_crit_chance / 100
+    }
+    getInfo(){
+        let result = ``;
+
+        result += `${this.name} (${this.life}/${this.max_life})\n`
+
+        return result;
+    }
+    getPhysicalDamage(){
+        return this.physical_damage
+    }
+    getMagicDamage(){
+        return this.magic_damage
+    }
+    getPhysicalDamageWithSpread(){
+        return  Functions.random(this.getPhysicalDamage() * 1.1, this.getPhysicalDamage()  * 0.9)
+    }
+    getMagicDamageWithSpread(){
+        return  Functions.random(this.getMagicDamage() * 1.1, this.getMagicDamage()  * 0.9)
+    }
+    isBlock(){
+        return this.attack_block && Functions.random(100,0) <= this.attack_block
+    }
+    getPhysicalRedaction(){
+        return (0.06 * this.armour) / (1 + 0.06 * this.armour)
+    }
+    getMagicRedaction(){
+        let r = this.resist / 100
+        return r > 0.75 ? 0.75 : r
+    }
     isDead(){
         return this.state === Unit.STATE_DEAD || this.state === Unit.STATE_DYING
     }
+    updateStatus(){
+        this.status.forEach((v,k,map) => {
+            v.newTurn()
+        })
+    }
+    calculatePhysicalDamage(target, is_range = false){
+        let physical_damage = this.getPhysicalDamageWithSpread(target)
 
+        if(target.armour >= 0){
+            let physical_reduction = target.getPhysicalRedaction()
+            physical_damage = physical_damage * (1 - physical_reduction)
+        }
+        else {
+            physical_damage = Functions.changeByPercent(physical_damage, Math.abs(target.armour))
+        }
+
+        return physical_damage
+    }
+    isSpellBlock(){
+        return this.spell_block && Functions.random(100,0) <= this.spell_block
+    }
+    isSuppress(){
+        return this.will && Functions.random(100,0) <= this.will
+    }
+    calculateMagicDamage(target){
+        let magic_damage = this.getMagicDamageWithSpread()
+        let magic_reduction = target.getMagicRedaction()
+        if(target.resist >= 0){
+            magic_damage = magic_damage * (1 - magic_reduction)
+        }
+        else {
+            magic_damage = magic_damage * (1 + -magic_reduction)
+        }
+        return magic_damage
+    }
+    addMana(value){
+        this.mana += value
+        if(this.mana > this.max_mana){
+            this.mana = this.max_mana
+        }
+    }
     addLife(value){
         this.life += value
         if(this.life > this.max_life){
             this.life = this.max_life
         }
     }
-    getAttackRange(){
-        return this.attack_range
-    }
 
-    getLookingRange(){
-        return this.looking_range
-    }
-
-    setStan(){
-
-    }
-
-    getTotalIncreasedAttackDamage(){
-        return this.increased_attack_damage - this.reduced_attack_damage
-    }
-
-    getMovementSpeed(){
-        return this.movement_speed
-    }
-
-
-    getAttackSpeed(){
-        return this.attack_speed
-    }
-
-    getCastSpeed(){
-        return this.cast_speed
-    }
-
-    getArmour(){
-        return Functions.changeByPercent(this.armour, this.getTotalArmourIncreased())
-    }
-
-    getTotalArmourIncreased(){
-        return this.increased_armour - this.reduced_armour
-    }
-
-    getMagickResistance(){
-        return Functions.changeByPercent(this.resistance, this.getTotalResistanceIncreased())
-    }
-
-    getTotalResistanceIncreased(){
-        return this.increased_resistance - this.reduced_resistance
-    }
-
-    newStatus(status, source){
+    newStatus(status, source, can_resist = false){
+        if(this.will / 100 >= Math.random() && !can_resist){
+            Functions.createModal(this, 'resist ' + status.name)
+            return
+        }
         if(status.check(this)){
             if(this.status.has(status.name)){
                 this.status.get(status.name).update(status, source)
@@ -147,6 +194,9 @@ export default class Unit extends GameObject{
             else {
                 this.status.set(status.name, status)
                 status.affect(this, source)
+                if(this.figth_context){
+                    Functions.createModal(this, status.name,12, 'white')
+                }
             }
         }
     }

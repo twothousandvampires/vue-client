@@ -10,7 +10,7 @@ export default {
 
 <template>
   <div>
-    <div :title="this.status.name + '(' + this.status.duration + ')'">
+    <div :title="this.status.getDescription()">
       <img id="status-image" :src="this.status.getStatusBarImgPath()">
     </div>
   </div>
@@ -18,7 +18,7 @@ export default {
 
 <style scoped>
   #status-image{
-    width: 30px;
-    height: 30px;
+    width: 60px;
+    height: 60px;
   }
 </style>

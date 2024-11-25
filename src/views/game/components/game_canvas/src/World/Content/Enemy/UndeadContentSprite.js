@@ -4,6 +4,7 @@ export default class UndeadContentSprite extends ContentSprite{
     constructor() {
         super();
         this.img_name = 'undying_squad'
+        this.name = 'living bones'
         this.frame_timer_max = 6
         this.width = 90
         this.height = 90

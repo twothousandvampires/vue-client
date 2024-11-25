@@ -1,37 +1,35 @@
-import Functions from "../../GameFunctions";
 import Status from "../Status";
+import FreezeEffect from "@/views/game/components/game_canvas/src/Effects/FreezeEffect";
 export default class Freeze extends Status{
-    constructor(duration = 3000) {
+    constructor(duration = 1) {
         super()
         this.name = 'frozen'
-        this.img_path = 'src/assets/img/icons/skill/step_of_another_world.png'
-        this.duration = Functions.msToTick(duration)
+        this.duration = duration
+        this.description = 'you will skip your turns while you are frozen'
+        this.status_bar_img_name = 'frozen.png'
+        this.sprite = undefined
     }
 
-    act(){
-        let tick = this.target.figth_context.tick
-        if(tick >= (this.duration) + this.affect_time){
+    newTurn(){
+        this.duration --
+        if(!this.duration){
             this.expire()
         }
     }
+    affect(target){
+        this.target = target
+        this.target.frozen = true
+        this.sprite = new FreezeEffect(this.target.figth_context)
+        this.target.figth_context.addEffect(this.sprite, target.num)
+    }
 
     expire(){
-        this.target.setUnfrozenState()
+        this.target.frozen = false
+        this.target.figth_context.removeEffect(this.sprite)
         this.target.status.delete(this.name)
     }
 
-    affect(target){
-        this.target = target
-        this.target.setFrozenState()
-        this.affect_time = target.figth_context.tick
-    }
-
     update(status){
-        this.affect_time = this.target.figth_context.tick
         this.duration = status.duration
-    }
-
-    targetDead() {
-
     }
 }

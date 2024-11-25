@@ -1,4 +1,3 @@
-import SoulVortexArea from "../../Areas/SoulVortex/SoulVortexArea";
 import Functions from "../../GameFunctions";
 
 export default class Teleport {

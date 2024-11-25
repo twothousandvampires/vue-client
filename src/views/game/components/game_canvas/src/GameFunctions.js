@@ -2,6 +2,8 @@ import Point from "./Scr/Point";
 
 export default class Functions{
 
+    static modal_queue = 0
+
     static distance(from, to){
         return Math.floor(Math.sqrt(((from.point.x - to.point.x) ** 2)
                                      + ((from.point.y - to.point.y) ** 2)))
@@ -9,6 +11,9 @@ export default class Functions{
 
     static increasedByPercent(flat, percent){
         return +((flat * (1 + percent / 100)).toFixed(1))
+    }
+    static chance(chance){
+        return Math.random() <= chance / 100
     }
 
     static changeByPercent(flat, percent){
@@ -96,7 +101,6 @@ export default class Functions{
     }
 
     static angle(from, target){
-        console.log(from)
         if(!target.point){
             target = {
                 point: target
@@ -157,29 +161,70 @@ export default class Functions{
         return new Promise(resolve => setTimeout(resolve, ms));
     }
 
-    static createModal(unit ,text, font_size = 14, color = 'white'){
-        let canvas = document.getElementById('game-canvas')
-        let c_x = canvas.getBoundingClientRect().left
-        let c_y = canvas.getBoundingClientRect().top
-
-
-        let elem = document.createElement('p');
-        elem.textContent = text;
-        elem.classList.add('game-modal')
-        elem.style.top = c_y + unit.point.y - unit.size_y/2 + 'px'
-        elem.style.left = c_x + unit.point.x - 10 + 'px'
-        elem.style.fontSize = font_size + 'px'
-        elem.style.color = color
-        let tick = 0
-        let timer = setInterval(()=>{
-            if(tick > 30){
-                clearInterval(timer)
-                elem.parentNode.removeChild(elem)
+    static async createModal(unit ,text, font_size = 14, color = 'white', without_queue = false){
+        if(!without_queue){
+            Functions.modal_queue ++
+        }
+        setTimeout(() => {
+            if(!without_queue){
+                Functions.modal_queue --
             }
-            elem.style.top = parseInt(elem.style.top) - 1 + 'px'
-            tick++
-        },40)
-        document.getElementById('app').append(elem)
+            let canvas = document.getElementById('game-canvas')
+            let c_x = canvas.getBoundingClientRect().left
+            let c_y = canvas.getBoundingClientRect().top
 
+
+            let elem = document.createElement('p');
+            elem.textContent = text;
+            elem.classList.add('game-modal')
+            elem.style.top = c_y + unit.point.y - unit.size_y/2 + 'px'
+            elem.style.left = c_x + unit.point.x - 10 + 'px'
+            elem.style.fontSize = font_size + 'px'
+            elem.style.color = color
+            let tick = 0
+            let timer = setInterval(()=>{
+                if(tick > 30){
+                    clearInterval(timer)
+                    elem.parentNode.removeChild(elem)
+                    return true
+                }
+                elem.style.top = parseInt(elem.style.top) - 1 + 'px'
+                tick++
+            },40)
+            document.getElementById('app').append(elem)
+        }, Functions.modal_queue * 250)
+    }
+    static async createOptionsModal(options, source, title = ''){
+
+        let exist = document.getElementsByClassName('options_modal')[0]
+        if(exist){
+            exist.parentNode.removeChild(exist)
+        }
+
+        let div = document.createElement('div')
+        div.className = 'options_modal'
+
+        if(title){
+            let title_div = document.createElement('div')
+            title_div.className = 'title'
+            title_div.innerText = title
+            div.appendChild(title_div)
+        }
+        let option_list_div = document.createElement('div')
+        option_list_div.className = 'options'
+        options.forEach(option => {
+            let o_div = document.createElement('div')
+            o_div.innerText = option.name
+            option_list_div.appendChild(o_div)
+            o_div.addEventListener('click', () => {
+                source.chooseOption(option.id)
+
+            })
+        })
+        div.appendChild(option_list_div)
+        div.addEventListener('click', () => {
+            div.parentNode.removeChild(div)
+        })
+        document.getElementById('app').append(div)
     }
 }

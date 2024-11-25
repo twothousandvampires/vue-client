@@ -20,32 +20,37 @@ export default class EquipProperty{
 
     getDescription(){
 
-        let inc = 0
-        let total = 0
-        if(this.sub_type == 1){
-            if(this.inc_type == 1){
-                total = -this.item.penalty + this.item.increased_by_column + this.item.increased_by_row
-            }
-            else if(this.inc_type == 2){
-                total = -this.item.penalty - this.item.increased_by_column - this.item.increased_by_row
-            }
+        let result = this.value
+        let effect = this.item.inc_effect
+        let penalty = this.item.penalty
+
+        if(penalty){
+            result = Math.floor(result * (1 - penalty / 100))
         }
-        else if(this.sub_type == 2){
-            if(this.inc_type == 1){
-                total = -this.item.penalty - this.item.increased_by_column - this.item.increased_by_row
+
+        if(effect && this.sub_type === 1){
+            result = Math.floor(result * (1 + effect / 100))
+        }
+
+        if(this.item.increased_by_column){
+            if(this.sub_type === 1){
+                result += Math.floor(this.value * 0.2)
             }
-            else if(this.inc_type == 2){
-                total = -this.item.penalty + this.item.increased_by_column + this.item.increased_by_row
+            else {
+                result -= Math.floor(this.value  * 0.2)
+            }
+
+        }
+
+        if(this.item.increased_by_row){
+            if(this.sub_type === 1){
+                result += Math.floor(this.value *  0.2)
+            }
+            else {
+                result -= Math.floor(this.value *  0.2)
             }
         }
 
-        if(total < 0){
-            inc = Functions.reducedByPercent(this.value, -total)
-        }
-        else {
-            inc = Functions.increasedByPercent(this.value, total)
-        }
-
-        return this.name + ' - ' + Math.floor(inc) + `\n`
+        return result
     }
 }

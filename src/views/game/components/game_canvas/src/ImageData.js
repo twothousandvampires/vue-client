@@ -3,7 +3,7 @@ export default class ImageData{
 
     static img_list = [
         {
-            name: 'grim',
+            name: 'grim2',
             format: 'png'
         },
         {
@@ -15,11 +15,146 @@ export default class ImageData{
             format: 'png'
         },
         {
+            name: 'greenskin_prophet',
+            format: 'png'
+        },
+        {
+            name: 'remains_of_camp',
+            format: 'png'
+        },
+        {
+            name: 'freeze_effect',
+            format: 'png'
+        },
+        {
+            name: 'living_creatures',
+            format: 'png'
+        },
+        {
+            name: 'flame_wave_effect',
+            format: 'png'
+        },
+        {
+            name: 'centipede',
+            format: 'png'
+        },
+        {
+            name: 'soul_vortex',
+            format: 'png'
+        },
+        {
+            name: 'swipe_effect',
+            format: 'png'
+        },
+        {
+            name: 'enchanted_armour',
+            format: 'png'
+        },
+        {
+            name: 'abandoned_forge',
+            format: 'png'
+        },
+        {
+            name: 'enchanted_weapon',
+            format: 'png'
+        },
+        {
+            name: 'fire_explosion_effect',
+            format: 'png'
+        },
+        {
+            name: 'flying_scrolls',
+            format: 'png'
+        },
+        {
+            name: 'mouse_breeder',
+            format: 'png'
+        },
+        {
+            name: 'commanding_greenskin',
+            format: 'png'
+        },
+        {
+            name: 'Gruz-Gul_greenskin_cultist',
+            format: 'png'
+        },
+        {
+            name: 'mana_source',
+            format: 'png'
+        },
+        {
+            name: 'ghostly_warrior',
+            format: 'png'
+        },
+        {
+            name: 'altar_of_forgotten_warrior',
+            format: 'png'
+        },
+        {
+            name: 'altar_of_forgotten_sorcerer',
+            format: 'png'
+        },
+        {
+            name: 'test_effect',
+            format: 'png'
+        },
+        {
+            name: 'vampiric_rite_effect',
+            format: 'png'
+        },
+        {
+            name: 'cave_bat',
+            format: 'png'
+        },
+        {
+            name: 'pachydermatous',
+            format: 'png'
+        },
+        {
+            name: 'greenskins_squad',
+            format: 'png'
+        },
+        {
+            name: 'living_flesh',
+            format: 'png'
+        },
+        {
+            name: 'mad_flesh',
+            format: 'png'
+        },
+        {
+            name: 'deaths_shard',
+            format: 'png'
+        },
+        {
+            name: 'enter',
+            format: 'png'
+        },
+        {
+            name: 'outer_life',
+            format: 'png'
+        },
+        {
             name: 'skeleton',
             format: 'png'
         },
         {
+            name: 'skeleton_wizard1',
+            format: 'png'
+        },
+        {
             name: 'skeleton_archer_new',
+            format: 'png'
+        },
+        {
+            name: 'skeleton_knight',
+            format: 'png'
+        },
+        {
+            name: 'ghost',
+            format: 'png'
+        },{
+            name: 'goblin_with_spear',
             format: 'png'
         },
         {
@@ -30,113 +165,79 @@ export default class ImageData{
             name: 'arrow',
             format: 'png'
         },
+
         {
-            name: 'crystal_vein',
+            name: 'post_potionbrewing',
+            format: 'png'
+        },
+        {
+            name: 'ghostly_mage',
             format: 'png'
         },
         {
             name: 'treasure',
             format: 'png'
         },
+        {
+            name: 'dead_body',
+            format: 'png'
+        },
+        {
+            name: 'giant_undead',
+            format: 'png'
+        },
+        {
+            name: 'black_mist',
+            format: 'png'
+        },
+        {
+            name: 'crystal_vein',
+            format: 'png'
+        },
+        {
+            name: 'pile_of_skull',
+            format: 'png'
+        },
+        {
+            name: 'lich',
+            format: 'png'
+        },
+        {
+            name: 'torch',
+            format: 'png'
+        },
+        {
+            name: 'flying_bat',
+            format: 'png'
+        },
+        {
+            name: 'wild_light',
+            format: 'png'
+        },
+        {
+            name: 'pale_obelisk',
+            format: 'png'
+        },
+        {
+            name: 'life_source',
+            format: 'png'
+        },
+        {
+            name: 'goblin_catcher',
+            format: 'png'
+        },
+        {
+            name: 'sitting_on_the_beast',
+            format: 'png'
+        },
+        {
+            name: 'goblin_mixologist',
+            format: 'png'
+        },
     ]
     constructor() {
         this.img_map = new Map()
         this.load()
-        // Environment
-        this['rock'] = new Image()
-        this['rock'].src = './src/assets/img/rocks/rock.png'
-
-        //enemy
-
-        this['arrow'] = new Image()
-        this['arrow'].src = './src/assets/img/Projectiles/arrow.png'
-
-        this['fire_ball'] = new Image()
-        this['fire_ball'].src = './src/assets/img/Projectiles/fireball.png'
-
-        this['fear_skull'] = new Image()
-        this['fear_skull'].src = './src/assets/img/Projectiles/fear_skull.png'
-
-        this['fear'] = new Image()
-        this['fear'].src = './src/assets/img/Status/fear.png'
-
-        this['ghost_grip'] = new Image()
-        this['ghost_grip'].src = './src/assets/img/Status/ghost_grip.png'
-
-        this['fury_of_the_dead'] = new Image()
-        this['fury_of_the_dead'].src = './src/assets/img/Status/fury_of_the_dead.png'
-
-        this['magic_explosion'] = new Image()
-        this['magic_explosion'].src = './src/assets/img/effects/magic_explosion.png'
-
-        this['soul_vortex'] = new Image()
-        this['soul_vortex'].src = './src/assets/img/effects/soul_vortex.png'
-
-        this['skeleton warrior'] = new Image()
-        this['skeleton warrior'].src = './src/assets/img/enemy/skeleton_warrior1.png'
-
-        this['ghost'] = new Image()
-        this['ghost'].src = './src/assets/img/enemy/ghost.png'
-
-        this['skull'] = new Image()
-        this['skull'].src = './src/assets/img/enemy/skull.png'
-
-        this['lich'] = new Image()
-        this['lich'].src = './src/assets/img/enemy/lich.png'
-
-        this['skeleton archer'] = new Image()
-        this['skeleton archer'].src = './src/assets/img/enemy/skeleton_archer1.png'
-
-        this['skeleton wizard'] = new Image()
-        this['skeleton wizard'].src = './src/assets/img/enemy/skeleton_wizard1.png'
-
-        this['pile_of_skull'] = new Image()
-        this['pile_of_skull'].src = './src/assets/img/enemy/pile_of_skull.png'
-
-        this['giant undead'] = new Image()
-        this['giant undead'].src = './src/assets/img/enemy/giant_undead.png'
-
-        this['undying squad'] = new Image()
-        this['undying squad'].src = './src/assets/img/world/undying_squad.png'
-
-        this['treasure'] = new Image()
-        this['treasure'].src = './src/assets/img/world/treasure.png'
-
-        this['reaper enemy'] = new Image()
-        this['reaper enemy'].src = './src/assets/img/enemy/reaper.png'
-
-        this['fire explosion'] = new Image()
-        this['fire explosion'].src = './src/assets/img/effects/explosion_fire.png'
-
-        this['raise_the_undead'] = new Image()
-        this['raise_the_undead'].src = './src/assets/img/effects/raise_the_undead.png'
-
-        this['mist'] = new Image()
-        this['mist'].src = './src/assets/img/effects/black_mist.png'
-
-        this['weapon swing'] = new Image()
-        this['weapon swing'].src = './src/assets/img/effects/weapon_swing.png'
-
-        this['tile'] = new Image()
-        this['tile'].src = './src/assets/img/world/underground_tiles.png'
-
-        this['chain light'] = new Image()
-        this['chain light'].src = './src/assets/img/effects/chain_light.png'
-
-        this['chel'] = new Image()
-        this['chel'].src = './src/assets/img/characters/grim.png'
-
-        this['grim traveler'] = new Image()
-        this['grim traveler'].src = './src/assets/img/characters/grim.png'
-
-        this['skeleton skull'] = new Image()
-        this['skeleton skull'].src = './src/assets/img/enemy/SkeletonSkull.png'
-
-        this['wandering clot'] = new Image()
-        this['wandering clot'].src = './src/assets/img/Projectiles/wandering_clot.png'
-
-        this['wandering clot end'] = new Image()
-        this['wandering clot end'].src = './src/assets/img/effects/wandering_clot_end.png'
     }
 
     getImage(name){

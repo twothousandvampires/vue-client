@@ -6,8 +6,7 @@ export default class PileOfSkullsSprite extends Sprite{
         super(owner);
         this.width = 96
         this.height = 96
-        this.img = new Image()
-        this.img.src = './src/assets/img/enemy/pile_of_skull.png'
+        this.img_name = 'pile_of_skull'
     }
 
     setImgState(){

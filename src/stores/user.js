@@ -1,9 +1,8 @@
 import { defineStore } from 'pinia'
+import Config from "../../config.js";
 
-const URL = 'http://89.111.155.67/api/'
+const URL = Config.app_url
 const TOKEN = localStorage.getItem('token') ? localStorage.getItem('token') : ''
-
-
 
 export const useUserStore = defineStore(
     'user',

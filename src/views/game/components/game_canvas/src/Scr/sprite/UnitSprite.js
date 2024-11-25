@@ -4,6 +4,7 @@ export default class UnitSprite extends Sprite{
     constructor(owner) {
         super()
         this.owner = owner
+        this.draw_y_offset = -20
     }
 
     reset(){

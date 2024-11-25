@@ -7,8 +7,7 @@ export default class Fight{
 
         this.enemy = []
         this.effects = []
-        this.effects_before = []
-        this.effects_after = []
+        this.ground_effects = []
 
         this.projectiles = []
         this.areas_before = []
@@ -30,7 +29,12 @@ export default class Fight{
         this.projectiles = this.projectiles.filter(elem => elem !== proj)
     }
     removeEffect(effect){
-        this.effects = this.effects.filter(elem => elem !== effect)
+        if(effect.type === 'ground'){
+            this.ground_effects = this.ground_effects.filter(elem => elem !== effect)
+        }
+        else {
+            this.effects = this.effects.filter(elem => elem !== effect)
+        }
     }
     removeEnemy(enemy){
         this.enemy = this.enemy.filter(elem => elem !== enemy)

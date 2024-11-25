@@ -4,6 +4,7 @@ export default class CrystalVeinContentSprite extends ContentSprite{
     constructor() {
         super();
         this.img_name = 'crystal_vein'
+        this.name = 'crystal vein'
         this.frame_timer_max = 3
         this.width = 40
         this.height = 40

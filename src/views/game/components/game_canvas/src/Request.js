@@ -1,7 +1,7 @@
+import Config from "../../../../../../config.js";
 export default class Request{
 
-    static URL = 'http://89.111.155.67/api/'
-
+    static URL = Config.app_url
     static TOKEN = localStorage.getItem('token') ? localStorage.getItem('token') : ''
 
     static deleteCharacter(id){

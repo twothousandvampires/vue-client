@@ -1,37 +1,40 @@
-import LuminousArc from "../../Skills/Sorcery/LuminousArc/ChainLight";
-import ExcitedBody from "../../Skills/Movement/ExcitedBody/ExcitedBody";
-import WanderingClot from "../../Skills/Sorcery/WanderingClot/WanderingClot";
-import FallingRocks from "../../Skills/Sorcery/FallingRocks/FallingRocks";
-import WildWind from "../../Skills/Sorcery/WildWind/WildWind";
-import FireCoil from "../../Skills/Sorcery/FireCoil/FireCoil";
-import IcyNova from "@/views/game/components/game_canvas/src/Skills/Sorcery/IcyNova/IcyNova";
-import ShieldUp from "@/views/game/components/game_canvas/src/Skills/Combat/ShieldUp/ShieldUp";
-import StoneSkin from "@/views/game/components/game_canvas/src/Skills/Combat/StoneSkin/StoneSkin";
-export default class GemSkillFactory {
-    constructor() {
+import MagicSpark from "../../Skills/MagicSpark.js";
+import BlessedArmour from "../../Skills/BlessedArmour.js";
+import FireBall from "../../Skills/FireBall.js";
+import Healing from "../../Skills/Healing";
+import GlacialNova from "../../Skills/GlacialNova";
+import VampiricRite from "@/views/game/components/game_canvas/src/Skills/VampiricRite";
+import WeaponSwing from "@/views/game/components/game_canvas/src/Skills/WeaponSwing";
+import LiftBody from "@/views/game/components/game_canvas/src/Skills/LiftBody";
+import HeavyStrike from "@/views/game/components/game_canvas/src/Skills/HeavyStrike";
+import FireArrow from "@/views/game/components/game_canvas/src/Skills/FireArrow";
+import FocusUp from "@/views/game/components/game_canvas/src/Skills/FocusUp";
 
-    }
-    static create(template, gem, player) {
-        let prop_args = [template, player, gem]
-        switch (template.name) {
-            case 'luminous arc':
-                return new LuminousArc(...prop_args)
-            case 'excited body':
-                return new ExcitedBody(...prop_args)
-            case 'wandering clot':
-                return new WanderingClot(...prop_args)
-            case 'falling rocks':
-                return new FallingRocks(...prop_args)
-            case 'wild wind':
-                return new WildWind(...prop_args)
-            case 'fire coil':
-                return new FireCoil(...prop_args)
-            case 'icy nova':
-                return new IcyNova(...prop_args)
-            case 'shield up':
-                return new ShieldUp(...prop_args)
-            case 'stone skin':
-                return new StoneSkin(...prop_args)
+export default class GemSkillFactory {
+    static create(template, player) {
+        switch (template.skill_name) {
+            case 'blessed armour':
+                return new BlessedArmour(template, player)
+            case 'magic spark':
+                return new MagicSpark(template, player)
+            case 'fire ball':
+                return new FireBall(template, player)
+            case 'healing':
+                return new Healing(template, player)
+            case 'glacial wave':
+                return new GlacialNova(template, player)
+            case 'vampiric rite':
+                return new VampiricRite(template, player)
+            case 'weapon swing':
+                return new WeaponSwing(template, player)
+            case 'heavy strike':
+                return new HeavyStrike(template, player)
+            case 'lift the body':
+                return new LiftBody(template, player)
+            case 'burning arrow':
+                return new FireArrow(template, player)
+            case 'focus up':
+                return new FocusUp(template, player)
         }
     }
 }

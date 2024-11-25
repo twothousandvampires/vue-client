@@ -8,6 +8,13 @@
       }
     },
     mounted() {
+      // window.addEventListener('click', (event) =>{
+      //   event.stopPropagation()
+      //   let exist = document.getElementsByClassName('options_modal')[0]
+      //   if(exist){
+      //     exist.parentNode.removeChild(exist)
+      //   }
+      // })
     },
     methods:{
       logout(){
@@ -45,6 +52,13 @@
   font-family: o;
   src: url("@/fonts/manaspc.ttf");
 }
+#inspect_passive_wrap, #inspect_skill_wrap{
+  position: fixed;
+  z-index: 100000;
+  padding: 4px;
+  background-color: #00994d;
+  border: 3px solid #5cd65c;
+}
 .item-context{
   font-family: o;
   z-index: 100000;
@@ -55,6 +69,37 @@
 }
 .item-context p{
   cursor: pointer;
+}
+.options_modal{
+  padding: 8px;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  flex-direction: column;
+  z-index: 99999;
+  border: 3px solid  #5cd65c;
+  background-color: #00994d;
+}
+.options_modal .title{
+  text-align: center;
+  font-size: 25px;
+  color: #222222;
+}
+.options_modal .options{
+  display: flex;
+  flex-direction: row;
+}
+
+.options_modal .options div{
+  padding: 6px;
+  cursor: pointer;
+  color: black;
+}
+
+.options_modal .options div:hover{
+  color: #1a651a;
 }
 
 .game-modal{

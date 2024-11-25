@@ -9,13 +9,15 @@ export const useLogStore = defineStore(
             }
         },
         getters: {
-            getLog: (state) => state.log
+            getLog: (state) => {
+                return  state.log
+            },
         },
         actions: {
             addLog(txt) {
                 let now = new Date()
                 let time = now.getHours() + ':' + (now.getMinutes() + '').padStart(2, '0')
-                this.log.push(time + ' ' +txt)
+                this.log.push(time + ' ' + txt)
             }
         }
     })

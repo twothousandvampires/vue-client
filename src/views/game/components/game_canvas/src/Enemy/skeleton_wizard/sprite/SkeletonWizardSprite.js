@@ -5,14 +5,13 @@ export default class SkeletonWizardSprite extends Sprite{
         super(owner);
         this.width = 96
         this.height = 96
-        this.img = new Image()
-        this.img.src = './src/assets/img/enemy/skeleton_wizard1.png'
+        this.img_name = 'skeleton_wizard1'
     }
     setImgState(){
         switch (this.owner.state){
             case Unit.STATE_IDLE:
                 this.y_frame_offset = 0
-                this.max_frame = Math.random() < 0.5 ? 12 : 0
+                this.max_frame = 12
                 this.frame_timer_max = 6
                 break;
             case Unit.STATE_MOVE:
@@ -23,7 +22,7 @@ export default class SkeletonWizardSprite extends Sprite{
             case Unit.STATE_CAST:
                 this.y_frame_offset = 192
                 this.max_frame = 12
-                this.frame_timer_max = Math.floor((this.owner.getCastSpeed()/12)/50)
+                this.frame_timer_max = 5
                 break;
             case Unit.STATE_DYING:
                 this.y_frame_offset = 288

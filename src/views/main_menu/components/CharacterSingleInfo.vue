@@ -24,10 +24,11 @@ export default {
   <div style="color:#c8c8c8;">
     <div id="info-head">
       <p class="stat-elem">{{ char.name }}</p>
-      <p>Level<span class="stat-elem">{{ char.level }}</span></p>
+      <p>Killed<span class="stat-elem">{{ char.enemies_killed }}</span></p>
     </div>
     <div id="info-body">
-      <img width="90" height=93 src="../../../assets/img/characters/chel_preview.gif" alt="">
+      <img v-if="!char.dead" width="96" height="96" src="/src/assets/img/grim_world_idle.gif" alt="">
+      <img v-else width="96" height="96" src="/src/assets/img/grim_dead.gif" alt="">
     </div>
     <div id="info-bottom">
       <button  @click.prevent="play(char.id)">Play</button>

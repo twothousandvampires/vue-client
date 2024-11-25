@@ -42,7 +42,6 @@ export default {
                                                             left: x - 20 + 'px',
                                                             width: width + 'px',
                                                             height: height + 'px' }"
-      v-on:mouseleave="$emit('mouseleave')"
     >
     <p class="item-name">{{item.name}}</p>
     <p class="item-name">{{item.getRarityString()}}</p>
@@ -50,14 +49,11 @@ export default {
       <p @click.prevent="$emit('inspectGem',$event, this.item)">Inspect</p>
     </div>
     <div v-if="item.item_type === Inventory.ITEM_TYPE_USED" class="menu-item">
-      <p @click.prevent="$emit('useItem',$event, this.item)">Use</p>
+      <p @click.prevent="this.item.use(this)">Use</p>
     </div>
     <div class="menu-item">
       <p @click.prevent="$emit('deleteItem', this.item)">Delete</p>
     </div>
-      <div class="menu-item">
-        <p @click.prevent="$emit('mouseleave', this.item)">Close</p>
-      </div>
   </div>
 </template>
 <style scoped>
@@ -67,16 +63,15 @@ export default {
   .menu-item:hover{
     background-color: #888888;
     border: 3px solid;
-    border-image: url('/src/assets/img/border/equip_clicked_border.png') 16 stretch stretch;
   }
   .item-name{
     font-size: 26px;
   }
   #inspect-item-modal{
-    background-color: white;
-    border: 16px solid;
-    border-image: url('/src/assets/img/border/equip_clicked_border.png') 16 stretch stretch;
     position: fixed;
     z-index: 100000;
+    padding: 4px;
+    background-color: #00994d;
+    border: 3px solid #5cd65c;
   }
 </style>

@@ -1,5 +1,4 @@
 <script>
-import Belt from "../../../../../components/hud/Belt.vue";
 import StatusBar from "../../../../../components/hud/StatusBar.vue";
 import Skill from "@/components/hud/Skill.vue";
 
@@ -9,7 +8,6 @@ export default {
     char : Object
   }
   ,components:{
-    Belt,
     StatusBar,
     Skill
   }
@@ -23,15 +21,15 @@ export default {
         <div id="stats-left">
           <div style="height: 130px">
             <div class="stat-item">
-              <img style="margin-right: 14px" width="30" height="30" src="../../../../../assets/img/icons/hud/life.gif" alt="life-gif">
+              <img style="margin-right: 14px" width="30" height="30" src="src/assets/img/life.gif" alt="life-gif">
               <p>{{char.life}}/{{char.max_life}}</p>
             </div>
             <div class="stat-item">
-              <img style="margin-right: 14px" width="30" height="30" src="../../../../../assets/img/icons/hud/mana.gif" alt="life-gif">
+              <img style="margin-right: 14px" width="30" height="30" src="src/assets/img/mana.gif" alt="life-gif">
               <p>{{char.mana}}/{{char.max_mana}}</p>
             </div>
             <div class="stat-item">
-              <img style="margin-right: 14px" width="30" height="30" src="../../../../../assets/img/icons/hud/stamina.gif" alt="life-gif">
+              <img style="margin-right: 14px" width="30" height="30" src="src/assets/img/stamina.gif" alt="life-gif">
               <p>{{Math.floor(char.energy)}}/{{char.max_energy}}</p>
             </div>
           </div>
@@ -39,25 +37,15 @@ export default {
       </div>
       <div id="status">
         <StatusBar :status="this.char.status"></StatusBar>
-        <Belt :belt="this.char.belt"></Belt>
       </div>
       <div>
-        <Skill v-if="this.char.selected_skill" :skill="this.char.selected_skill"></Skill>
+        <div v-if="char.figth_context">
+          <p @click="char.skipTurn()">next turn</p>
+          <p>actions {{char.action_count}}</p>
+        </div>
+        <p @click="char.useTorch()">torch({{char.torch}})</p>
+        <p>food ({{char.food}})</p>
       </div>
-      <div v-if="char.is_in_figth" style="display: flex;flex-direction: column">
-        <div>
-          <p>turns</p>
-        </div>
-        <div>
-          {{char.action_points}}
-        </div>
-        <div  style="cursor: pointer" @click="char.endTurn" title="next turn(space)">
-          <img src="@/assets/img/icons/misc/next_turn.gif" @click="this.char.endTurn">
-        </div>
-      </div>
-<!--      <div>-->
-<!--        <p @click="char.useTorch()">torch - {{char.torch}}</p>-->
-<!--      </div>-->
     </div>
   </div>
 </template>

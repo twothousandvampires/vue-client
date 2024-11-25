@@ -6,7 +6,7 @@ export default class Fear extends Status{
     constructor() {
         super()
         this.name = 'fear'
-        this.img_path = 'src/assets/img/icons/skill/step_of_another_world.png'
+        this.img_path = 'src/assets/img/icons/skill/instincts.png'
         this.sprite = new FearSprite(this)
         this.size_x = 40
         this.size_y = 40

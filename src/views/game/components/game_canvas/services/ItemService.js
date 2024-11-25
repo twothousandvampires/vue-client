@@ -1,4 +1,5 @@
-const URL = 'http://89.111.155.67/api/'
+import Config from "../../../../../../config.js";
+const URL = Config.app_url
 const TOKEN = localStorage.getItem('token') ? localStorage.getItem('token') : ''
 export default {
     createItem(item_name, skill_name){
@@ -16,13 +17,6 @@ export default {
     },
     getItemList(){
         return axios({method:'get', url : URL +'item',
-            headers: {
-                'Authorization': 'Bearer ' + TOKEN,
-            }
-        })
-    },
-    getSpellList(){
-        return axios({method:'get', url : URL +'skill/list',
             headers: {
                 'Authorization': 'Bearer ' + TOKEN,
             }

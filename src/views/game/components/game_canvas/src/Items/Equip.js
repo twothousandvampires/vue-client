@@ -39,9 +39,10 @@ export default class Equip extends Item{
         this.class = template.details.equip_class
         this.type = template.details.equip_type
         this.quality = template.details.equip_quality
+        this.inc_effect = template.details.inc_effect
 
-        this.increased_by_row = template.details.row_bonus ? 10 : 0
-        this.increased_by_column = template.details.column_bonus  ? 10 : 0
+        this.increased_by_row = template.details.row_bonus ? 20 : 0
+        this.increased_by_column = template.details.column_bonus  ? 20 : 0
         this.penalty = template.details.penalty
 
         template.props.forEach(elem => {
@@ -53,9 +54,20 @@ export default class Equip extends Item{
         return this.increased_by_column + this.increased_by_row - this.penalty
     }
 
+    getClassString(){
+        return Equip.CLASSES[this.class]
+    }
+    getQualityString(){
+        return Equip.QUALITIES[this.quality]
+    }
+
+    getTypeString(){
+        return Equip.TYPES[this.type]
+    }
+
     getDescription(){
         let result = ``
-        result += `name - ${this.name} \n`
+        result += `name - ${this.name} (${this.inc_effect}) \n`
         result += `class - ${Equip.CLASSES[this.class]} \n`
         result += `subclass - ${Equip.TYPES[this.type]} \n`
         result += `rarity - ${Equip.RARITIES[this.rarity]} \n`

@@ -13,8 +13,8 @@ export default class Game{
         this.game_tick = 0
         this.log = useLogStore()
         this.scene = undefined
-        this.inv_is_open = false
         this.char = char
+        this.prepare_for_battle = false
     }
     async init(){
         Input.init()
@@ -29,6 +29,7 @@ export default class Game{
 
     newBattle(response){
         this.scene = new Battle(response.node, this)
+        this.scene.start()
     }
 
     endFight(){
@@ -49,12 +50,11 @@ export default class Game{
 
     updateWorldData(node, char_id){
         CharacterService.move(node.x, node.y, char_id).then(r => {
-            if(r.data.data?.item && r.data.data.item?.slot){
-                this.char.inv.pull[r.data.data.item.slot] =  this.char.inv.createItem(r.data.data?.item)
+            if(r.data.data?.character){
+                this.char.parseStats(r.data.data.character)
+                this.char.init()
             }
             this.checkLogFromServer(r)
-            this.char.x = node.x
-            this.char.y = node.y
             this.char.pretti_x = 6
             this.char.pretti_y = 6
             this.scene.prettifyData(r.data.data)

@@ -1,33 +1,21 @@
 import Status from "../Status";
-import Functions from "../../GameFunctions";
 import LeafArmourSprite from "./sprite/LeafArmourSprite";
 
 export default class LeafArmour extends Status{
     constructor() {
         super()
         this.name = 'leaf armour'
-        this.img_path = 'src/assets/img/icons/status/leaf_armour.png'
+        this.status_bar_img_name = 'leaf_fall.gif'
         this.sprite = new LeafArmourSprite(this)
-        this.size_x = 40
-        this.size_y = 40
-        this.duration = Functions.msToTick(10000)
-    }
-
-    act(){
-        let tick = this.target.figth_context.tick
-        if(tick % 25 === 0){
-            this.target.addLife(1)
-        }
-        this.setMiddlePoint()
-        if(tick >= (this.duration) + this.affect_time){
-            this.expire()
-        }
-
-        this.sprite.act()
+        this.duration = 3
     }
 
     expire(){
         this.target.status.delete(this.name)
+    }
+
+    newTurn(){
+        this.target.addLife(1)
     }
 
     affect(target, source){
@@ -37,11 +25,14 @@ export default class LeafArmour extends Status{
     }
 
     update(status){
-        this.affect_time = this.target.figth_context.tick
         this.duration = status.duration
     }
 
     targetDead() {
         this.expire()
+    }
+
+    getDescription(){
+        return `Your restore life`
     }
 }
