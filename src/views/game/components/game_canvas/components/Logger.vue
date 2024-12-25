@@ -18,9 +18,9 @@ export default {
   watch:{
     getLog: {
       handler(){
-        setTimeout(()=>{
-          document.getElementById('dd').lastElementChild.scrollIntoView()
-        }, 500)
+        // setTimeout(()=>{
+        //   document.getElementById('dd').lastElementChild.scrollIntoView()
+        // }, 500)
       },
       deep: true
     }
@@ -28,7 +28,7 @@ export default {
 }
 </script>
 <template>
-  <div @click="test" id="logger">
+  <div @click="test" id="logger" style="color: #86c69a;font-size: 12px; padding-left: 14px;">
     <ul id="dd">
       <li :id="'log_msg' + index" v-for="(log_item, index) in this.getLog">
         {{log_item}}
@@ -48,15 +48,12 @@ export default {
    overflow-y: auto;
  }
   #logger{
+    z-index: 1111;
     overflow-y: auto;
     font-size: 12px;
-    position: fixed;
-    top: 0;
-    left: calc(100% - 250px);
-    width: 250px;
-    height: 100%;
-    background-color: #c8c8c8;
-    border: 10px solid #c8c8c8;
-    border-image: url("/src/assets/img/border/border_long.png") 10 stretch stretch;
+    width: 240px;
+    height: 800px;
+    background-color: #2a1e23;
+    background-image: url('/src/assets/img/loggettest.png');
   }
 </style>

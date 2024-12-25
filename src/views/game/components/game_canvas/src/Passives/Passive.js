@@ -10,17 +10,37 @@ export default class Passive{
         'block technique' : 'block_technique_passive.png',
         'strong flesh' : 'strong_flesh_passive.png',
         'stamina' : 'stamina_passive.png',
-        'recovery weapon' : 'recovery_weapon_passive.png'
+        'recovery weapon' : 'recovery_weapon_passive.png',
+        'mind buffer' : 'mind_buffer_passive.png',
+        'inner power' : 'inner_power_passive.png',
+        'spiritual shield' : 'spiritual_shield_passive.png',
+        'knowledge of weak points' : 'knowledge_of_weak_points_passive.png',
+        'battery weapon' : 'battery_weapon_passive.png',
+        'residual magic' : 'residual_magic_passive.png',
+        'cave moth essence' : 'cave_moth_essence_passive.png',
+        'increased potion effect' : 'increased_potion_effect_passive.png',
+        'splitting' : 'splitting.png',
+        'synthesis' : 'synthesis.png',
     }
-    constructor(template) {
+    constructor(template, player) {
         this.id = template.id
         this.name = template.name
         this.level = template.level
         this.img = Passive.img[this.name]
-        this.stat = template.stat
         this.exp_cost = template.exp_cost
-        this.add_per_level = template.add_per_level
-        this.description = template.description
+        this.stats = template.stats
+        this.player = player
+    }
+
+    getStats(){
+        if(!this.level){
+            this.level = 1
+        }
+        let result = ''
+        this.stats.forEach(element => {
+            result += `${element.description}\n start value - ${element.start_value}\n add per level - ${element.add_per_level} \n total - ${element.start_value + Math.floor((this.level - 1) * element.add_per_level)} \n`
+        });
+        return result;
     }
 
     getDescription(){
@@ -30,7 +50,7 @@ export default class Passive{
         let result = ``
         result += `${this.name} \n`
         result += `level: ${this.level} \n`
-        result += `${this.description} (${this.level * this.add_per_level})\n`
+        result += `${this.getStats()} \n`
         result += `exp needed to upgrade: ${this.level * this.exp_cost}`
 
         return result

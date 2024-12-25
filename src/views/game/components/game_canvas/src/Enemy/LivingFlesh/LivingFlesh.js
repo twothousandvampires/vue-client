@@ -31,6 +31,7 @@ export default class LivingFlesh extends Undead{
         this.piercing_damage_resist = 1
         this.cutting_damage_resist = 2
         this.crushing_damage_resist = 1
+        this.initiative = 1
         this.init()
     }
 }

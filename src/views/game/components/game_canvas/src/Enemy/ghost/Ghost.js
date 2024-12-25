@@ -29,6 +29,7 @@ export default class Ghost extends Undead {
         this.caster = true
         this.mana = 3
         this.priority_for_spellcasting = 50
+        this.initiative = 15
         this.casts = [
             new RottenArmour(this),
             new WeakSoul(this),

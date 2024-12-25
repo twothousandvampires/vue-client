@@ -64,6 +64,15 @@ export default class Request{
         })
     }
 
+    static retreat(char_id){
+        return axios({method: 'post',
+            url : Request.URL + 'character/' + char_id +'/retreat/',
+            headers : {
+                'Authorization': 'Bearer ' + Request.TOKEN,
+            }
+        })
+    }
+
     static createItem(item_name){
         return axios({method: 'post',
             url : Request.URL + 'item/create/',

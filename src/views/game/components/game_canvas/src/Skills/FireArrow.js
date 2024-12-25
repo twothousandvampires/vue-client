@@ -14,32 +14,50 @@ export default class FireArrow extends Skill{
     use(enemy = false){
         this.player.reduceEnergy(this.energy_cost)
         this.player.setAttack()
+        this.target = enemy
+        
+        return true
+    }
 
+    action(){
+        let enemy = this.target
         let damage =  {
             physical_damage: this.player.physical_damage,
-            piercing_damage: this.player.piercing_damage,
-            cutting_damage: this.player.cutting_damage + this.level,
+            piercing_damage: this.player.piercing_damage + this.level,
+            cutting_damage: this.player.cutting_damage,
             crushing_damage: this.player.crushing_damage
         }
 
         enemy.takeAttackDamage(this.player, damage)
 
-        if(Functions.chance(this.ignite_chance)){
-            enemy.newStatus(new Ignite(this.level, 3), this.player)
+        if(Functions.chance(this.player.combo_points >= 1 ? 100 : this.ignite_chance)){
+            enemy.newStatus(new Ignite(this.player.combo_points >= 2 ? this.level * 3 : this.level, 3), this.player)
         }
-
-        return true
     }
 
+    getMainDescription(){
+    
+        let result = `deals attack damage plus 1 piercing damage per level to any target and have chance to ignite (${this.ignite_chance}%)`
+
+        if(this.player.combo_points >= 1){
+            result += `\n(combo1) chance to ignite is (100%)`
+        }
+        if(this.player.combo_points === 2){
+            result += `\n(combo2) ignite deals triple damage`
+        }
+      
+        return result
+    }
     canUse(enemy = undefined){
+        if(enemy === this.player) return false
         return enemy && !enemy.isDead()
     }
 
     getDescription(){
         let result = ``
         result += `${this.name} (${this.level})\n`
-        result += `${this.description} \n`
-        result += `energy_cost - ${this.energy_cost} \n`
+        result += `${this.getMainDescription()} \n`
+        result += `${this.getCost()}\n`
         return result
     }
 }

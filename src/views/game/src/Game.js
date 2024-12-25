@@ -3,9 +3,10 @@ import Request from "../components/game_canvas/src/Request.js";
 import Underground from "../components/game_canvas/src/World/Src/Underground";
 import Battle from "../components/game_canvas/src/Battle";
 import Input from "../components/game_canvas/src/Singltons/Input";
-import CharacterService from "../services/CharacterService";
+import requestService from "../services/requestService";
 import { useGameConfigStore } from "@/stores/game_config";
 import { useLogStore } from "@/stores/log";
+
 export default class Game{
 
     constructor(char) {
@@ -18,7 +19,7 @@ export default class Game{
     }
     async init(){
         Input.init()
-        let world_response = await CharacterService.world(this.char.id)
+        let world_response = await requestService.world(this.char.id)
         if(world_response.data.success){
             this.scene = new Underground(this, world_response.data.data)
         }
@@ -40,6 +41,14 @@ export default class Game{
         })
     }
 
+    playerRetreat(){
+        Request.retreat(this.char.id).then(r => {
+            this.checkLogFromServer(r)
+            this.char = new Character(r.data.data.char)
+            this.scene = new Underground(this, r.data.data)
+        })
+    }
+
     checkLogFromServer(data){
         if( data.data.data?.log?.length ){
             data.data.data.log.forEach(server_log => {
@@ -49,7 +58,7 @@ export default class Game{
     }
 
     updateWorldData(node, char_id){
-        CharacterService.move(node.x, node.y, char_id).then(r => {
+        requestService.move(node.x, node.y, char_id).then(r => {
             if(r.data.data?.character){
                 this.char.parseStats(r.data.data.character)
                 this.char.init()

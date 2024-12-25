@@ -1,8 +1,9 @@
 import Passive from "@/views/game/components/game_canvas/src/Passives/Passive";
+import LustOfMurderStatus from "../Status/LustForMurderStatus";
 
 export default class LustOfMurder extends Passive{
     constructor(template, player) {
-        super(template);
+        super(template, player);
         this.use(player)
         this.chance = this.level * 5
     }
@@ -23,12 +24,10 @@ export default class LustOfMurder extends Passive{
         player.whenAttackTriggers.push(this)
     }
 
-    trigger(player){
+    trigger(){
+        console.log(this.player)
         if(Math.random() <= this.chance / 100){
-            console.log(player.physical_damage)
-            player.physical_damage ++
-            console.log(player.physical_damage)
+            this.player.newStatus(new LustOfMurderStatus(1), this.player, true)
         }
     }
-
 }

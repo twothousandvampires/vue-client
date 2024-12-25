@@ -154,6 +154,10 @@ export default class Underground extends World{
                 }
                 return;
             }
+            else if(node.visited === 1){
+                this.game.updateWorldData(node, this.char.id)
+                this.delay = false
+            }
         }
         if(input.i && !this.delay){
             this.setDelay(100)

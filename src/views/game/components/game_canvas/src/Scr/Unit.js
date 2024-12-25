@@ -74,6 +74,11 @@ export default class Unit extends GameObject{
         }
     }
     setDyingState(){
+        
+        this.status.forEach((v,k,map) => {
+            v.targetDead()
+        })
+    
         this.figth_context.deleteFromQueue(this)
         this.dead = true
         this.state =  Unit.STATE_DYING
@@ -95,10 +100,11 @@ export default class Unit extends GameObject{
     setCellCords(cell, cell_w, cell_h){
         this.point = new Point(cell.x + cell_w / 2, cell.y + cell_h/2)
     }
-    isPhysicalCrit(){
-        return Math.random() <= this.attack_crit_chance / 100
+    isPhysicalCrit(options = {}){
+        let add = options.additional_critical_chance ? options.additional_critical_chance : 0
+        return Math.random() <= (this.attack_crit_chance + add) / 100
     }
-    isMagicCrit(){
+    isMagicCrit(options = {}){
         if(!this.magic_damage) return false
         return Math.random() <= this.spell_crit_chance / 100
     }
@@ -134,9 +140,14 @@ export default class Unit extends GameObject{
     isDead(){
         return this.state === Unit.STATE_DEAD || this.state === Unit.STATE_DYING
     }
-    updateStatus(){
+    updateStatusNewTurn(){
         this.status.forEach((v,k,map) => {
             v.newTurn()
+        })
+    }
+    updateStatusEndTurn(){
+        this.status.forEach((v,k,map) => {
+            v.endTurn()
         })
     }
     calculatePhysicalDamage(target, is_range = false){
@@ -174,6 +185,9 @@ export default class Unit extends GameObject{
         if(this.mana > this.max_mana){
             this.mana = this.max_mana
         }
+    }
+    removeFreeze(){
+        this.frozen = false
     }
     addLife(value){
         this.life += value

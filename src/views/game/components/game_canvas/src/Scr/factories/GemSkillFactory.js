@@ -9,6 +9,12 @@ import LiftBody from "@/views/game/components/game_canvas/src/Skills/LiftBody";
 import HeavyStrike from "@/views/game/components/game_canvas/src/Skills/HeavyStrike";
 import FireArrow from "@/views/game/components/game_canvas/src/Skills/FireArrow";
 import FocusUp from "@/views/game/components/game_canvas/src/Skills/FocusUp";
+import ShieldUp from "@/views/game/components/game_canvas/src/Skills/ShieldUp";
+import BlindingPowder from "../../Skills/BlindingPowder.js";
+import BackStab from "../../Skills/BackStab.js";
+import SummonWildLightning from "../../Skills/SummonWildLightning.js";
+import ShieldThrow from "../../Skills/ShiledThrow.js";
+import LivingBomb from "../../Skills/LivingBomb.js";
 
 export default class GemSkillFactory {
     static create(template, player) {
@@ -35,6 +41,18 @@ export default class GemSkillFactory {
                 return new FireArrow(template, player)
             case 'focus up':
                 return new FocusUp(template, player)
+            case 'shield up':
+                return new ShieldUp(template, player)
+            case 'blinding powder':
+                return new BlindingPowder(template, player)
+            case 'back stab':
+                return new BackStab(template, player)
+            case 'summon wild lightning':
+                return new SummonWildLightning(template, player)
+            case 'shield throw':
+                return new ShieldThrow(template, player)
+            case 'living bomb':
+                return new LivingBomb(template, player)
         }
     }
 }

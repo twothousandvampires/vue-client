@@ -9,7 +9,7 @@ export default class FlyingScrolls extends ContentSprite{
         this.width = 100
         this.height = 100
         this.max_frame = 8
-        this.content_img_offset_x = 10
+        this.content_img_offset_x = 20
         this.content_img_offset_y = 10
         this.size_w = 40
         this.size_h = 40

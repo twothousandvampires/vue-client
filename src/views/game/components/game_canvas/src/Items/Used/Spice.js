@@ -1,6 +1,6 @@
 import Used from "@/views/game/components/game_canvas/src/Items/Used/Used.js";
 import Functions from "@/views/game/components/game_canvas/src/GameFunctions";
-import CharacterService from "@/views/game/services/CharacterService";
+import requestService from "@/views/game/services/requestService";
 
 export default class Spice extends Used{
     constructor(template, player) {
@@ -26,10 +26,12 @@ export default class Spice extends Used{
     }
 
     async chooseOption(option_id){
-        let data = await CharacterService.addPropertyOnItem(this.player.id, option_id)
+        let data = await requestService.addPropertyOnItem(this.player.id, option_id, this.id, 'all')
         if(data.success){
-            this.player.inv.deleteItem(this)
             this.player.inv.update(data.data.items)
+        }
+        else{
+            alert(data.error)
         }
     }
 }

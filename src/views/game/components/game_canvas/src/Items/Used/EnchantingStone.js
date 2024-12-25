@@ -1,6 +1,6 @@
 import Used from "@/views/game/components/game_canvas/src/Items/Used/Used.js";
 import Functions from "@/views/game/components/game_canvas/src/GameFunctions";
-import CharacterService from "@/views/game/services/CharacterService";
+import requestService from "@/views/game/services/requestService";
 
 export default class EnchantingStone extends Used{
     constructor(template, player) {
@@ -26,10 +26,8 @@ export default class EnchantingStone extends Used{
     }
 
     async chooseOption(option_id){
-        let data = await CharacterService.upgradeItemQuality(this.player.id, option_id)
-        console.log(data)
+        let data = await requestService.upgradeItemQuality(this.player.id, option_id, this.id)
         if(data.success){
-            this.player.inv.deleteItem(this)
             this.player.inv.update(data.data.items)
         }
     }

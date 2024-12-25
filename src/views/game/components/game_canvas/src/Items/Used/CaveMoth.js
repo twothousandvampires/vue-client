@@ -9,9 +9,9 @@ export default class CaveMoth extends Food{
     }
 
     async use(){
+        await this.afterUse()
         this.player.addMana(this.power)
         this.player.magic_damage += 1
-        await this.afterUse()
     }
 
     getDescription(){

@@ -15,12 +15,22 @@ import ScrollOfInferno from "@/views/game/components/game_canvas/src/Items/Used/
 import CaveBerry from "@/views/game/components/game_canvas/src/Items/Used/CaveBerry";
 import CrystalHammer from "@/views/game/components/game_canvas/src/Items/Used/CrystalHammer";
 import Spice from "@/views/game/components/game_canvas/src/Items/Used/Spice";
+import RoyalSnack from "../../Items/Used/RoyalSnack";
+import ImprovingDust from "../../Items/Used/ImprovingDust";
+import EquipmentParts from "../../Items/Used/EquipmentParts";
+import ScrollDesign from "../../Items/Used/ScrollDesign";
+import BoltedLigthning from "../../Items/Used/BotledLightning";
+import CombatPotion from "../../Items/Used/CombatPotion";
 
 export default class ItemFactory {
     static createItem(template, player){
         switch (template.name){
             case 'small healing potion':
                 return new SmallHealingPotion(template, player)
+            case 'botled lightning':
+                return new BoltedLigthning(template, player)
+            case 'combat potion':
+                return new CombatPotion(template, player)
             case 'small armour potion':
                 return new SmallArmourPotion(template, player)
             case 'explosive potion':
@@ -35,6 +45,8 @@ export default class ItemFactory {
                 return new UnpredictableStone(template, player)
             case 'cave moth':
                 return new CaveMoth(template, player)
+            case 'royal snack':
+                return new RoyalSnack(template, player)
             case 'cave berry':
                 return new CaveBerry(template, player)
             case 'nice mushroom':
@@ -51,8 +63,15 @@ export default class ItemFactory {
                 return new CrystalHammer(template, player)
             case 'spice':
                 return new Spice(template, player)
+            case 'improving dust':
+                return new ImprovingDust(template, player)
+            case 'equipment parts':
+                return new EquipmentParts(template, player)
+            case 'scroll design':
+                return new ScrollDesign(template, player)
             default:
                 return new Equip(template, player)
+        
         }
     }
 }

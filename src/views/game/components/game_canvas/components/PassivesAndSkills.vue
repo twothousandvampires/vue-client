@@ -1,5 +1,5 @@
 <script>
-import CharacterService from "@/views/game/services/CharacterService";
+import requestService from "@/views/game/services/requestService";
 
 export default {
   name: "PassivesAndSkills",
@@ -14,7 +14,7 @@ export default {
   },
   methods:{
     async learn(id){
-      let new_char = await CharacterService.learnPassive(this.char.id, id)
+      let new_char = await requestService.learnPassive(this.char.id, id)
       this.char.parseStats(new_char)
       this.show = false
       this.closePassive()
@@ -23,7 +23,7 @@ export default {
       if(this.learning_id) return
 
       this.learning_id = passive.id
-      let data = await CharacterService.upgradePassive(this.char.id,  passive.id)
+      let data = await requestService.upgradePassive(this.char.id,  passive.id)
       if(data.success){
         this.char.parseStats(data.data)
         this.closePassive()
@@ -83,7 +83,7 @@ export default {
 </script>
 <template>
   <div id="wrap">
-    <div style="width: 350px; display: flex;flex-direction: row; align-items: center; justify-content: space-between; border 3px solid" v-if="this.show" id="available_passives">
+    <div style="z-index: 2222222;width: 350px; display: flex;flex-direction: row; align-items: center; justify-content: space-between; border 3px solid" v-if="this.show" id="available_passives">
         <img @click="learn(passive.id)" v-for="passive in this.char.available_passives" @mouseleave="closePassive" @mouseenter="showPassive($event, passive)" width="80" height="80" :src="'./src/assets/img/' + passive.img" alt="">
     </div>
     <div>

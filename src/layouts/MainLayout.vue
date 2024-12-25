@@ -44,15 +44,9 @@
   background: #555;
 }
   .wrap{
-    background-color: black;
-    overflow: auto;
-    min-width: 100%;
-    min-height: 100%;
-    border: 95px solid #40c4c8;
-    border-image: url("/src/assets/img/border/border_long.png") 95 stretch stretch;
-    padding-top: 50px;
-    width: auto;
-    height: auto;
+    background-color:black;
+    overflow: hidden;
+    width: 1200px;
     display: flex;
     justify-content: center;
     align-items: center;

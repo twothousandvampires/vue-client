@@ -33,6 +33,7 @@ export default class MadFlesh extends Undead{
         this.piercing_damage_resist = 1
         this.cutting_damage_resist = 2
         this.crushing_damage_resist = 1
+        this.initiative = 9
         this.init()
     }
 

@@ -5,7 +5,7 @@ import GrimTravelerSprite from "./sprite/GrimTravelerSprite";
 import {useLogStore} from "@/stores/log";
 import PassiveFactory from "@/views/game/components/game_canvas/src/Scr/factories/PassiveFactory";
 import GemSkillFactory from "@/views/game/components/game_canvas/src/Scr/factories/GemSkillFactory";
-import CharacterService from "@/views/game/services/CharacterService";
+import requestService from "@/views/game/services/requestService";
 import Input from "@/views/game/components/game_canvas/src/Singltons/Input";
 import PlayerAttack from "@/views/game/components/game_canvas/src/Skills/PlayerAttack";
 
@@ -20,6 +20,7 @@ export default class Character extends Unit{
         super(undefined, 650, 850)
         this.blockTriggers = []
         this.whenAttackTriggers = []
+        this.whenAttackHitTriggers = []
         this.skill_pull = []
         this.inv = new Inventory(this)
         this.parseStats(template)
@@ -42,12 +43,23 @@ export default class Character extends Unit{
         this.box_size_z = 64
         this.action_count = 0
         this.action = new PlayerAttack(this)
-
+        this.reduce_action_points = 0
+        this.combo_points = 0
         this.init()
+    
+    
+    }
+    retreat(){
+        this.fliped = true
+        this.is_retreat = true
+        this.skipTurn()
     }
     successfulAttack(damage_amount){
         if(this.life_leech){
             this.addLife(this.life_leech)
+        }
+        if(Math.random() <= this.gain_mana_when_hit_chance / 100){
+            this.addMana(1)
         }
         this.whenAttackTriggers.forEach(elem => {
             elem.trigger(this)
@@ -117,23 +129,58 @@ export default class Character extends Unit{
             cold_damage: this.cold_damage
         }
     }
+    removeNegativeStatus(count){
+
+    }
+    rest(){
+        if(this.figth_context) return
+        if(!this.food) return 
+
+        Functions.createInputModal('amount', this.playerRest.bind(this))
+    }
+    async playerRest(amount){
+
+        if(this.food < amount){
+            alert("your have no that emount!")
+            return
+        }
+        let data = await CharacterService.serverRequest('rest', {char_id: this.id, amount: amount})
+
+        if(data.success){
+            this.parseStats(data.data.char)
+    
+            if( data.data?.log?.log?.length ){
+                data.data.log.log.forEach(server_log => {
+                    this.log.addLog(server_log)
+                })
+            }
+        }
+        
+    }
     calcActionPoints(){
         this.action_count = Math.floor(this.speed / 400)
-        if(!this.action_count) this.action_count = 1
+        this.action_count -= this.reduce_action_points
+        if(this.action_count <= 0) this.action_count = 1
         if(this.action_count > 7) this.action_count = 7
     }
     startTurn(){
+        if(this.is_retreat){
+            this.figth_context.retreat()
+            rerurn
+        }
+        this.combo_points = 0
+        this.updateStatusNewTurn()
+    
         if(this.frozen){
             Functions.createModal(this, 'cannot move')
             this.skipTurn()
         }
         else {
+            this.addEnergy(this.getEnergyRegeneration())
             this.turn = true
             Functions.createModal(this, 'your turn!', '20', 'yellow')
             this.calcActionPoints()
         }
-        this.updateStatus()
-        this.addEnergy(this.getEnergyRegeneration())
     }
     summon(summon){
         this.figth_context.pushSummon(summon)
@@ -150,6 +197,11 @@ export default class Character extends Unit{
         this.blockTriggers.forEach(elem => {
             elem.trigger(this)
         })
+    }
+    createEnemy(e){
+        if(this.figth_context){
+            this.figth_context.createEnemy(e.target.value)
+        }
     }
     async takeSpellDamage(enemy, damage){
         let total_d = damage
@@ -223,8 +275,15 @@ export default class Character extends Unit{
         }
 
         if(total_d){
-            Functions.createModal(this, is_enemy_critical_attack ? total_d + '!' : total_d,16,'white', true)
+            let options = {
+                critical: is_enemy_critical_attack,
+                type: total_p > total_m ? 'phys' : 'magic'
+            }
+            Functions.createDamageModal(this, total_d, options)
             this.reduceLife(total_d)
+            this.whenAttackHitTriggers.forEach(elem => {
+                elem.trigger(enemy)
+            })
         }
 
         await Functions.sleep(500)
@@ -450,15 +509,18 @@ export default class Character extends Unit{
         return Math.random() < (base_chance * total_reduce)
     }
     parseStats(template){
+        
         for(let stat in template){
             this[stat] = template[stat]
         }
+
         this.max_energy = template.energy
         if(this.food <= 0){
             this.energy = Math.floor(this.energy/2)
         }
         this.parsePassives(template.passives)
         this.parseSkills(template.skills)
+        
         this.inv.update(template.items)
     }
     parseSkills(skills){
@@ -494,7 +556,7 @@ export default class Character extends Unit{
     }
 
     async useTorch(){
-        let result = await CharacterService.torch(this.id)
+        let result = await CharacterService.serverRequest('torch', {char_id: this.id})
         if(!result.success){
             alert(result.message)
         }
@@ -507,12 +569,30 @@ export default class Character extends Unit{
     }
 
     castAct() {
+        if(this.sprite.frame === this.sprite.cast_frame && !this.was_action){
+        
+            this.was_action = true
+            this.action.action()
+
+            if(this.action.decrease_action_point){
+                if(this.action.can_create_combo && this.combo_points < 2 && Math.random() < this.combo_chance/ 100){
+                    Functions.createModal(this, 'combo point!', '20', 'yellow')
+                    this.combo_points ++
+                }
+                else if(this.combo_points){
+                    this.combo_points = 0
+                }   
+            }
+
+            this.decreaseActionCount()
+        }
         if (this.sprite.isSpriteLoopEnd()) {
             this.setIdle()
         }
     }
 
     setIdle() {
+        this.was_action = false
         if(this.energy < 15 && Math.random() > 0.5){
             this.setDyspnea()
         }
@@ -535,7 +615,30 @@ export default class Character extends Unit{
         if(this.energy < 0) this.energy = 0
     }
     attackAct(){
+        if(this.sprite.frame === this.sprite.attack_frame && !this.was_action){
+            this.was_action = true
+            this.action.action()
+            if(this.action.decrease_action_point){
+                if(this.action.can_create_combo && this.combo_points < 2 && Math.random() < this.combo_chance/ 100){
+                    Functions.createModal(this, 'combo point!', '20', 'yellow')
+                    this.combo_points ++
+                }
+                else if(this.combo_points){
+                    this.combo_points = 0
+                }   
+            }
+            this.decreaseActionCount()
+        }
         if(this.sprite.isSpriteLoopEnd()){
+            if(this.need_restore_sprite){
+                this.fliped = false
+                let cell = this.figth_context.getPlayerCell()
+                
+                this.point.x = cell.x + cell.width/2
+                this.point.y = cell.y + cell.height/2
+
+                this.need_restore_sprite = false
+            }
             this.setIdle()
         }
     }
@@ -679,10 +782,21 @@ export default class Character extends Unit{
             elem.selected = false
         })
     }
-    decreaseActionCount(amount = 1){
+    getTotalPhysDamage(){
+        return this.physical_damage + this.crushing_damage + this.cutting_damage + this.piercing_damage
+    }
+    getTotalMagicDamage(){
+        return this.magic_damage + this.fire_damage + this.lightning_damage + this.cold_damage
+    }
+    decreaseActionCount(){
+
+        if(this.action.decrease_action_point){
+            this.action_count -= 1
+        }
+
         this.action = new PlayerAttack(this)
         this.unselectAll()
-        this.action_count -= amount
+
         if(!this.action_count){
             this.skipTurn()
         }
@@ -702,11 +816,24 @@ export default class Character extends Unit{
         }
 
         this.action.use(this.cursored_target)
-        this.decreaseActionCount()
+
+        if(!this.action.have_action){
+            this.decreaseActionCount()
+        }
+    }
+    removeFreeze(){
+        this.frozen = false
+        this.setIdle()
     }
     act() {
+        this.sprite.act()
+        this.stateAct()
+
+        if(!this.turn) return
+
         let input = Input.getInput()
-        if(input[' '] && this.turn){
+
+        if(input[' '] || this.frozen){
             this.skipTurn()
             return
         }
@@ -721,7 +848,6 @@ export default class Character extends Unit{
             }
         }
 
-        this.sprite.act()
-        this.stateAct()
+        
     }
 }

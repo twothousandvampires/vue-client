@@ -1,5 +1,4 @@
 import Used from "@/views/game/components/game_canvas/src/Items/Used/Used.js";
-import CharacterService from "@/views/game/services/CharacterService";
 import Ignite from "@/views/game/components/game_canvas/src/Status/Ignite/Ignite";
 import FlameWave from "@/views/game/components/game_canvas/src/Effects/FlameWave/FlameWave";
 
@@ -12,7 +11,7 @@ export default class ScrollOfInferno extends Used{
     }
 
     async use(enemy = false){
-
+    
         let targets = this.player.figth_context.getFirstEnemiesInLines().filter(elem => !elem.isDead())
         let d = {
             fire_damage: this.power * 12
@@ -23,8 +22,7 @@ export default class ScrollOfInferno extends Used{
             this.player.figth_context.addEffect(new FlameWave( this.player.figth_context), elem.num)
         })
 
-        await CharacterService.useItems([this.id], this.player)
-        this.player.inv.deleteFromPull(this)
+        this.afterUser()
     }
 
     getDescription(){

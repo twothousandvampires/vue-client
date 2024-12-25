@@ -1,5 +1,4 @@
 import Used from "@/views/game/components/game_canvas/src/Items/Used/Used.js";
-import CharacterService from "@/views/game/services/CharacterService";
 
 export default class SmallManaPotion extends Used{
     constructor(template, player) {
@@ -8,9 +7,8 @@ export default class SmallManaPotion extends Used{
     }
 
     async use(){
-        this.player.addMana(this.power)
-        await CharacterService.useItems([this.id], this.player)
-        this.player.inv.deleteFromPull(this)
+        await this.afterUse()
+        this.player.addMana(this.getTotalPotionPower())
     }
 
     canUse(enemy = undefined){

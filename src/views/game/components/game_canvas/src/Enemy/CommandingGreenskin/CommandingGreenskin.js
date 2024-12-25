@@ -37,6 +37,7 @@ export default class CommandingGreenskin extends Enemy{
         this.magic_damage = 0
         this.fire_damage_resist = 2
         this.use_orders_rate = 40
+        this.initiative = 8
         this.orders = [
             new DefendOrders(this),
             new AttackOrders(this),
@@ -46,6 +47,7 @@ export default class CommandingGreenskin extends Enemy{
     }
 
     async startTurn(enemies, player) {
+        this.updateStatusNewTurn()
         if(this.availableToTurn()){
             let checked_orders = this.orders.filter(elem => elem.check(player))
             if(checked_orders.length && Math.random() <= this.use_orders_rate / 100){
@@ -65,6 +67,9 @@ export default class CommandingGreenskin extends Enemy{
     }
 
     setDyingState(){
+        this.status.forEach((v,k,map) => {
+            v.targetDead()
+        })
         this.figth_context.deleteFromQueue(this)
         if(Math.random() <= 0.3){
             let order = new LastOrders(this)

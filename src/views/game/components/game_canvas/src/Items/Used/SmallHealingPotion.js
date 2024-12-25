@@ -1,17 +1,16 @@
 import Used from "@/views/game/components/game_canvas/src/Items/Used/Used.js";
-import CharacterService from "@/views/game/services/CharacterService";
 
 export default class SmallHealingPotion extends Used{
     constructor(template, player) {
         super(template, player)
         this.name = 'small healing potion'
         this.uses_in_fight = true
+        this.power = 10
     }
 
     async use(){
-        this.player.addLife(this.power)
-        await CharacterService.useItems([this.id], this.player)
-        this.player.inv.deleteFromPull(this)
+        await this.afterUse()
+        this.player.addLife(this.getTotalPotionPower())
     }
 
     canUse(enemy = undefined){

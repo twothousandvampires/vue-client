@@ -18,12 +18,12 @@ export default class BlessedArmourBuff extends Status{
     affect(target){
         this.target = target
         this.target.armour += this.power
-        this.target.resist += this.power * 3
+        this.target.resist += this.power * 2
     }
 
     expire(){
         this.target.armour -= this.power
-        this.target.resist -= this.power * 3
+        this.target.resist -= this.power * 2
         this.target.status.delete(this.name)
     }
 

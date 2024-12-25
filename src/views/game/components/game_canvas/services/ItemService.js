@@ -15,6 +15,28 @@ export default {
             }
         })
     },
+    createShard(){
+        return axios({method: 'post',
+            url : URL + 'item/create_shard/',
+            data : {
+                char_id : localStorage.getItem('char_id'),
+            },
+            headers : {
+                'Authorization': 'Bearer ' + TOKEN,
+            }
+        })
+    },
+    createItem2(){
+        return axios({method: 'post',
+            url : URL + 'item/create_from_inventory/',
+            data : {
+                char_id : localStorage.getItem('char_id'),
+            },
+            headers : {
+                'Authorization': 'Bearer ' + TOKEN,
+            }
+        })
+    },
     getItemList(){
         return axios({method:'get', url : URL +'item',
             headers: {

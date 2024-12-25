@@ -43,6 +43,17 @@ export default class Item extends Cell{
         'greenskins skull' : '/src/assets/img/greenskins_skull.png',
         'crystal hammer' : '/src/assets/img/crystal_hammer.gif',
         'spice' : '/src/assets/img/spice.gif',
+        'belt rope' : '/src/assets/img/belt_rope.png',
+        'bone doll' : '/src/assets/img/bone_doll.png',
+        'improving dust' : '/src/assets/img/improving_dust.gif',
+        'equipment parts' : '/src/assets/img/equipment_parts.png',
+        'scroll design' : '/src/assets/img/scroll_design.png',
+        'solidified lava mold' : '/src/assets/img/solidified_lava_mold.png',
+        'stone amulet' : '/src/assets/img/stone_amulet.png',
+        'snow shuriken' : '/src/assets/img/snow_shuriken.png',
+        'sparking sabre' : '/src/assets/img/sparking_sabre.gif',
+        'botled lightning' : '/src/assets/img/botled_lightning.png',
+        'combat potion' : '/src/assets/img/combat_potion.png',
     }
     static rarity_strings = {
         1: 'common',

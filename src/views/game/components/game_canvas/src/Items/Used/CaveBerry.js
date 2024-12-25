@@ -10,9 +10,9 @@ export default class CaveBerry extends Food{
     }
 
     async use(){
+        await this.afterUse()
         this.player.resist += this.power
         this.player.newStatus(new CaveBerryBuff(this.power, 5), this.player, true)
-        await this.afterUse()
     }
 
     getDescription(){

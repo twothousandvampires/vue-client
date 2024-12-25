@@ -26,6 +26,7 @@ export default class GoblinCatcher extends Enemy{
         this.fire_damage_resist = 2
         this.net_use_chance = 35
         this.init()
+        this.initiative = 10
     }
 
     async startTurn(enemies, player) {

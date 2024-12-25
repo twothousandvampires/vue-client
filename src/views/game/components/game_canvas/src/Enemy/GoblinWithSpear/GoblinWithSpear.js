@@ -24,5 +24,6 @@ export default class GoblinWithSpear extends Enemy{
         this.fire_damage_resist = 2
         this.piercing_damage_resist = 2
         this.init()
+        this.initiative = 8
     }
 }

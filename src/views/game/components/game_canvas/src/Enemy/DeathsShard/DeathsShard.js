@@ -32,6 +32,7 @@ export default class DeathsShard extends Undead{
         this.cutting_damage_resist = 0
         this.crushing_damage_resist = 0
         this.physical_damage_resist = 0
+        this.initiative = 3
         this.init()
     }
 }

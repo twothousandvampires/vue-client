@@ -8,7 +8,7 @@ export default {
     CharacterSingleInfo
   },
   computed: {
-    ...mapState(useUserStore,['user'])
+    ...mapState(useUserStore, ['user'])
   },
 }
 </script>

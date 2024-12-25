@@ -3,7 +3,7 @@ import LivingFleshSprite from "@/views/game/components/game_canvas/src/Enemy/Liv
 import Functions from "@/views/game/components/game_canvas/src/GameFunctions";
 
 export default class SummonedLivingFlesh extends Unit{
-    constructor(context, level) {
+    constructor(context, level, combo, life = 0, damage = 0) {
         super(context);
         this.sprite = new LivingFleshSprite(this)
         this.box_size_x = 40
@@ -12,12 +12,12 @@ export default class SummonedLivingFlesh extends Unit{
         this.size_x = 100
         this.size_y = 100
         this.fliped = true
-        this.life = 12 + level * 2
-        this.max_life = 12 + level * 2
+        this.life = (12 + life + (level * 2)) * (combo >= 1 ? 2 : 1)
+        this.max_life = (12 + life + (level * 2)) * (combo >= 1 ? 2 : 1)
 
         this.name = 'summoned living flesh'
         this.speed = 300
-        this.physical_damage = 5 + level * 2
+        this.physical_damage = 5 + (level * 2) + damage
         this.accuracy = 0
         this.energy = 100
         this.init()
@@ -125,7 +125,7 @@ export default class SummonedLivingFlesh extends Unit{
             }
             t.takeAttackDamage(this, d)
         }
-        this.updateStatus()
+        this.updateStatusNewTurn()
         await Functions.sleep(500)
         this.figth_context.next(this)
     }

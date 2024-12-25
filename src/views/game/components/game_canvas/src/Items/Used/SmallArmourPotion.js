@@ -1,5 +1,4 @@
 import Used from "@/views/game/components/game_canvas/src/Items/Used/Used.js";
-import CharacterService from "@/views/game/services/CharacterService";
 
 export default class SmallArmourPotion extends Used{
     constructor(template, player) {
@@ -10,9 +9,8 @@ export default class SmallArmourPotion extends Used{
     }
 
     async use(){
-        this.player.armour += this.power
-        await CharacterService.useItems([this.id], this.player)
-        this.player.inv.deleteFromPull(this)
+        await this.afterUse()
+        this.player.armour += this.getTotalPotionPower()
     }
 
     getDescription(){

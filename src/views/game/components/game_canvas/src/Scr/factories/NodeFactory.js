@@ -21,6 +21,8 @@ import RemainsOfCamp from "@/views/game/components/game_canvas/src/World/Content
 import FlyingScrolls from "@/views/game/components/game_canvas/src/World/Content/Object/FlyingScrolls";
 import LivingCreatures from "@/views/game/components/game_canvas/src/World/Content/Enemy/LivingCreatures";
 import AbandonedForge from "@/views/game/components/game_canvas/src/World/Content/Object/AbandonedForge";
+import EnvironmentSprite from "../../World/Content/Enemy/EnvironmentSprite";
+import UnknownSquad from "../../World/Content/Enemy/UnknownSquad";
 
 const ENEMY_TYPE_UNDYING = 1
 const TREASURE_TYPE_CHEST = 1
@@ -99,6 +101,12 @@ export default class NodeFactory{
                 break;
             case 3:
                 node.content_sprite = new LivingCreatures()
+                break;
+            case 4:
+                node.content_sprite = new EnvironmentSprite()
+                break;
+            case 5:
+                node.content_sprite = new UnknownSquad()
                 break;
         }
     }

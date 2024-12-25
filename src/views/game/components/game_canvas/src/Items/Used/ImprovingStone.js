@@ -1,6 +1,6 @@
 import Used from "@/views/game/components/game_canvas/src/Items/Used/Used.js";
 import Functions from "@/views/game/components/game_canvas/src/GameFunctions";
-import CharacterService from "@/views/game/services/CharacterService";
+import requestService from "@/views/game/services/requestService";
 
 export default class ImprovingStone extends Used{
     constructor(template, player) {
@@ -29,10 +29,13 @@ export default class ImprovingStone extends Used{
     }
 
     async chooseOption(option_id){
-        let data = await CharacterService.upgradeSkill(this.player.id, option_id)
+        let data = await requestService.upgradeSkill(this.player.id, this.id, option_id)
         if(data.success){
             this.player.parseStats(data.data)
             this.player.inv.deleteItem(this)
+        }
+        else{
+            alert(data.error)
         }
     }
 }

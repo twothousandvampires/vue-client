@@ -19,7 +19,83 @@ export default class ImageData{
             format: 'png'
         },
         {
+            name: 'lost_daylight',
+            format: 'png'
+        },
+        {
+            name: 'the_beehive_dragger',
+            format: 'png'
+        }, 
+        {
+            name: 'slime',
+            format: 'png'
+        }, 
+        {
+            name: 'naughty_piece_of_darkness',
+            format: 'png'
+        }, 
+        {
+            name: 'stinging_one',
+            format: 'png'
+        }, 
+        {
+            name: 'wild_mycelium',
+            format: 'png'
+        }, 
+        {
+            name: 'germinated_mycelium',
+            format: 'png'
+        }, 
+        {
+            name: 'lightning_effect',
+            format: 'png'
+        },
+        {
+            name: 'shield_effect',
+            format: 'png'
+        },
+        {
+            name: 'spark_effect',
+            format: 'png'
+        },
+        {
+            name: 'wild_lightning',
+            format: 'png'
+        },
+        {
+            name: 'swarm',
+            format: 'png'
+        },
+        {
+            name: 'wandering_night_shine',
+            format: 'png'
+        },
+        {
             name: 'remains_of_camp',
+            format: 'png'
+        },
+        {
+            name: 'unknown_squad',
+            format: 'png'
+        },
+        {
+            name: 'protective_minerals',
+            format: 'png'
+        },
+        {
+            name: 'environment_squad',
+            format: 'png'
+        },
+        {
+            name: 'magic_explosion',
+            format: 'png'
+        },
+        {
+            name: 'stun_effect',
+            format: 'png'
+        },
+        {
+            name: 'rocks_jump_effect',
             format: 'png'
         },
         {
@@ -28,6 +104,14 @@ export default class ImageData{
         },
         {
             name: 'living_creatures',
+            format: 'png'
+        },
+        {
+            name: 'shelling_beetle',
+            format: 'png'
+        },
+        {
+            name: 'paralyzing_arachnid',
             format: 'png'
         },
         {

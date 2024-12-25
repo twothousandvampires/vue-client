@@ -1,7 +1,7 @@
 <script>
-import PlayerStats from "@/components/PlayerStats.vue";
-import PlayerEquip from '@/components/PlayerEquip.vue';
-import PlayerInventory from "@/components/PlayerInventory.vue";
+import PlayerStats from "./PlayerStats.vue";
+import PlayerEquip from './PlayerEquip.vue';
+import PlayerInventory from "./PlayerInventory.vue";
 import Cell from "../../game_canvas/src/inventory/cell/Cell";
 import ItemInspectModal from "./ItemInspectModal.vue";
 import InspectSkillGem from "./InspectSkillGem.vue";

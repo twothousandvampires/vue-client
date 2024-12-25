@@ -23,6 +23,19 @@ import GruzGulGreenskinCultist
 import Centipede from "@/views/game/components/game_canvas/src/Enemy/Centipede/Centipede";
 import EnchantedArmour from "@/views/game/components/game_canvas/src/Enemy/EnchantedArmour/EnchantedArmour";
 import EnchantedWeapon from "@/views/game/components/game_canvas/src/Enemy/EnchantedWeapon/EnchantedWeapon";
+import ParalyzingArachnid from "@/views/game/components/game_canvas/src/Enemy/ParalyzingArachnid/ParalyzingArachnid";
+import ShellingBeetle from "@/views/game/components/game_canvas/src/Enemy/ShellingBeetle/ShellingBeetle";
+import ProtectiveMinerals from "../../Enemy/ProtectiveMinerals/ProtectiveMinerals";
+import LostDaylight from "../../Enemy/LostDaylight/LostDaylight";
+import WanderingNightShine from "../../Enemy/WanderingNightShine/WanderingNightShine";
+import Swarm from "../../Enemy/Swarm/Swarm";
+import TheBeehiveDragger from "../../Enemy/TheBeehiveDragger/TheBeehiveDragger";
+import Slime from "../../Enemy/Slime/Slime";
+import GerminatedMycelium from "../../Enemy/GerminatedMycelium.js/GerminatedMycelium";
+import WildMyceliumSprite from "../../Enemy/WildMycelium/WildMyceliumSprite";
+import WildMycelium from "../../Enemy/WildMycelium/WildMycelium";
+import StingingOne from "../../Enemy/StingingOne/StingingOne";
+import NaughtyPieceofDarkness from "../../Enemy/NaughtyPieceofDarkness/NaughtyPieceofDarkness";
 
 export default class EnemyFactory {
     constructor() {
@@ -79,6 +92,30 @@ export default class EnemyFactory {
                 return new EnchantedArmour(context)
             case 'enchanted weapon':
                 return new EnchantedWeapon(context)
+            case 'paralyzing arachnid':
+                return new ParalyzingArachnid(context)
+            case 'shelling beetle':
+                return new ShellingBeetle(context)
+            case 'protective minerals':
+                return new ProtectiveMinerals(context)
+            case 'lost daylight':
+                return new LostDaylight(context)
+            case 'wandering night shine':
+                return new WanderingNightShine(context)
+            case 'swarm':
+                return new Swarm(context)
+            case 'the beehive dragger':
+                return new TheBeehiveDragger(context)
+            case 'slime':
+                return new Slime(context)
+            case 'germinated mycelium':
+                return new GerminatedMycelium(context)
+            case 'wild mycelium':
+                return new WildMycelium(context)
+            case 'stinging one':
+                    return new StingingOne(context)
+            case 'naughty piece of darkness':
+                return new NaughtyPieceofDarkness(context)
         }
     }
 }

@@ -1,7 +1,7 @@
 <script>
 import AccountInfo from "./AccountInfo.vue";
 import CharactersInfo from "./CharactersInfo.vue";
-import Load from '../../../components/Load.vue'
+import Load from '../../components/Load.vue'
 
 import {mapActions, mapState} from 'pinia'
 import { useUserStore } from "@/stores/user";

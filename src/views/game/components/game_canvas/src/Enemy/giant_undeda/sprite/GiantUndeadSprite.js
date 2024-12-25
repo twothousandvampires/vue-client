@@ -7,6 +7,7 @@ export default class GiantUndeadSprite extends Sprite{
         this.width = 108
         this.height = 108
         this.img_name = 'giant_undead'
+        this.draw_y_offset = -40
     }
 
     setImgState(){

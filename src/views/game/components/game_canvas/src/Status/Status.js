@@ -7,6 +7,9 @@ export default class Status{
     endTurn(){
 
     }
+    newTurn(){
+        
+    }
     act(){
 
     }
@@ -15,5 +18,8 @@ export default class Status{
     }
     getDescription(){
         return `${this.name} (${this.duration}) \n${this.description} `
+    }
+    targetDead(){
+        
     }
 }

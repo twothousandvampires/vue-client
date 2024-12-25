@@ -1,4 +1,5 @@
 import Sprite from "../Sprite";
+import Functions from "@/views/game/components/game_canvas/src/GameFunctions";
 
 export default class UnitSprite extends Sprite{
     constructor(owner) {
@@ -34,6 +35,6 @@ export default class UnitSprite extends Sprite{
         this.frame_timer_max = this.previous_frame_timer_max
     }
     init(){
-
+        this.frame = Functions.random(this.max_frame,0)
     }
 }

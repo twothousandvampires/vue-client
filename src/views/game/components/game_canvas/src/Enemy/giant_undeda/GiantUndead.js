@@ -22,6 +22,7 @@ export default class GiantUndead extends Undead {
         this.attack_block = 15
         this.sprite = new GiantUndeadSprite(this)
         this.init()
+        this.initiative = 1
     }
 
     afterDamage(){

@@ -8,6 +8,8 @@ export default class GrimTravelerSprite extends UnitSprite{
         this.height = 96
         this.img_name = 'grim2'
         this.draw_y_offset = - 35
+        this.cast_frame = 8
+        this.attack_frame = 6
     }
     setImgState(){
         switch (this.owner.state){
@@ -53,7 +55,7 @@ export default class GrimTravelerSprite extends UnitSprite{
                 break;
             case Unit.STATE_DYSPNEA:
                 this.y_frame_offset = 96 * 7
-                this.max_frame = 6
+                this.max_frame = 5
                 this.frame_timer_max = 5
                 break;
             case Unit.STATE_DAMAGED:

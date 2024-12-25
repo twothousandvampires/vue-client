@@ -1,10 +1,10 @@
 <script>
-import AccountService from "@/services/AccountService";
+import CharacterService from "../../game/services/requestService";
+
 export default {
   data(){
     return{
       name : '',
-      email : '',
       password : '',
       c_password : '',
       error_msg : false,
@@ -18,13 +18,13 @@ export default {
   },
   methods:{
     async auth(){
-      let ApiResponse = await AccountService.login(this.email, this.password)
-      if(ApiResponse.data.success) {
-        localStorage.setItem('token' , ApiResponse.data.data.token)
+      let res = await CharacterService.serverRequest('login', { name: this.name, password: this.password })
+      if(res.success) {
+        localStorage.setItem('token' , res.data.token)
         location.href = '/'
       }
       else{
-        this.error_msg = ApiResponse.data.message
+        this.error_msg = res.data.message
       }
     },
     inputLogin(e){
@@ -53,15 +53,18 @@ export default {
       this.password = ''
       this.name = ''
       this.c_password = ''
-      this.email = ''
     },
     async registration() {
-      let ApiResponse = await AccountService.registration(this.name, this.email, this.password, this.c_password)
-      if (ApiResponse.data.success) {
+      let res = await CharacterService.serverRequest('registration', {
+                name : this.name,
+                password : this.password,
+                c_password : this.c_password
+      })
+      if (res.success) {
         this.clear()
-        this.success_msg = ApiResponse.data.message
+        this.success_msg = res.message
       } else {
-        this.error_msg = ApiResponse.data.message
+        this.error_msg = res.message
       }
     }
   },
@@ -78,9 +81,7 @@ export default {
         <p @click="startGame">Click to start</p>
       </div>
       <form v-show="this.start">
-        <input v-if="!login_form" @input="inputName" v-bind:value="name" class="input" type="text" placeholder="name">
-
-        <input @input="inputLogin" v-bind:value="email" class="input" type="text" placeholder="email">
+        <input @input="inputName" v-bind:value="name" class="input" type="text" placeholder="name">
         <input @input="inputPass" v-bind:value="password" class="input" type="text" placeholder="password">
 
         <input v-if="!login_form" @input="inputCpass" v-bind:value="c_password" class="input" type="text" placeholder="retype password">

@@ -1,3 +1,4 @@
+import Character from "./Character/Character";
 import Point from "./Scr/Point";
 
 export default class Functions{
@@ -161,6 +162,41 @@ export default class Functions{
         return new Promise(resolve => setTimeout(resolve, ms));
     }
 
+    static createDamageModal(unit, damage, options = {}){
+        let modal_direction = unit instanceof Character ? -2 : + 2
+        let canvas = document.getElementById('game-canvas')
+        let c_x = canvas.getBoundingClientRect().left
+        let c_y = canvas.getBoundingClientRect().top
+
+
+        let elem = document.createElement('p');
+
+        let text = damage
+        
+        if(options.critical){
+            text += '!'
+        }
+
+        elem.textContent = text;
+
+        elem.classList.add('game-modal')
+        elem.style.top = c_y + unit.point.y - unit.size_y / 2 + 'px'
+        elem.style.left = c_x + unit.point.x - 10 + 'px'
+        elem.style.fontSize = options.critical ? '18px' : '16px'
+        elem.style.color = options.type === 'phys' ? 'white' : 'yellow'
+        let tick = 0
+        let timer = setInterval(()=>{
+            if(tick > 15){
+                clearInterval(timer)
+                elem.parentNode.removeChild(elem)
+                return true
+            }
+            elem.style.left = parseInt(elem.style.left) + modal_direction + 'px'
+            tick++
+        }, 40)
+        document.getElementById('app').append(elem)
+    }
+
     static async createModal(unit ,text, font_size = 14, color = 'white', without_queue = false){
         if(!without_queue){
             Functions.modal_queue ++
@@ -194,6 +230,45 @@ export default class Functions{
             document.getElementById('app').append(elem)
         }, Functions.modal_queue * 250)
     }
+
+    static async createInputModal(title = '???', callback){
+        let exist = document.getElementsByClassName('options_modal')[0]
+        if(exist){
+            exist.parentNode.removeChild(exist)
+        }
+
+        let div = document.createElement('div')
+        div.className = 'options_modal'
+
+        let title_div = document.createElement('div')
+        title_div.className = 'title'
+        title_div.innerText = title
+        div.appendChild(title_div)
+
+        let input = document.createElement('input')
+        input.type="number"
+        input.value = 10
+        input.id = 'input_id'
+
+        input.autofocus = true
+
+        div.appendChild(input)
+
+        let ok = document.createElement('p')
+        ok.innerText = 'ok'
+
+        ok.addEventListener('click', () => {
+            let v = document.getElementById('input_id').value
+            callback(v)
+            div.parentNode.removeChild(div)
+        })
+
+        div.appendChild(ok)
+
+
+        document.getElementById('app').append(div)
+    }
+
     static async createOptionsModal(options, source, title = ''){
 
         let exist = document.getElementsByClassName('options_modal')[0]

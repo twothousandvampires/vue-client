@@ -1,5 +1,6 @@
 import { defineStore } from 'pinia'
 import Config from "../../config.js";
+import CharacterService from '../views/game/services/requestService.js';
 
 const URL = Config.app_url
 const TOKEN = localStorage.getItem('token') ? localStorage.getItem('token') : ''
@@ -19,15 +20,12 @@ export const useUserStore = defineStore(
         actions: {
             async fetchUser() {
                 try {
-                    const data = await axios({method:'post', url : URL +'user/',
-                        headers: {
-                            'Authorization': 'Bearer ' + this.token,
-                        }
-                    })
+                    const data = await CharacterService.serverRequest('user')
 
-                    this.user = data.data.data
+                    this.user = data.data.user
                 }
                 catch (error) {
+
                 }
             },
 

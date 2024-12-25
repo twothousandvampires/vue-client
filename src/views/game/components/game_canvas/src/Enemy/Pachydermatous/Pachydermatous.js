@@ -26,5 +26,6 @@ export default class Pachydermatous extends Enemy{
         this.crushing_damage_resist = 0
         this.cold_damage_resist = 2
         this.init()
+        this.initiative = 12
     }
 }

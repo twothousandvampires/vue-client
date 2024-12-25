@@ -1,6 +1,6 @@
 import Used from "@/views/game/components/game_canvas/src/Items/Used/Used.js";
 import Functions from "@/views/game/components/game_canvas/src/GameFunctions";
-import CharacterService from "@/views/game/services/CharacterService";
+import requestService from "@/views/game/services/requestService";
 
 export default class LearningStone extends Used{
     constructor(template, player) {
@@ -13,7 +13,7 @@ export default class LearningStone extends Used{
     }
 
     async use(){
-        let data = await CharacterService.getSkillsForLearning(this.char_id, this.id)
+        let data = await requestService.getSkillsForLearning(this.char_id, this.id)
         let options = []
         data.data.forEach(elem => {
             options.push({
@@ -26,7 +26,7 @@ export default class LearningStone extends Used{
     }
 
     async chooseOption(option_id){
-        let data = await CharacterService.learnSkill(this.player.id, option_id)
+        let data = await CharacterService.learnSkill(this.player.id, this.id, option_id)
         if(data.success){
             this.player.parseStats(data.data)
             this.player.inv.deleteItem(this)

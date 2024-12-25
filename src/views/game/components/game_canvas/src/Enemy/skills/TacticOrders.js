@@ -10,6 +10,7 @@ export default class TacticOrders extends EnemySkill{
         targets.forEach(elem => {
             elem.evade += 5
             elem.speed += 200
+            elem.initiative += 2
         })
     }
 

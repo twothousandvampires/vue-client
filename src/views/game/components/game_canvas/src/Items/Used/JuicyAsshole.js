@@ -9,13 +9,13 @@ export default class JuicyAsshole extends Food{
     }
 
     async use(){
+        await this.afterUse()
         this.player.addLife(this.power)
         this.player.addEnergy(10)
-        await this.afterUse()
     }
 
     getDescription(){
-        return 'restores your life and energy'
+        return 'restores your life and energy ' + this.charges
     }
 
     canUse(enemy = undefined){

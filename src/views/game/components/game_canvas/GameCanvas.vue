@@ -1,11 +1,10 @@
 <script>
 import AudioPlayer from "./components/AudioPlayer.vue";
 import PlayerHUD from "./components/PlayerHUD.vue";
-import RenderSettings from "./components/RenderSettings.vue";
 import Inventory from "./components/Inventory.vue";
-import Logger from "@/views/game/components/game_canvas/components/Logger.vue";
-import BattleTools from "@/views/game/components/game_canvas/components/BattleTools.vue";
-import FightPrepare from "@/views/game/components/game_canvas/components/FightPrepare.vue";
+import Logger from "./components/Logger.vue";
+import StatusBar from "./components/hud/StatusBar.vue";
+
 export default {
   name: "GameCanvas",
   data(){
@@ -17,13 +16,11 @@ export default {
     game: Object
   },
   components:{
-    FightPrepare,
     AudioPlayer,
     PlayerHUD,
-    RenderSettings,
     Inventory,
     Logger,
-    BattleTools
+    StatusBar
   },
   mounted() {
     this.game.init()
@@ -37,7 +34,10 @@ export default {
     }
   },
   methods:{
-
+    to_profile(){
+        localStorage.removeItem('world')
+        window.location.href = '/'
+      }
   },
   computed: {
     char: function (){
@@ -51,22 +51,34 @@ export default {
 </script>
 
 <template>
+  
   <div id="canvas-wrap">
-    <AudioPlayer ref="audio_player"></AudioPlayer>
-    <canvas id='game-canvas' width="1300" height="1300" ref="canvas"></canvas>
+    <PlayerHUD v-bind:char="char"></PlayerHUD>
+    <div style="width: 720px; height: 800px;position: relative;">
+      <div style="background-image: url('/src/assets/img/toptest2.png');height: 120px;z-index: 1111;position: relative; background-color: #2a1e23;display: flex;justify-content: space-around;align-items: center;">
+        <AudioPlayer ref="audio_player"></AudioPlayer>
+        <p style="color: #86c69a;cursor: pointer;" @click="to_profile">Profile</p>
+      </div>
+      <div style="background-image: url('/src/assets/img/innertest.png');height: 680px; width: 720px;;z-index: 1111;position: relative;pointer-events: none;">
+
+      </div>
+      <canvas style="position: relative;top:-960px;left: -300px;" id='game-canvas' width="1300" height="1300" ref="canvas"></canvas>
+      <div id="status">
+        <StatusBar :status="char.status"></StatusBar>
+      </div>
+    </div>
+    <Logger></Logger>
   </div>
   <div v-if="init">
     <Inventory v-if="char.inv_is_open" v-bind:char="char"></Inventory>
-<!--    <RenderSettings v-bind:render="game.scene?.render"></RenderSettings>-->
-<!--    <BattleTools v-bind:f_context="game.scene"></BattleTools>-->
-    <PlayerHUD v-bind:char="char"></PlayerHUD>
-<!--    <FightPrepare v-bind:game="this.game" v-if="this.game.prepare_for_battle"></FightPrepare>-->
-    <Logger></Logger>
     <div style="visibility: hidden; position: fixed; top: 20%; left: 50%;transform: translate(-50%, -50%);text-align: center" id="cell_info"></div>
-    <div v-if="char.figth_context" style="display: flex;flex-direction: column;position: fixed; top: 85%; left: 50%;transform: translate(-50%, -50%);text-align: center" id="spells_and_items">
+    <div v-if="char.figth_context" style="display: flex;flex-direction: column;position: fixed; top: 28%; left: 50%;transform: translate(-50%, -50%);text-align: center" id="spells_and_items">
       <div id="items">
         <div @click="char.selectToUse(item)" v-for="item in char.getItems((elem) => { return elem.uses_in_fight})" style="margin: 2px;border: 5px solid; display: flex; flex-direction: row;justify-content: center;align-items: center" :style="item.selected ? 'border: 5px solid #00e699' :''">
           <img :title="item.getDescription()" width="60" height="60" :src="item.getImagePath()" alt="">
+          <p style="position: absolute; left: 45px; top: 36px;color: wheat" v-if="item.item_type === 3">
+            {{item.charges}}
+          </p>
         </div>
       </div>
       <div id="spells">
@@ -76,16 +88,31 @@ export default {
       </div>
     </div>
   </div>
-
 </template>
 
 <style scoped>
+#status{
+  display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    position: absolute;
+    top:calc(100% - 80px);
+    height: 80px;
+    width: 400px;
+    z-index: 6666;
+  }
   #items, #spells{
     display: flex;
     flex-direction: row;
   }
   #canvas-wrap{
     overflow: hidden;
+    width: 1200px;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
   }
   canvas{
     image-rendering: -moz-crisp-edges;

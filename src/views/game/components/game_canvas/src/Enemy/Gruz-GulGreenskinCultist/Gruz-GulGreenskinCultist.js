@@ -1,10 +1,7 @@
 import GruzGulGreenskinCultistSprite
     from "@/views/game/components/game_canvas/src/Enemy/Gruz-GulGreenskinCultist/GruzGulGreenskinCultistSprite";
 import Enemy from "@/views/game/components/game_canvas/src/Enemy/src/Enemy";
-import WarDrums from "@/views/game/components/game_canvas/src/Auras/WarDrums";
 import FireShards from "@/views/game/components/game_canvas/src/Auras/FireShards";
-import FireBall from "@/views/game/components/game_canvas/src/Enemy/skills/FireBall";
-import WeakSoul from "@/views/game/components/game_canvas/src/Enemy/skills/WeakSoul";
 import BlindingFlash from "@/views/game/components/game_canvas/src/Enemy/skills/BlindingFlash";
 
 export default class GruzGulGreenskinCultist extends Enemy{

@@ -3,8 +3,8 @@ import FreezeEffect from "@/views/game/components/game_canvas/src/Effects/Freeze
 export default class Freeze extends Status{
     constructor(duration = 1) {
         super()
-        this.name = 'frozen'
-        this.duration = duration
+        this.name = 'freeze'
+        this.duration = duration + 1
         this.description = 'you will skip your turns while you are frozen'
         this.status_bar_img_name = 'frozen.png'
         this.sprite = undefined
@@ -24,12 +24,15 @@ export default class Freeze extends Status{
     }
 
     expire(){
-        this.target.frozen = false
+        this.target.removeFreeze()
         this.target.figth_context.removeEffect(this.sprite)
         this.target.status.delete(this.name)
     }
 
     update(status){
         this.duration = status.duration
+    }
+    targetDead(){
+        this.expire()
     }
 }

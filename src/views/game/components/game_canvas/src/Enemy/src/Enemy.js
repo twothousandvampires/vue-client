@@ -16,6 +16,7 @@ export default class Enemy extends Unit{
         this.lightning_damage_resist = 1
         this.cold_damage_resist = 1
 
+        this.initiative = 5
         this.priority_for_spellcasting = 0
     }
     getTarget(player){
@@ -30,11 +31,11 @@ export default class Enemy extends Unit{
     turn(enemies, player){
         let target = this.getTarget(player)
         let cast_result = false
-        if(this.caster && this.mana && this.wantToCast()){
+        if(this.caster && this.mana && this.wantToCast() && !this.silence){
             cast_result = this.cast(target, enemies)
         }
         if(!cast_result){
-            Functions.createModal(this, 'attack!',16,'white', true)
+            Functions.createModal(this, 'attack!')
             target.takeDamage(this)
         }
     }
@@ -46,14 +47,17 @@ export default class Enemy extends Unit{
         return true
     }
     async afterTurn(){
-        this.updateStatus()
+        this.updateStatusEndTurn()
         await Functions.sleep(500)
         this.figth_context.next(this)
     }
     async startTurn(enemies, player){
+        this.updateStatusNewTurn()
+
         if(this.availableToTurn()){
             this.turn(enemies, player)
         }
+
         await this.afterTurn()
     }
     cast(target, enemy){
@@ -102,10 +106,13 @@ export default class Enemy extends Unit{
 
         }
     }
-    takeSpellDamage(player, damage){
+    takeSpellDamage(player, damage = {}){
 
-        let result = damage.magic_damage
+        let result = 0
 
+        if(damage.magic_damage){
+            result += damage.magic_damage
+        }
         if(damage.cold_damage){
             result += damage.cold_damage * this.cold_damage_resist
         }
@@ -132,14 +139,18 @@ export default class Enemy extends Unit{
         if(total){
             this.afterDamage(player)
             this.reduceLife(total)
-            Functions.createModal(this, total, '16', 'yellow')
+            let options = {
+                critical: false,
+                type: 'magic'
+            }
+            Functions.createDamageModal(this, total, options)
             return total
         }
     }
     isPhysImmune(){
         return !this.crushing_damage_resist && !this.physical_damage_resist && !this.piercing_damage_resist && !this.cutting_damage_resist
     }
-    takeAttackDamage(player, damage){
+    takeAttackDamage(player, damage, options = {}){
 
         if(this.isPhysImmune()){
             Functions.createModal(this, 'attack immune')
@@ -154,7 +165,7 @@ export default class Enemy extends Unit{
         let weak = player.energy < 15 && Math.random() < 0.5
 
         let total = Functions.random(result * 1.1, result  * 0.9)
-        let is_critical = player.isPhysicalCrit()
+        let is_critical = player.isPhysicalCrit(options)
 
         if(this.armour >= 0){
             let physical_reduction = this.getPhysicalRedaction()
@@ -169,7 +180,9 @@ export default class Enemy extends Unit{
             total /= 2
         }
         if(is_critical && !weak){
-            total *= 2
+            let add = options.additional_critical_damage ? options.additional_critical_damage : 0
+            let total_more = 2 + add / 100
+            total *= total_more
         }
 
         total = Math.round(total)
@@ -187,8 +200,11 @@ export default class Enemy extends Unit{
             player.successfulAttack(total)
             this.afterDamage(player)
             this.reduceLife(total)
-
-            Functions.createModal(this, is_critical ? total + '!' : total, '16', 'white')
+            let options = {
+                critical: is_critical,
+                type: 'phys'
+            }
+            Functions.createDamageModal(this, total, options)
         }
     }
     takeDirectSpellDamage(damage){
@@ -207,8 +223,9 @@ export default class Enemy extends Unit{
         if(damage.fire_damage){
             result += damage.fire_damage * this.fire_damage_resist
         }
+        let is_critical = player.isMagicCrit(options)
 
-       let  total = Functions.random(result * 1.1, result  * 0.9)
+        let  total = Functions.random(result * 1.1, result  * 0.9)
 
         let magic_reduction = this.getMagicRedaction()
 
@@ -219,12 +236,21 @@ export default class Enemy extends Unit{
             total = total * (1 + -magic_reduction)
         }
 
+        if(is_critical){
+            total *= 2
+        }
+
         total = Math.round(total)
 
         if(total){
             this.afterDamage()
             this.reduceLife(total)
-            Functions.createModal(this, total, '16', 'yellow')
+
+            let options = {
+                type: 'magic',
+                critical: is_critical,
+            }
+            Functions.createDamageModal(this, total, options)
         }
     }
     reduceLife(value){

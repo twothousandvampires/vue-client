@@ -6,7 +6,7 @@ export default class PassiveFactory{
             case 'lust for murder' :
                 return new LustOfMurder(template, player)
             default:
-                return new Passive(template)
+                return new Passive(template, player)
         }
     }
 }

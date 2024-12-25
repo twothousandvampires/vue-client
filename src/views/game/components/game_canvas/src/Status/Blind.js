@@ -4,14 +4,13 @@ export default class Blind extends Status{
     constructor(power, duration) {
         super();
         this.power = power
-        this.duration = duration
+        this.duration = duration + 1
         this.description = 'you can miss the attack'
         this.name = 'blind'
         this.status_bar_img_name = 'blind_status.png'
     }
 
     newTurn(){
-        this.target.takeDirectDamage(this.power)
         this.duration --
         if(!this.duration){
             this.expire()
@@ -19,11 +18,11 @@ export default class Blind extends Status{
     }
     affect(target){
         this.target = target
-        this.target.blind += 20
+        this.target.blind += this.power
     }
 
     expire(){
-        this.target.blind -= 20
+        this.target.blind -= this.power
         this.target.status.delete(this.name)
     }
 

@@ -7,43 +7,62 @@ export default class VampiricRite extends Skill{
     constructor(template, player) {
         super(template, player)
         this.img = 'vampiric_rite.png'
-        this.mana_cost = 3
-        this.description = 'deals damage to enemies equal half of your magic damage plus 1 per level and gives you buff that have power equal of count hit enemy'
+        this.mana_cost = 2
+        this.life_cost = 2
+        this.description = 'enemy'
+
     }
-
-    use(){
-        this.player.mana -= this.mana_cost
-
+    action(){
+    
         if(this.player.energy <= 15 && Math.random() < 0.5){
             Functions.createModal(this.player, 'cast failed...')
             return
         }
 
         let targets = this.player.figth_context.turn_queue.filter(elem => !elem.isDead() && elem !== this.player)
-        this.player.setCast()
-
+        
         Functions.createModal(this.player, this.name)
-        let damage = {
-            magic_damage: this.player.magic_damage / 2 + this.level,
-            fire_damage: 0,
-            cold_damage: 0,
-            lightning_damage: 0
-        }
 
-        if(targets.length){
+        if(targets.length && this.player.combo_points === 2){
+            let damage = {
+                magic_damage: this.player.magic_damage,
+                fire_damage: 0,
+                cold_damage: 0,
+                lightning_damage: 0
+            }
             targets.forEach(elem =>{
                 elem.takeSpellDamage(this.player, damage)
             })
-            this.player.newStatus(new VampiricRiteBuff(targets.length, 3), this.player, true)
         }
+        if(targets.length){
+            this.player.newStatus(new VampiricRiteBuff(targets.length, this.player.combo_points >= 1 ? 6 : 3), this.player, true)
+        }
+       
         this.player.figth_context.addEffect(new VampiricRiteEffect(this.player.figth_context), 18)
     }
+    use(){
+        this.player.mana -= this.mana_cost
+        this.player.reduceLife(this.life_cost, false)
+        this.player.setCast()
+    }
+    getMainDescription(){
 
+        let result = `you get life leech equals number of enemy for 3 turns`
+
+        if(this.player.combo_points >= 1){
+            result += `\n(combo1) for 6 turns`
+        }
+        if(this.player.combo_points === 2){
+            result += `\n(combo2) deals magic damage`
+        }
+
+        return result
+    }
     getDescription(){
         let result = ``
         result += `${this.name} (${this.level})\n`
-        result += `${this.description} \n`
-        result += `mana cost - ${this.mana_cost} \n`
+        result += `${this.getMainDescription()} \n`
+        result += `${this.getCost()}`
         return result
     }
 

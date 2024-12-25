@@ -1,16 +1,20 @@
-import Effect from "../Effect";
 import ChainLightSprite from "./sprite/ChainLightSprite";
-export default class LuminousArcEffect extends Effect{
+import GameObject from "@/views/game/components/game_canvas/src/Scr/GameObject";
 
-    constructor(context, x, y, w, h = 0, angle)  {
-        super(context, x, y, w, h , angle)
-        this.size_x =  (40 * w)/240
-        this.size_y = w
-        this.box_size_x =  (40 * w)/240
-        this.box_size_y = w
+export default class LuminousArcEffect extends GameObject{
 
+    constructor(context, angle, length)  {
+        super(context)
+        this.size_x = length / 4
+        this.size_y = length
         this.angle = angle
         this.sprite = new ChainLightSprite(this)
+        console.log(this.angle)
     }
-
+    addCell(){
+        
+    }
+    act(){
+        this.sprite.act()
+    }
 }

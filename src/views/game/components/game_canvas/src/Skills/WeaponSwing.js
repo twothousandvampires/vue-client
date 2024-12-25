@@ -9,40 +9,67 @@ export default class WeaponSwing extends Skill{
     }
 
     use(enemy = false){
-        this.player.reduceEnergy(this.energy_cost)
+        this.player.reduceEnergy(this.getEnergyCost())
         this.player.setAttack()
+        this.target = enemy
+    }
 
-        let up_and_below_damage =  {
-            physical_damage: 0,
-            piercing_damage: 0,
-            cutting_damage: this.player.cutting_damage + (this.level * 2),
-            crushing_damage: 0
-        }
-        let d = this.player.getPhysicalDamage()
-        d.cutting_damage += this.level * 2
-
+    action(){
+        let enemy = this.target
         let targets = this.player.figth_context.getTargetsUpperAndBottom(enemy).filter(elem => !elem.isDead())
         let up_and_below = targets.filter(elem => elem !== enemy)
 
-        up_and_below.forEach(elem =>{
-            elem.takeAttackDamage(this.player, up_and_below_damage)
-        })
+        let d = this.player.getPhysicalDamage()
+        d.cutting_damage += this.level * 2
+
+        let panish = this.player.combo_points === 2 ? 1 : 0.5
+        let d2 = {
+            physical_damage: Math.floor(this.player.physical_damage / panish),
+            piercing_damage: Math.floor(this.player.piercing_damage / panish),
+            cutting_damage: Math.floor(this.player.cutting_damage / panish) + this.level * 2,
+            crushing_damage: Math.floor(this.player.crushing_damage / panish),
+        }
+
+        up_and_below.forEach(element => {
+            element.takeAttackDamage(this.player, d2)
+        });
 
         enemy.takeAttackDamage(this.player, d)
-
-        return true
     }
 
     canUse(enemy = undefined){
+        if(enemy === this.player) return false
         let figth_context = this.player.figth_context
         return enemy && !enemy.isDead() && figth_context.checkLine(enemy.num);
     }
 
+    getMainDescription(){
+
+        let result = `target gets attack damage plus 2 cutting damage per level target's below and upper get half damage`
+
+        if(this.player.combo_points >= 1){
+            result += `\n(combo1) energy cost is reduced by 10`
+        }
+        if(this.player.combo_points === 2){
+            result += `\n(combo2) target's below and upper get full damage`
+        }
+
+        return result
+    }
+    
+    getEnergyCost(){
+        if(!this.player.combo_points){
+            return this.energy_cost
+        }
+        else {
+            return this.energy_cost - 10
+        }
+    }
     getDescription(){
         let result = ``
         result += `${this.name} (${this.level})\n`
-        result += `${this.description} \n`
-        result += `energy_cost - ${this.energy_cost} \n`
+        result += `${this.getMainDescription()} \n`
+        result += `${this.getCost()}`
         return result
     }
 }

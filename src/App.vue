@@ -1,34 +1,29 @@
 <script>
-  import Request from "./services/AccountService";
-  export default {
-    data(){
-      return{
-        auth : !!localStorage.getItem('token'),
-        world : !!localStorage.getItem('world')
-      }
-    },
-    mounted() {
-      // window.addEventListener('click', (event) =>{
-      //   event.stopPropagation()
-      //   let exist = document.getElementsByClassName('options_modal')[0]
-      //   if(exist){
-      //     exist.parentNode.removeChild(exist)
-      //   }
-      // })
-    },
-    methods:{
-      logout(){
-        Request.logout().then( r =>{
-          localStorage.clear()
-          window.location.href = '/'
-        })
-      },
-      to_profile(){
-        localStorage.removeItem('world')
+import CharacterService from "./views/game/services/requestService";
+
+export default {
+  data(){
+    return{
+      auth : !!localStorage.getItem('token'),
+      world : !!localStorage.getItem('world')
+    }
+  },
+  mounted() {
+    
+  },
+  methods:{
+    logout(){
+      CharacterService.serverRequest('logout').then( r =>{
+        localStorage.clear()
         window.location.href = '/'
-      }
+      })
     },
-  }
+    to_profile(){
+      localStorage.removeItem('world')
+      window.location.href = '/'
+    }
+  },
+}
 </script>
 
 <template>
@@ -42,7 +37,15 @@
       </nav>
     </div>
   </header>
-  <RouterView v-bind:world="this.world" v-bind:auth="this.auth"/>
+  <div style="display: flex; flex-direction: column;">
+      <img src="/src/assets/img/toptest.png" width="1320" height="60" alt="">
+      <div style="display: flex; flex-direction: row;">
+        <img src="/src/assets/img/lefttest.png" width="60" height="800" alt="">
+        <RouterView v-bind:world="this.world" v-bind:auth="this.auth"/>
+        <img src="/src/assets/img/rigthtest.png" width="60" height="800" alt="">
+      </div>
+      <img src="/src/assets/img/bottomtest.png" width="1320" height="60" alt="">
+  </div>
 </template>
 
 <style>
@@ -123,14 +126,11 @@
   z-index: 100;
 }
 #app {
+  background-color: black;
   font-family: o;
-  font-size: 20px;
-  height: 100%;
   width: 100%;
-  margin: 0 auto;
   display: flex;
-  flex-direction: column;
-  justify-content: space-between;
+  justify-content: center;
   font-weight: normal;
 }
 

@@ -1,7 +1,7 @@
-import Undead from "../src/Undead";
 import CaveBatSprite from "@/views/game/components/game_canvas/src/Enemy/CaveBat/CaveBatSprite";
+import Enemy from "@/views/game/components/game_canvas/src/Enemy/src/Enemy";
 
-export default class CaveBat extends Undead{
+export default class CaveBat extends Enemy{
     constructor(context, x, y, power = 1) {
         super(context, x, y)
         //draw size on canvas
@@ -28,6 +28,7 @@ export default class CaveBat extends Undead{
         this.magic_damage = 0
         this.fire_damage_resist = 2
         this.piercing_damage_resist = 2
+        this.initiative = 12
         this.init()
     }
 }

@@ -10,6 +10,8 @@ export default class NiceMushroom extends Food{
     }
 
     async use(){
+        await this.afterUse()
+
         this.player.addLife(this.power)
 
         let rnd = Functions.random(4, 1)
@@ -26,7 +28,6 @@ export default class NiceMushroom extends Food{
         else{
             this.player.armour ++
         }
-        await this.afterUse()
     }
 
     getDescription(){

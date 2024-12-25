@@ -4,6 +4,7 @@ import EnemyFactory from "./Scr/factories/EnemyFactory";
 import Fight from "./Fight";
 import {useLogStore} from "@/stores/log";
 import Enemy from "@/views/game/components/game_canvas/src/Enemy/src/Enemy";
+import requestService from "../../../services/requestService";
 
 export default class Battle extends Fight{
 
@@ -23,6 +24,7 @@ export default class Battle extends Fight{
         this.summons = []
         this.render = new BattleRender(this)
         this.init(node)
+        this.turn_count = 0
 
     }
     getPlayerCell(){
@@ -72,15 +74,25 @@ export default class Battle extends Fight{
             })
         })
 
-        this.sortBySpeed()
+        this.sortByInitiative()
 
         this.turn_queue[0].startTurn(this.turn_queue, this.player)
+    }
+    getAliveEnemies(enemy = undefined){
+        return this.enemy_pull.filter(elem => !elem.isDead() && elem != enemy)
+    }
+    getRandomAliveEnemy(){
+        let pull = this.getAliveEnemies()
+        return pull[Math.floor(Math.random() * pull.length)]
     }
     getEnemies(){
         return this.turn_queue.filter(elem => elem instanceof Enemy)
     }
-    addEffect(effect, cell_num){
-        effect.addCell(this.cells.find(elem => elem.num === cell_num))
+    addEffect(effect, cell_num = undefined){
+        if(cell_num){
+            effect.addCell(this.cells.find(elem => elem.num === cell_num))
+        }
+        
         if(effect.type === 'ground'){
             this.ground_effects.push(effect)
         }
@@ -96,6 +108,12 @@ export default class Battle extends Fight{
         this.player.is_in_figth = false
         this.game.endFight()
     }
+    retreat(){
+        this.sendHP()
+        this.player.is_in_figth = false
+        this.game.playerRetreat()
+    }
+    
     init(node){
         this.generateCells()
         this.player.prepareToFight(this)
@@ -125,18 +143,26 @@ export default class Battle extends Fight{
             }
         }
     }
+    createEnemy(enemy_name, cell_number = undefined){
+        
+        if(!cell_number){
+            cell_number = this.getFreeCells()[0].num
+        }
+
+        let e = this.enemy_creator.create(enemy_name, this)
+        e.num = cell_number
+        this.turn_queue.push(e)
+        this.enemy_pull.push(e)
+        let cell = this.cells.find(cell => cell.num === e.num)
+        if(cell){
+            cell.content = e
+            e.setCellCords(cell, this.cell_w, this.cell_h)
+        }
+    }
     async createPull(enemy_array){
         enemy_array.forEach(elem => {
             elem.forEach(g => {
-                let e = this.enemy_creator.create(g.name, this)
-                e.num = g.num
-                this.turn_queue.push(e)
-                this.enemy_pull.push(e)
-                let cell = this.cells.find(cell => cell.num === e.num)
-                if(cell){
-                    cell.content = e
-                    e.setCellCords(cell, this.cell_w, this.cell_h)
-                }
+                this.createEnemy(g.name, g.num)
             })
         })
     }
@@ -154,8 +180,8 @@ export default class Battle extends Fight{
         })
         return target
     }
-    sortBySpeed(){
-        this.turn_queue.sort((a,b) => b.speed - a.speed)
+    sortByInitiative(){
+        this.turn_queue.sort((a,b) => b.initiative - a.initiative)
     }
     checkLine(num){
         let first = this.cells.find(elem => elem.num === num - 1)
@@ -167,6 +193,13 @@ export default class Battle extends Fight{
         else{
             return false
         }
+    }
+    getBehindTarget(enemy){
+        let num = enemy.num
+        if([7,14,21,28,25].includes(num)){
+            return false
+        }
+        return this.turn_queue.find(elem => elem.num === num + 1)
     }
     getEnemiesInSquare(item){
         let result = [item]
@@ -312,7 +345,8 @@ export default class Battle extends Fight{
 
 
         if(!next){
-            this.sortBySpeed()
+            this.turn_count ++
+            this.sortByInitiative()
             next = this.turn_queue[0]
         }
 

@@ -7,13 +7,13 @@ export default {
       is_played: false,
       song: false,
       music_pull: [
-        {
-          song_name: 'The Majestic Kingdom',
-          album: 'Ethereal Hymns Split (2021)',
-          artist: 'Piva',
-          music_src: 'The Majestic Kingdom.mp3',
-          logo_src: 'Ethereal Hymns Split (2021)_logo.jpg'
-        },
+        // {
+        //   song_name: 'The Majestic Kingdom',
+        //   album: 'Ethereal Hymns Split (2021)',
+        //   artist: 'Piva',
+        //   music_src: 'The Majestic Kingdom.mp3',
+        //   logo_src: 'Ethereal Hymns Split (2021)_logo.jpg'
+        // },
         // {
         //   song_name: 'Ode To Louise Claude De Saint-Martin',
         //   album: 'Split (2021)',
@@ -69,6 +69,13 @@ export default {
           artist: 'Fogweaver',
           music_src: 'Foglord - The Essence.mp3',
           logo_src: 'Fog_Castle_x_Foglord_x_Fogweaver_logo.jpg'
+        },
+        {
+          song_name: 'Celebrimbor & Narvi',
+          album: 'Doors of Durin',
+          artist: 'Grimdor',
+          music_src: 'Grimdor - Celebrimbor & Narvi.mp3',
+          logo_src: 'images.jpg'
         },
       ]
     }
@@ -135,12 +142,12 @@ export default {
     <audio  ref="audio"></audio>
     <div  v-if="this.song" style="display: flex; flex-direction: row">
       <div>
-        <img @click="mute" width="60" height="60" :src="getImgSrc">
+        <img @click="mute" width="80" height="80" :src="getImgSrc">
       </div>
       <div style="display: flex; flex-direction: column;margin-left: 5px">
-        <marquee style="color: wheat" scrolldelay="100" direction="left" scrollamount="1">{{this.song.song_name}}</marquee>
-        <marquee style="color: wheat" scrolldelay="100" direction="left" scrollamount="1">album - {{this.song.album}}</marquee>
-        <marquee style="color: wheat" scrolldelay="100" direction="left" scrollamount="1">artist - {{this.song.artist}}</marquee>
+        <marquee style="color: #86c69a; font-size: 18px;" scrolldelay="100" direction="left" scrollamount="1">{{this.song.song_name}}</marquee>
+        <marquee style="color: #86c69a; font-size: 16px;" scrolldelay="100" direction="left" scrollamount="1">album - {{this.song.album}}</marquee>
+        <marquee style="color: #86c69a; font-size: 16px;" scrolldelay="100" direction="left" scrollamount="1">artist - {{this.song.artist}}</marquee>
       </div>
     </div>
   </div>
@@ -148,9 +155,6 @@ export default {
 <style scoped>
   .player-wrap{
     font-size: 10px;
-    position: fixed;
-    top:50px;
-    left:250px;
     width: 400px;
     height: 80px;
     z-index: 10000;

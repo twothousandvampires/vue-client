@@ -1,4 +1,5 @@
 import Status from "@/views/game/components/game_canvas/src/Status/Status";
+
 export default class ToxicPotionStatus extends Status{
     constructor(power, duration) {
         super();

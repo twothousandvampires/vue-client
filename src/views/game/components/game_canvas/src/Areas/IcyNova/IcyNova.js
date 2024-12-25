@@ -30,7 +30,7 @@ export default class IcyNovaArea extends GameObject{
                 this.hitted.push(elem)
                 elem.newStatus(new Freeze(this.freeze_duration))
                 elem.takeSpellDamage(this.source.getDamageDescription(), this)
-                alert(elem.state)
+            
             }
         })
         this.size_y += this.grow_radius_y
