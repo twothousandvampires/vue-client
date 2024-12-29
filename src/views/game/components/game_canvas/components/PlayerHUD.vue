@@ -21,15 +21,15 @@ export default {
         <div id="stats-left">
           <div style="height: 130px">
             <div class="stat-item">
-              <img style="margin-right: 14px" width="30" height="30" src="src/assets/img/life.gif" alt="life-gif">
+              <img style="margin-right: 14px" width="30" height="30" src="/src/assets/img/life.gif" alt="life-gif">
               <p>{{char.life}}/{{char.max_life}}</p>
             </div>
             <div class="stat-item">
-              <img style="margin-right: 14px" width="30" height="30" src="src/assets/img/mana.gif" alt="life-gif">
+              <img style="margin-right: 14px" width="30" height="30" src="/src/assets/img/mana.gif" alt="life-gif">
               <p>{{char.mana}}/{{char.max_mana}}</p>
             </div>
             <div class="stat-item">
-              <img style="margin-right: 14px" width="30" height="30" src="src/assets/img/stamina.gif" alt="life-gif">
+              <img style="margin-right: 14px" width="30" height="30" src="/src/assets/img/stamina.gif" alt="life-gif">
               <p>{{Math.floor(char.energy)}}/{{char.max_energy}}</p>
             </div>
           </div>

@@ -50,6 +50,7 @@ export default class Character extends Unit{
     
     }
     retreat(){
+        if(!this.turn) return
         this.fliped = true
         this.is_retreat = true
         this.skipTurn()
@@ -144,7 +145,7 @@ export default class Character extends Unit{
             alert("your have no that emount!")
             return
         }
-        let data = await CharacterService.serverRequest('rest', {char_id: this.id, amount: amount})
+        let data = await requestService.serverRequest('rest', { amount: amount })
 
         if(data.success){
             this.parseStats(data.data.char)
@@ -556,7 +557,7 @@ export default class Character extends Unit{
     }
 
     async useTorch(){
-        let result = await CharacterService.serverRequest('torch', {char_id: this.id})
+        let result = await requestService.serverRequest('torch')
         if(!result.success){
             alert(result.message)
         }
@@ -719,27 +720,19 @@ export default class Character extends Unit{
             this.pretti_y = 6
             this.setGroundState()
             this.started = 1
-            CharacterService.setStarted(this.id)
+            requestService.serverRequest('set_started')
         }, 1700)
     }
     setWorldIdle(){
         this.state = Character.STATE_WORLD_IDLE
         this.resetState()
     }
+    send(){
+        requestService.serverRequest('set', {life: this.life, mana: this.mana, dead: this.dead})
+    }
     setDying(){
         this.dead = 1
-        axios({
-            method: 'post',
-            url: '//127.0.0.1:8000/api/character/set/' + this.id,
-            data : {
-                life: this.life,
-                mana: this.mana,
-                dead: this.dead
-            },
-            headers: {
-                'Authorization': 'Bearer ' + localStorage.getItem('token'),
-            }
-        });
+        this.send()
         this.state = Unit.STATE_DYING
         this.resetState()
         this.stateAct = this.dyingAct

@@ -15,6 +15,7 @@ export default class Enemy extends Unit{
         this.fire_damage_resist = 1
         this.lightning_damage_resist = 1
         this.cold_damage_resist = 1
+        this.magic_damage_resist = 1
 
         this.initiative = 5
         this.priority_for_spellcasting = 0
@@ -111,7 +112,7 @@ export default class Enemy extends Unit{
         let result = 0
 
         if(damage.magic_damage){
-            result += damage.magic_damage
+            result += damage.magic_damage * this.magic_damage_resist
         }
         if(damage.cold_damage){
             result += damage.cold_damage * this.cold_damage_resist
@@ -223,8 +224,7 @@ export default class Enemy extends Unit{
         if(damage.fire_damage){
             result += damage.fire_damage * this.fire_damage_resist
         }
-        let is_critical = player.isMagicCrit(options)
-
+        
         let  total = Functions.random(result * 1.1, result  * 0.9)
 
         let magic_reduction = this.getMagicRedaction()
@@ -236,9 +236,6 @@ export default class Enemy extends Unit{
             total = total * (1 + -magic_reduction)
         }
 
-        if(is_critical){
-            total *= 2
-        }
 
         total = Math.round(total)
 
@@ -248,7 +245,7 @@ export default class Enemy extends Unit{
 
             let options = {
                 type: 'magic',
-                critical: is_critical,
+                critical: false,
             }
             Functions.createDamageModal(this, total, options)
         }

@@ -29,13 +29,13 @@ export default class ImprovingStone extends Used{
     }
 
     async chooseOption(option_id){
-        let data = await requestService.upgradeSkill(this.player.id, this.id, option_id)
-        if(data.success){
-            this.player.parseStats(data.data)
+        let res = await requestService.serverRequest('upgrade_skill', { used_id: this.id, skill_id: option_id })
+        if(res.success){
+            this.player.parseStats(res.data.char)
             this.player.inv.deleteItem(this)
         }
         else{
-            alert(data.error)
+            alert(res.message)
         }
     }
 }

@@ -14,8 +14,8 @@ export default {
   },
   methods:{
     async learn(id){
-      let new_char = await requestService.learnPassive(this.char.id, id)
-      this.char.parseStats(new_char)
+      let res = await requestService.serverRequest('learn_passive', { passive_id: id })
+      this.char.parseStats(res.data.char)
       this.show = false
       this.closePassive()
     },
@@ -23,15 +23,15 @@ export default {
       if(this.learning_id) return
 
       this.learning_id = passive.id
-      let data = await requestService.upgradePassive(this.char.id,  passive.id)
-      if(data.success){
-        this.char.parseStats(data.data)
+      let res = await requestService.serverRequest('upgrade_passive', { passive_id: passive.id})
+      if(res.success){
+        this.char.parseStats(res.data.char)
         this.closePassive()
         let updated_passive = this.char.passives.find(elem => elem.id === passive.id)
         this.showPassive(event, updated_passive)
       }
       else {
-        alert(data.message)
+        alert(res.message)
       }
       this.learning_id = undefined
     },
@@ -66,15 +66,15 @@ export default {
         this.show = !this.show
       }
       else {
-        let data = await CharacterService.unlockPassives(this.char.id)
-        if(data.success){
-          data.data.forEach(elem => {
+        let res = await requestService.serverRequest('unlock_passives')
+        if(res.success){
+          res.data.passives.forEach(elem => {
             this.char.addPassive(elem)
           })
           this.show = true
         }
         else {
-          alert(data.message)
+          alert(res.message)
         }
       }
     }

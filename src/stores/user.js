@@ -1,9 +1,4 @@
 import { defineStore } from 'pinia'
-import Config from "../../config.js";
-import CharacterService from '../views/game/services/requestService.js';
-
-const URL = Config.app_url
-const TOKEN = localStorage.getItem('token') ? localStorage.getItem('token') : ''
 
 export const useUserStore = defineStore(
     'user',
@@ -18,35 +13,14 @@ export const useUserStore = defineStore(
             getUSer: (state) => state.user
         },
         actions: {
-            async fetchUser() {
-                try {
-                    const data = await CharacterService.serverRequest('user')
-
-                    this.user = data.data.user
-                }
-                catch (error) {
-
-                }
+            setUser(user){
+                this.user = user
             },
-
             async deleteCharacter(char_id){
-                const data = await axios({method: 'post',
-                    url : URL + 'character/' + char_id + '/delete',
-                    headers : {
-                        'Authorization': 'Bearer ' + this.token,
-                    }
-                })
-
                 this.user.characters = this.user.characters.filter(elem => {return elem.id != char_id})
             },
-
-            async createCharacter(name){
-                return axios({method: 'post', url: URL + 'character/create/', headers: {
-                        'Authorization': 'Bearer ' + this.token,
-                    }, data : {
-                        name : name,
-                    }
-                })
+            addChar(char){
+                this.user.characters.push(char)
             }
         }
 })

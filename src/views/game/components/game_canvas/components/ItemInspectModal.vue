@@ -1,5 +1,4 @@
 <script>
-
 import Inventory from "../src/inventory/Inventory";
 
 export default {

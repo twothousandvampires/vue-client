@@ -26,9 +26,9 @@ export default class EnchantingStone extends Used{
     }
 
     async chooseOption(option_id){
-        let data = await requestService.upgradeItemQuality(this.player.id, option_id, this.id)
-        if(data.success){
-            this.player.inv.update(data.data.items)
+        let res = await requestService.serverRequest('upgrade_item_quality', {item_id: option_id, used_id: this.id})
+        if(res.success){
+            this.player.inv.update(res.data.items)
         }
     }
 }

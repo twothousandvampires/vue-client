@@ -53,7 +53,7 @@ export default {
 <template>
   
   <div id="canvas-wrap">
-    <PlayerHUD v-bind:char="char"></PlayerHUD>
+    <PlayerHUD v-if="this.char" v-bind:char="char"></PlayerHUD>
     <div style="width: 720px; height: 800px;position: relative;">
       <div style="background-image: url('/src/assets/img/toptest2.png');height: 120px;z-index: 1111;position: relative; background-color: #2a1e23;display: flex;justify-content: space-around;align-items: center;">
         <AudioPlayer ref="audio_player"></AudioPlayer>
@@ -63,7 +63,7 @@ export default {
 
       </div>
       <canvas style="position: relative;top:-960px;left: -300px;" id='game-canvas' width="1300" height="1300" ref="canvas"></canvas>
-      <div id="status">
+      <div v-if="char" id="status">
         <StatusBar :status="char.status"></StatusBar>
       </div>
     </div>

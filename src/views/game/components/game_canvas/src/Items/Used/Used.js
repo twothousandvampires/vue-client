@@ -13,9 +13,9 @@ export default class Used extends Item{
         this.have_action = false
     }
     async afterUse(){
-        let data = await requestService.useItems([this.id], this.player)
-        if(data.success){
-            this.player.parseStats(data.data)
+        let res = await requestService.serverRequest('use_item', { ids_list: [this.id]})
+        if(res.success){
+            this.player.parseStats(res.data.char)
         }
     }
     getDescription(){

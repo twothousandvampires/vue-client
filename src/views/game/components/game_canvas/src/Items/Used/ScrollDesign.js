@@ -26,12 +26,12 @@ export default class ScrollDesign extends Used{
     }
 
     async chooseOption(option_id){
-        let data = await requestService.addPropertyOnItem(this.player.id, option_id, this.id, 'type')
-        if(data.success){
-            this.player.inv.update(data.data.items)
+        let res = await requestService.serverRequest('add_property', {item_id: option_id, used_id: this.id, prop_type: 'type'} )
+        if(res.success){
+            this.player.inv.update(res.data.items)
         }
         else{
-            alert(data.error)
+            alert(res.message)
         }
     }
 }

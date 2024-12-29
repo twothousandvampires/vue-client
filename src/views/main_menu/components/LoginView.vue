@@ -1,5 +1,5 @@
 <script>
-import CharacterService from "../../game/services/requestService";
+import requestService from "../../game/services/requestService";
 
 export default {
   data(){
@@ -18,7 +18,7 @@ export default {
   },
   methods:{
     async auth(){
-      let res = await CharacterService.serverRequest('login', { name: this.name, password: this.password })
+      let res = await requestService.serverRequest('login', { name: this.name, password: this.password })
       if(res.success) {
         localStorage.setItem('token' , res.data.token)
         location.href = '/'
@@ -26,9 +26,6 @@ export default {
       else{
         this.error_msg = res.data.message
       }
-    },
-    inputLogin(e){
-      this.email = e.target.value
     },
     inputName(e){
       this.name = e.target.value
@@ -55,15 +52,16 @@ export default {
       this.c_password = ''
     },
     async registration() {
-      let res = await CharacterService.serverRequest('registration', {
+      let res = await requestService.serverRequest('registration', {
                 name : this.name,
                 password : this.password,
                 c_password : this.c_password
       })
-      if (res.success) {
+      if(res.success){
         this.clear()
         this.success_msg = res.message
-      } else {
+      }
+      else{
         this.error_msg = res.message
       }
     }

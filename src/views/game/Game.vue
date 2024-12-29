@@ -19,10 +19,7 @@ export default {
     GameCanvas
   },
   async mounted() {
-    let response = await requestService.getCharacter()
-    let data = response.data.data
-    let player = new Character(data)
-    this.game = new Game(player)
+    this.game = new Game()
   },
 }
 </script>

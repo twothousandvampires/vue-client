@@ -59,7 +59,7 @@ export default class Underground extends World{
     }
     updateMapData(data){
         this.clearMap()
-        data.nodes.forEach(elem =>{
+        data.forEach(elem =>{
             elem = this.node_factory.createNode(elem, this.char)
             this.map[elem.pretti_y][elem.pretti_x] = elem
         })
@@ -197,12 +197,4 @@ export default class Underground extends World{
         },50)
     }
 
-    prettifyData(response){
-        if(response.fight){
-            this.game.newBattle(response)
-        }
-        else{
-            this.updateMapData(response, this.char.x, this.char.y)
-        }
-    }
 }

@@ -2,6 +2,7 @@
 
 import { useUserStore } from "@/stores/user";
 import { mapActions } from 'pinia'
+import requestService from "../../game/services/requestService";
 
 export default {
   data(){
@@ -10,14 +11,18 @@ export default {
     }
   },
   methods:{
-    ...mapActions(useUserStore, ['createCharacter']),
+    ...mapActions(useUserStore, ['addChar']),
+
     inputName(e){
       this.character_name = e.target.value
     },
     async create(){
       if(this.character_name !== ''){
-        await this.createCharacter(this.character_name)
-        location.href = '/game'
+        let res =  await requestService.serverRequest('create_character', { name: this.character_name })
+        if(res.success){
+          this.addChar(res.data.char)
+          this.$emit('stopCreating')
+        }
       }
     }
   },

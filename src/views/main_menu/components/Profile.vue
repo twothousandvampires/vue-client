@@ -5,6 +5,7 @@ import Load from '../../components/Load.vue'
 
 import {mapActions, mapState} from 'pinia'
 import { useUserStore } from "@/stores/user";
+import requestService from "../../game/services/requestService";
 
 export default {
   name: "UserMainInfo.vue",
@@ -13,11 +14,12 @@ export default {
     CharactersInfo,
     Load
   },
-  mounted() {
-    this.fetchUser()
+  async mounted() {
+    let data = await requestService.serverRequest('user')
+    this.setUser(data.data.user)
   }
   ,methods:{
-    ...mapActions(useUserStore, ['fetchUser']),
+    ...mapActions(useUserStore, ['setUser']),
   },
   computed: {
     ...mapState(useUserStore,['user'])

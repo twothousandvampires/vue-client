@@ -1,12 +1,19 @@
 <script>
 import {mapActions, mapState} from "pinia/dist/pinia";
 import { useUserStore } from "@/stores/user";
+import requestService from "../../game/services/requestService";
 
 export default {
   props : {
     char : Object
   },
   methods : {
+    async delete(char_id){
+      let res = await requestService.serverRequest('delete_character', {delete_id: char_id})
+      if(res.success){
+        this.deleteCharacter(char_id)
+      }
+    },
     ...mapActions(useUserStore, ['deleteCharacter']),
     play(id){
       localStorage.setItem('char_id', id)
@@ -32,7 +39,7 @@ export default {
     </div>
     <div id="info-bottom">
       <button  @click.prevent="play(char.id)">Play</button>
-      <button  @click.prevent="this.deleteCharacter(char.id)">Delete</button>
+      <button  @click.prevent="this.delete(char.id)">Delete</button>
     </div>
   </div>
 </template>

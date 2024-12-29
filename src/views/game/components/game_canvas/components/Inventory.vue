@@ -46,7 +46,7 @@ export default {
         this.clicked_item.clicked = true
       }
       else if(this.clicked_item && this.clicked_item.slot !== item.slot ){
-        this.char.inv.change(this.clicked_item, item.slot)
+        this.char.inv.change(this.clicked_item, item)
         this.clicked_item = false
       }
       else {

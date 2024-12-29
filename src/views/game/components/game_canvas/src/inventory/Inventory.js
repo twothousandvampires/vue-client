@@ -5,6 +5,7 @@ import EmptyArmourCell from "./cell/EmptyArmourCell";
 import EmptyAccessoryCell from "./cell/EmptyAccessoryCell";
 import EmptyBeltCell from "./cell/EmptyBeltCell";
 import EmptyGemCell from "./cell/EmptyGemCell";
+import requestService from "../../../../services/requestService";
 
 export default class Inventory{
 
@@ -122,23 +123,11 @@ export default class Inventory{
         return ItemCreator.createItem(template, this.player)
     }
 
-    async change(clicked, slot) {
-        let ApiResponse = await axios({
-            method: 'post',
-            url: 'http://127.0.0.1:8000/api/item/change/' + this.player.id,
-            data: {
-                from: clicked.slot,
-                to: slot,
-            },
-            headers: {
-                'Authorization': 'Bearer ' + localStorage.getItem('token'),
-            }
-        });
-        if (ApiResponse.data.success) {
-            this.player.parseStats(ApiResponse.data.data.data)
-            this.update(ApiResponse.data.data.data.items)
-            this.checkRow()
-            this.checkColumn()
+    async change(moved, target) {
+        let res = await requestService.serverRequest('change_items', { moved: moved.id, target: target.slot });
+        
+        if(res.success){
+            this.player.parseStats(res.data.char)
         }
     }
     update(items){
@@ -154,22 +143,15 @@ export default class Inventory{
             this.pull[item.slot] = item
             this.equipItem(item)
         })
+        this.checkColumn()
+        this.checkRow()
     }
     deleteFromPull(item){
         this.pull[item.slot] = this.createCell(item.slot)
     }
     async deleteItem(item){
-        let ApiResponse = await axios({
-            method: 'post',
-            url: '//127.0.0.1:8000/api/item/delete/',
-            data : {
-                id : item.id,
-            },
-            headers: {
-                'Authorization': 'Bearer ' + localStorage.getItem('token'),
-            }
-        });
-        if(ApiResponse.data.success){
+        let res = await requestService.serverRequest('delete_item', { item_id: item.id })
+        if(res.success){
             this.pull[item.slot] = this.createCell(item.slot)
         }
     }

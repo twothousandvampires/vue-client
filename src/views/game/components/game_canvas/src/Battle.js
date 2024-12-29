@@ -4,7 +4,6 @@ import EnemyFactory from "./Scr/factories/EnemyFactory";
 import Fight from "./Fight";
 import {useLogStore} from "@/stores/log";
 import Enemy from "@/views/game/components/game_canvas/src/Enemy/src/Enemy";
-import requestService from "../../../services/requestService";
 
 export default class Battle extends Fight{
 
@@ -104,12 +103,12 @@ export default class Battle extends Fight{
         this.areas.push(area)
     }
     fightEnd(){
-        this.sendHP()
+        this.player.send()
         this.player.is_in_figth = false
         this.game.endFight()
     }
     retreat(){
-        this.sendHP()
+        this.player.send()
         this.player.is_in_figth = false
         this.game.playerRetreat()
     }
@@ -352,24 +351,10 @@ export default class Battle extends Fight{
 
         next.startTurn(this.enemy_pull, this.player)
     }
-    sendHP(){
-        axios({
-            method: 'post',
-            url: '//127.0.0.1:8000/api/character/set/' + this.player.id,
-            data : {
-                life: this.player.life,
-                mana: this.player.mana,
-                dead: this.player.dead
-            },
-            headers: {
-                'Authorization': 'Bearer ' + localStorage.getItem('token'),
-            }
-        });
-    }
-
+    
     frame(){
         if( Functions.every(4, this.tick)){
-            this.sendHP()
+            this.player.send()
         }
 
         this.player.act()

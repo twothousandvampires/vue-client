@@ -28,19 +28,19 @@ export default class UnpredictableStone extends Used{
     }
 
     async chooseOption(option_id){
-        let data = undefined
+        let res = undefined
         if(option_id === 1){
-            data = await requestService.learnSkill(this.player.id, this.id, false)
+            res = await requestService.serverRequest('learn_random_skill', { used_id: this.id })
         }
         else {
-            data = await requestService.upgradeSkill(this.player.id, this.id, false)
+            res = await requestService.serverRequest('upgrade_random_skill', { used_id: this.id })
         }
 
-        if(data && data.success){
-            this.player.parseStats(data.data)
+        if(res.success){
+            this.player.parseStats(res.data.char)
         }
         else {
-            alert(data.message)
+            alert(res.message)
         }
     }
 }

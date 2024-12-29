@@ -9,19 +9,20 @@ import { useLogStore } from "@/stores/log";
 
 export default class Game{
 
-    constructor(char) {
+    constructor() {
         this.game_config = useGameConfigStore()
         this.game_tick = 0
         this.log = useLogStore()
         this.scene = undefined
-        this.char = char
+        this.char = undefined
         this.prepare_for_battle = false
     }
     async init(){
         Input.init()
-        let world_response = await requestService.world(this.char.id)
-        if(world_response.data.success){
-            this.scene = new Underground(this, world_response.data.data)
+        let res = await requestService.serverRequest('move')
+        if(res.success){
+            this.char = new Character(res.data.char)
+            this.scene = new Underground(this, res.data.nodes)
         }
         this.frame_id = requestAnimationFrame(()=>this.frame())
         this.initiated = true
@@ -34,40 +35,45 @@ export default class Game{
     }
 
     endFight(){
-        Request.win(this.char.id).then(r => {
-            this.checkLogFromServer(r)
-            this.char = new Character(r.data.data.char)
-            this.scene = new Underground(this, r.data.data)
+        requestService.serverRequest('win').then(res => {
+            this.checkLogFromServer(res.data.log)
+            this.char = new Character(res.data.char)
+            this.scene = new Underground(this, res.data.nodes)
         })
     }
 
     playerRetreat(){
-        Request.retreat(this.char.id).then(r => {
-            this.checkLogFromServer(r)
-            this.char = new Character(r.data.data.char)
-            this.scene = new Underground(this, r.data.data)
+        requestService.serverRequest('retreat').then(res => {
+            this.checkLogFromServer(res.data.log)
+            this.char = new Character(res.data.char)
+            this.scene = new Underground(this, res.data.nodes)
         })
     }
 
-    checkLogFromServer(data){
-        if( data.data.data?.log?.length ){
-            data.data.data.log.forEach(server_log => {
-                this.log.addLog(server_log)
-            })
-        }
+    checkLogFromServer(log){
+       if(!log) return
+
+       log.forEach(server_log => {
+            this.log.addLog(server_log)
+       })
     }
 
-    updateWorldData(node, char_id){
-        requestService.move(node.x, node.y, char_id).then(r => {
-            if(r.data.data?.character){
-                this.char.parseStats(r.data.data.character)
-                this.char.init()
-            }
-            this.checkLogFromServer(r)
+    async updateWorldData(node){
+        let res = await requestService.serverRequest('move', {x: node.x, y: node.y})
+
+        if(res.data.fight){
+            this.scene = new Battle(res.data.node, this)
+            this.scene.start()
+            return
+        }
+        else{
+            this.char.parseStats(res.data.character)
+            this.char.init()
+            this.checkLogFromServer(res.data.log)
             this.char.pretti_x = 6
             this.char.pretti_y = 6
-            this.scene.prettifyData(r.data.data)
-        })
+            this.scene.updateMapData(res.data.nodes)
+        }
     }
 
     frame(){

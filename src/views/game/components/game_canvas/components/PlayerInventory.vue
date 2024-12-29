@@ -1,5 +1,4 @@
 <script>
-import ItemService from "@/views/game/components/game_canvas/services/ItemService";
 import ItemFactory from "@/views/game/components/game_canvas/src/Scr/factories/ItemFactory";
 import requestService from "../../../services/requestService";
 
@@ -17,36 +16,41 @@ export default {
     }
   },
   async mounted() {
-    let response = await ItemService.getItemList()
-    this.item_list = response.data
+    let res = await requestService.serverRequest('get_items_list')
+    this.item_list = res.data.items
   },
   methods: {
     async deleteAllItems(){
-      let response = await ItemService.deleteAllItems(this.char.id)
-      if(response.data.success){
+      let res = await requestService.serverRequest('delete_all_items')
+      if(res.success){
         this.char.inv.clear()
       }
     },
     async deleteItem(item){
-      let response = await Request.deleteItem(item.id)
-      if(response.data.success){
+      alert('here')
+      let res = await requestService.serverRequest('delete_item', { item_id: item.id})
+      if(res.success){
         this.char.inv.deleteItem(item)
       }
     },
     async createItem(){
-      CharacterService.serverRequest('create_item', {item_name: this.item_to_create.name}).then(response => {
+      requestService.serverRequest('create_item', {item_name: this.item_to_create.name}).then(response => {
         if(response.success) {
           this.char.inv.pull[response.data.item.slot] = ItemFactory.createItem(response.data.item, this.char)
         }
       })
     },
     async createShard(){
-      let data = await ItemService.createShard()
-      this.char.inv.update(data.data.data.items)
+      let res = await requestService.serverRequest('disassemble')
+      if(res.success){
+        this.char.inv.update(res.data.items)
+      }
     },
     async createItem2(){
-      let data = await ItemService.createItem2()
-      this.char.inv.update(data.data.data.items)
+      let res = await requestService.serverRequest('synthesis')
+      if(res.success){
+        this.char.inv.update(res.data.items)
+      }
     }
   }
 }

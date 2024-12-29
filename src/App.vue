@@ -20,6 +20,7 @@ export default {
     },
     to_profile(){
       localStorage.removeItem('world')
+      localStorage.removeItem('char_id')
       window.location.href = '/'
     }
   },
