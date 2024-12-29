@@ -1,8 +1,8 @@
 <script>
-  import AudioPlayer from "../views/game/components/game_canvas/components/AudioPlayer.vue";
+  
   export default {
     components:{
-      AudioPlayer
+      
     }
   }
 </script>

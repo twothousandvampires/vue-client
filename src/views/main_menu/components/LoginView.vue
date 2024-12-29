@@ -72,7 +72,7 @@ export default {
   <div>
     <audio ref="audio" src="./src/assets/music/To Call Upon the Fog.mp3"></audio>
     <div>
-      <img src="/src/assets/img/main.gif" alt="">
+      <img src="/assets/img/main.gif" alt="">
     </div>
     <div id="form-wrap" style="min-height: 200px">
       <div id="start" v-show="!this.start">
