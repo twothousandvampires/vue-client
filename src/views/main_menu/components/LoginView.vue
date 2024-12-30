@@ -72,7 +72,7 @@ export default {
 </script>
 <template>
   <div>
-    <audio ref="audio" src="./src/assets/music/To Call Upon the Fog.mp3"></audio>
+    <audio ref="audio" :src="config.music_url + 'To Call Upon the Fog.mp3'"></audio>
     <div>
       <img :src="config.img_link('main.gif')" alt="">
     </div>

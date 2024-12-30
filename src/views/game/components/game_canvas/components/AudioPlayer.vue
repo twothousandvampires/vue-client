@@ -77,6 +77,13 @@ export default {
           music_src: 'Grimdor - Celebrimbor & Narvi.mp3',
           logo_src: 'images.jpg'
         },
+        {
+          song_name: 'Uprising of the Green Skeletons',
+          album: 'Hearken to the moon whisper',
+          artist: 'Mallachian cobwebs',
+          music_src: 'Uprising of the Green Skeletons.mp3',
+          logo_src: 'cxH5rT4fh9xoS7loCCOM2Fj3-uof8hnsSS5l447MPpaGoHVcwW8Na3fCrYaePGjiMarwuueu.jpg'
+        },
       ]
     }
   },
