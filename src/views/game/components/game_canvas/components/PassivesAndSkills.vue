@@ -1,6 +1,6 @@
 <script>
 import requestService from "@/views/game/services/requestService";
-import config from './config'
+import config from '/config'
 export default {
   name: "PassivesAndSkills",
   props:{
