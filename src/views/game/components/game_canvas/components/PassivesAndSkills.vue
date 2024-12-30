@@ -101,7 +101,7 @@ export default {
       </div>
       <div style="width: 50%" id="skills_wrap">
         <div v-for="skill in this.char.skill_pull">
-          <img @mouseleave="closeSkill" @mouseenter="showSkill($event, skill)" width="60" height="60" :src="'src/assets/img/' + skill.img" alt="">
+          <img @mouseleave="closeSkill" @mouseenter="showSkill($event, skill)" width="60" height="60" :src="config.img_url + skill.img" alt="">
         </div>
       </div>
     </div>
