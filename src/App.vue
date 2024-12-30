@@ -17,13 +17,13 @@ export default {
     logout(){
       CharacterService.serverRequest('logout').then( r =>{
         localStorage.clear()
-        window.location.href = '/'
+        window.location.href = './'
       })
     },
     to_profile(){
       localStorage.removeItem('world')
       localStorage.removeItem('char_id')
-      window.location.href = '/'
+      window.location.href = './'
     }
   },
 }
@@ -34,7 +34,7 @@ export default {
   <header>
     <div class="wrapper">
       <nav>
-        <RouterLink to="/" v-if="!auth">Login</RouterLink>
+        <RouterLink to="./" v-if="!auth">Login</RouterLink>
         <p @click="logout" v-else>Logout</p>
         <p @click="to_profile" v-if="world">Profile</p>
       </nav>
@@ -44,7 +44,9 @@ export default {
       <img :src="config.img_link('toptest.png')" width="1320" height="60" alt="">
       <div style="display: flex; flex-direction: row;">
         <img :src="config.img_link('lefttest.png')" width="60" height="800" alt="">
+
         <RouterView v-bind:world="this.world" v-bind:auth="this.auth"/>
+
         <img :src="config.img_link('rigthtest.png')" width="60" height="800" alt="">
       </div>
       <img :src="config.img_link('bottomtest.png')" width="1320" height="60" alt="">
