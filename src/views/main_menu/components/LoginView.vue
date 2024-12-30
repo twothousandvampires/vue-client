@@ -23,7 +23,7 @@ export default {
       let res = await requestService.serverRequest('login', { name: this.name, password: this.password })
       if(res.success) {
         localStorage.setItem('token' , res.data.token)
-        location.href = '/'
+        location.href = './'
       }
       else{
         this.error_msg = res.data.message
