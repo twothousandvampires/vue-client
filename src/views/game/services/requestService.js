@@ -10,7 +10,7 @@ export default {
         request_data.action = action
         
         let data = await axios({method: 'post',
-            url: this.URL + action,
+            url: this.URL,
             data: request_data,
             headers: {
                 'Authorization': 'Bearer ' + this.TOKEN
