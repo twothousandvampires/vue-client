@@ -1,6 +1,7 @@
 <script>
 import CharacterService from "./views/game/services/requestService";
 import config from "../config.js";
+import MainMenu from "./views/main_menu/MainMenu.vue";
 
 export default {
   data(){
@@ -9,6 +10,9 @@ export default {
       world : !!localStorage.getItem('world'),
       config
     }
+  },
+  components: {
+    MainMenu
   },
   mounted() {
     
@@ -34,8 +38,7 @@ export default {
   <header>
     <div class="wrapper">
       <nav>
-        <RouterLink to="./" v-if="!auth">Login</RouterLink>
-        <p @click="logout" v-else>Logout</p>
+        <p @click="logout" v-if="auth">Logout</p>
         <p @click="to_profile" v-if="world">Profile</p>
       </nav>
     </div>
@@ -45,7 +48,7 @@ export default {
       <div style="display: flex; flex-direction: row;">
         <img :src="config.img_link('lefttest.png')" width="60" height="800" alt="">
 
-        <RouterView v-bind:world="this.world" v-bind:auth="this.auth"/>
+          <MainMenu v-bind:world="this.world" v-bind:auth="this.auth"/>
 
         <img :src="config.img_link('rigthtest.png')" width="60" height="800" alt="">
       </div>
