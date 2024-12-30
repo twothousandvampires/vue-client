@@ -5,8 +5,6 @@ import FireExplosion from "@/views/game/components/game_canvas/src/Effects/FireE
 export default class ExplosivePotion extends Used{
     constructor(template, player) {
         super(template, player)
-        this.img_path = '/src/assets/img/explosive_potion.png'
-        this.name = 'explosive potion'
         this.uses_in_fight = true
     }
 

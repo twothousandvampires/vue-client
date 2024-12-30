@@ -4,8 +4,6 @@ import Food from "@/views/game/components/game_canvas/src/Items/Used/Food";
 export default class NiceMushroom extends Food{
     constructor(template, player) {
         super(template, player)
-        this.img_path = '/src/assets/img/nice_mushroom.png'
-        this.name = 'nice mushroom'
         this.uses_in_fight = true
     }
 

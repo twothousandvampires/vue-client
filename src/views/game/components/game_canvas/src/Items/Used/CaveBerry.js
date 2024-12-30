@@ -4,8 +4,6 @@ import CaveBerryBuff from "@/views/game/components/game_canvas/src/Status/CaveBe
 export default class CaveBerry extends Food{
     constructor(template, player) {
         super(template, player)
-        this.img_path = '/src/assets/img/cave_berry.png'
-        this.name = 'cave berry'
         this.uses_in_fight = true
     }
 

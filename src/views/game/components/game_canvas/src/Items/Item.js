@@ -56,6 +56,15 @@ export default class Item extends Cell{
         'sparking sabre' : 'sparking_sabre.gif',
         'botled lightning' : 'botled_lightning.png',
         'combat potion' : 'combat_potion.png',
+        'cave moth': 'cave_moth.png',
+        'cave berry': 'cave_berry.png',
+        'small armour potion': 'small_armour_potion.png',
+        'explosive potion': 'explosive_potion.png',
+        'juicy asshole': 'juicy_asshole.png',
+        'nice mushroom': 'nice_mushroom.png',
+        'royal snack': 'royal_snack.png',
+        'scroll of inferno': 'scroll.png',
+        'scroll of raised bones': 'scroll.png'
     }
     static rarity_strings = {
         1: 'common',

@@ -6,7 +6,6 @@ export default class ScrollOfInferno extends Used{
 
     constructor(template, player) {
         super(template, player)
-        this.img_path = '/src/assets/img/scroll.png'
         this.uses_in_fight = true
     }
 

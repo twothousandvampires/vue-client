@@ -137,6 +137,7 @@ export default {
   background-color: black;
   font-family: o;
   width: 100%;
+  height: 100%;
   display: flex;
   justify-content: center;
   font-weight: normal;
