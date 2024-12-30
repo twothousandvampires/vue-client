@@ -59,25 +59,25 @@ export default {
 
 <div id="inv">
     <div id ="utility">
-      <p @click="createItem">
+      <!-- <p @click="createItem">
         create item
       </p>
       <p @click="deleteAllItems">
         delete all
-      </p>
+      </p> -->
       <img @click="createItem2()" title="consume 3 items from you inventory to have a chance to create new" width="48" height="48"
         src='/src/assets/img/synthesis.png'
       >
       <img @click="createShard()" title="consume a item from you inventory to have a chance to create craft item" width="48" height="48"
         src='/src/assets/img/splitting.png'
       >
-      <div>
+      <!-- <div>
         <select v-model="item_to_create">
           <option v-for="item in item_list" :value="item">
             {{item.name}}
           </option>
         </select>
-      </div>
+      </div> -->
     </div>
     <div id="items">
       <div class="inv_item"  v-for="item in char.inv.pull.slice(9,33)" >

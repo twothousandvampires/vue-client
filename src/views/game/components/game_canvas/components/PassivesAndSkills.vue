@@ -1,6 +1,6 @@
 <script>
 import requestService from "@/views/game/services/requestService";
-
+import config from './config'
 export default {
   name: "PassivesAndSkills",
   props:{
@@ -9,7 +9,8 @@ export default {
   data(){
     return{
       show: false,
-      learning_id: undefined
+      learning_id: undefined,
+      config
     }
   },
   methods:{
@@ -84,7 +85,7 @@ export default {
 <template>
   <div id="wrap">
     <div style="z-index: 2222222;width: 350px; display: flex;flex-direction: row; align-items: center; justify-content: space-between; border 3px solid" v-if="this.show" id="available_passives">
-        <img @click="learn(passive.id)" v-for="passive in this.char.available_passives" @mouseleave="closePassive" @mouseenter="showPassive($event, passive)" width="80" height="80" :src="'./src/assets/img/' + passive.img" alt="">
+        <img @click="learn(passive.id)" v-for="passive in this.char.available_passives" @mouseleave="closePassive" @mouseenter="showPassive($event, passive)" width="80" height="80" :src="config.img_url + passive.img" alt="">
     </div>
     <div>
       <p style="text-align: center">experience: {{char.exp}}</p>
@@ -92,7 +93,7 @@ export default {
     <div style="display: flex; flex-direction: row">
       <div id="passives_wrap">
         <div :style="passive.id === this.learning_id ? 'opacity: 0.5' : ''" v-for="passive in this.char.passives">
-          <img @mouseleave="closePassive" @mouseenter="showPassive($event, passive)" @click="upgradePassive($event,passive)" width="60" height="60" :src="'src/assets/img/' + passive.img" alt="">
+          <img @mouseleave="closePassive" @mouseenter="showPassive($event, passive)" @click="upgradePassive($event,passive)" width="60" height="60" :src="config.img_url + passive.img" alt="">
         </div>
         <div>
           <img title="add passive" @click="unlock" width="60" height="60" src="/src/assets/img/add_passive.png" alt="add passive">

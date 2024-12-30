@@ -63,8 +63,8 @@ export default class Item extends Cell{
         'juicy asshole': 'juicy_asshole.png',
         'nice mushroom': 'nice_mushroom.png',
         'royal snack': 'royal_snack.png',
-        'scroll of inferno': 'scroll.png',
-        'scroll of raised bones': 'scroll.png'
+        'scroll of Inferno': 'scroll.png',
+        'scroll of Raise Bones': 'scroll.png'
     }
     static rarity_strings = {
         1: 'common',
