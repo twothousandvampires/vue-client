@@ -1,12 +1,17 @@
 <script>
+import config from '/config'
 export default {
-
+  data(){
+    return {
+      config
+    }
+  }
 }
 </script>
 
 <template>
   <div class="loading">
-    <img class="load_gif" src="@/assets/img/icons/misc/load.gif" alt="">
+    <img class="load_gif" :src="config.img_url + 'load.gif'" alt="">
   </div>
 </template>
 
