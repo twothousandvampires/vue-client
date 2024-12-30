@@ -1,11 +1,13 @@
 <script>
 import CharacterService from "./views/game/services/requestService";
+import config from "../config.js";
 
 export default {
   data(){
     return{
       auth : !!localStorage.getItem('token'),
-      world : !!localStorage.getItem('world')
+      world : !!localStorage.getItem('world'),
+      config
     }
   },
   mounted() {
@@ -39,13 +41,13 @@ export default {
     </div>
   </header>
   <div style="display: flex; flex-direction: column;">
-      <img src="/src/assets/img/toptest.png" width="1320" height="60" alt="">
+      <img :src="config.img_link('toptest.png')" width="1320" height="60" alt="">
       <div style="display: flex; flex-direction: row;">
-        <img src="/src/assets/img/lefttest.png" width="60" height="800" alt="">
+        <img :src="config.img_link('lefttest.png')" width="60" height="800" alt="">
         <RouterView v-bind:world="this.world" v-bind:auth="this.auth"/>
-        <img src="/src/assets/img/rigthtest.png" width="60" height="800" alt="">
+        <img :src="config.img_link('rigthtest.png')" width="60" height="800" alt="">
       </div>
-      <img src="/src/assets/img/bottomtest.png" width="1320" height="60" alt="">
+      <img :src="config.img_link('bottomtest.png')" width="1320" height="60" alt="">
   </div>
 </template>
 

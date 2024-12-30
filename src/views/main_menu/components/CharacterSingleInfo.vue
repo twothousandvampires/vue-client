@@ -2,8 +2,14 @@
 import {mapActions, mapState} from "pinia/dist/pinia";
 import { useUserStore } from "@/stores/user";
 import requestService from "../../game/services/requestService";
+import config from '/config'
 
 export default {
+  data(){
+    return {
+      config
+    }
+  },
   props : {
     char : Object
   },
@@ -34,8 +40,8 @@ export default {
       <p>Killed<span class="stat-elem">{{ char.enemies_killed }}</span></p>
     </div>
     <div id="info-body">
-      <img v-if="!char.dead" width="96" height="96" src="/src/assets/img/grim_world_idle.gif" alt="">
-      <img v-else width="96" height="96" src="/src/assets/img/grim_dead.gif" alt="">
+      <img v-if="!char.dead" width="96" height="96" :src="config.img_link('grim_world_idle.gif')" alt="">
+      <img v-else width="96" height="96"  :src="config.img_link('grim_dead.gif')" alt="">
     </div>
     <div id="info-bottom">
       <button  @click.prevent="play(char.id)">Play</button>

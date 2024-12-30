@@ -1,5 +1,6 @@
 <script>
 import requestService from "../../game/services/requestService";
+import config from '/config'
 
 export default {
   data(){
@@ -10,7 +11,8 @@ export default {
       error_msg : false,
       success_msg : false,
       login_form : true,
-      start: false
+      start: false,
+      config
     }
   },
   mounted() {
@@ -72,7 +74,7 @@ export default {
   <div>
     <audio ref="audio" src="./src/assets/music/To Call Upon the Fog.mp3"></audio>
     <div>
-      <img src="./assets/main.gif" alt="">
+      <img :src="config.img_link('main.gif')" alt="">
     </div>
     <div id="form-wrap" style="min-height: 200px">
       <div id="start" v-show="!this.start">
