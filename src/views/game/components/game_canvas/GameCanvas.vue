@@ -4,12 +4,13 @@ import PlayerHUD from "./components/PlayerHUD.vue";
 import Inventory from "./components/Inventory.vue";
 import Logger from "./components/Logger.vue";
 import StatusBar from "./components/hud/StatusBar.vue";
+import config from '/config';
 
 export default {
   name: "GameCanvas",
   data(){
     return{
-
+      config
     }
   },
   props: {
@@ -55,13 +56,11 @@ export default {
   <div id="canvas-wrap">
     <PlayerHUD v-if="this.char" v-bind:char="char"></PlayerHUD>
     <div style="width: 720px; height: 800px;position: relative;">
-      <div style="background-image: url('/src/assets/img/toptest2.png');height: 120px;z-index: 1111;position: relative; background-color: #2a1e23;display: flex;justify-content: space-around;align-items: center;">
+      <div id="topwraper">
         <AudioPlayer ref="audio_player"></AudioPlayer>
         <p style="color: #86c69a;cursor: pointer;" @click="to_profile">Profile</p>
       </div>
-      <div style="background-image: url('/src/assets/img/innertest.png');height: 680px; width: 720px;;z-index: 1111;position: relative;pointer-events: none;">
-
-      </div>
+      <div id="innerframe"></div>
       <canvas style="position: relative;top:-960px;left: -300px;" id='game-canvas' width="1300" height="1300" ref="canvas"></canvas>
       <div v-if="char" id="status">
         <StatusBar :status="char.status"></StatusBar>
@@ -91,6 +90,23 @@ export default {
 </template>
 
 <style scoped>
+#topwraper{
+  background-image: url('/src/assets/img/toptest2.png');
+  height: 120px;z-index: 1111;
+  position: relative; 
+  background-color: #2a1e23;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+}
+#innerframe{
+  background-image: url('/src/assets/img/innertest.png');
+  height: 680px; 
+  width: 720px;
+  z-index: 1111;
+  position: relative;
+  pointer-events: none;
+}
 #status{
   display: flex;
     flex-direction: row;
