@@ -49,6 +49,25 @@ export default class Character extends Unit{
     
     
     }
+    removeDefendStats(){
+        this.was_defended = false
+        this.attack_block -= 10
+        this.armour -= 3
+    }
+    addDefendStats(){
+        this.was_defended = true
+        this.attack_block += 10
+        this.armour += 3
+    }
+    defend(){
+        this.addDefendStats()
+        this.skipTurn()
+    }
+    openInventory(){
+        if(this.figth_context) return
+
+        this.inv_is_open = !this.inv_is_open
+     }
     retreat(){
         if(!this.turn) return
         this.fliped = true
@@ -168,6 +187,9 @@ export default class Character extends Unit{
         if(this.is_retreat){
             this.figth_context.retreat()
             rerurn
+        }
+        if(this.was_defended){
+            this.removeDefendStats()
         }
         this.combo_points = 0
         this.updateStatusNewTurn()

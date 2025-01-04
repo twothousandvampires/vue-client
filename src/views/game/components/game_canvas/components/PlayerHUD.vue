@@ -49,12 +49,15 @@ export default {
        </div>
       </div>
       <div style="color: #86c69a;">
-        <div style="display: flex;justify-content: center;align-items: center;">
-          <img @click="char.useTorch()" src="/src/assets//img/torch_count.gif" alt="">
+        <div title="open inventory (i)" style="display: flex;justify-content: center;align-items: center;cursor: pointer;">
+          <img width="60" height="60" @click="char.openInventory()" src="/src/assets/img/elder_ring.png" alt="">
+        </div>
+        <div title="place torch" style="display: flex;justify-content: center;align-items: center;cursor: pointer;">
+          <img @click="char.useTorch()" src="/src/assets/img/torch_count.gif" alt="">
           <p>{{char.torch}}</p>
         </div>
-        <div style="display: flex;justify-content: center;align-items: center;">
-          <img @click="char.rest()" src="/src/assets//img/food_count.gif" alt="">
+        <div title="to rest" style="display: flex;justify-content: center;align-items: center;cursor: pointer;">
+          <img @click="char.rest()" src="/src/assets/img/food_count.gif" alt="">
           <p>{{char.food}}</p>
         </div>
       </div>

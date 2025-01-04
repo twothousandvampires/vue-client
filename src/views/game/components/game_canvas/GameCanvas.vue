@@ -70,9 +70,9 @@ export default {
   </div>
   <div v-if="init">
     <Inventory v-if="char.inv_is_open" v-bind:char="char"></Inventory>
-    <div style="visibility: hidden; position: fixed; top: 20%; left: 50%;transform: translate(-50%, -50%);text-align: center" id="cell_info"></div>
-    <div v-if="char.figth_context" style="display: flex;flex-direction: column;position: fixed; top: 28%; left: 50%;transform: translate(-50%, -50%);text-align: center" id="spells_and_items">
-      <div id="items">
+    <div style="background-color: wheat;visibility: hidden; position: fixed; top: 30%; left: 50%;transform: translate(-50%, -50%);text-align: center;color:black;z-index: 666666;" id="cell_info"></div>
+    <div v-if="char.figth_context" style="z-index: 66666;display: flex;flex-direction: column;position: fixed; top: 28%; left: 50%;transform: translate(-50%, -50%);text-align: center" id="spells_and_items">
+      <div style="width: 400px;overflow-x: auto;" id="items">
         <div @click="char.selectToUse(item)" v-for="item in char.getItems((elem) => { return elem.uses_in_fight})" style="margin: 2px;border: 5px solid; display: flex; flex-direction: row;justify-content: center;align-items: center" :style="item.selected ? 'border: 5px solid #00e699' :''">
           <img :title="item.getDescription()" width="60" height="60" :src="item.getImagePath()" alt="">
           <p style="position: absolute; left: 45px; top: 36px;color: wheat" v-if="item.item_type === 3">
@@ -80,7 +80,7 @@ export default {
           </p>
         </div>
       </div>
-      <div id="spells">
+      <div style="width: 400px;overflow-x: auto;" id="spells">
         <div @click="char.selectToUse(skill)" v-for="skill in char.skill_pull" style="margin: 2px;border: 5px solid; display: flex; flex-direction: row;justify-content: center;align-items: center" :style="skill.selected ? 'border: 5px solid #00e699' :''">
           <img :title="skill.getDescription()" width="60" height="60" :src="skill.getImagePath()" alt="">
         </div>

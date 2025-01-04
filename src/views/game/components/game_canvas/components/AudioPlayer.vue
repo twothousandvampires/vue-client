@@ -110,7 +110,7 @@ export default {
       if(!this.muted){
         this.volume_level = setInterval(()=>{
           this.$refs.audio.volume += 0.005
-          if(this.$refs.audio.volume >= 0.1){
+          if(this.$refs.audio.volume >= 0.15){
             clearInterval(this.volume_level)
           }
         },500)
@@ -121,7 +121,7 @@ export default {
         this.$refs.audio.volume = 0
         this.volume_level = setInterval(()=>{
           this.$refs.audio.volume += 0.005
-          if(this.$refs.audio.volume >= 0.05){
+          if(this.$refs.audio.volume >= 0.15){
             clearInterval(this.volume_level)
           }
         },500)
