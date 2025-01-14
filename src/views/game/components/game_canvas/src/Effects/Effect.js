@@ -12,12 +12,12 @@ export default class Effect extends GameObject{
             this.sprite.frame_timer = 0
             this.sprite.frame ++
             if(this.sprite.frame === this.sprite.max_frame){
-                this.figth_context.removeEffect(this)
+                this.fight_context.removeEffect(this)
             }
         }
     }
     
     remove(){
-        this.figth_context.effects = this.figth_context.effects.filter(elem => elem != this)
+        this.fight_context.effects = this.fight_context.effects.filter(elem => elem != this)
     }
 }

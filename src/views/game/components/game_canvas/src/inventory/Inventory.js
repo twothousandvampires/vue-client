@@ -70,16 +70,10 @@ export default class Inventory{
         if(item.item_type === Inventory.ITEM_TYPE_EQUIP && item.slot < 9 ){
             item.equip(this.player)
         }
-        else if(item.item_type === Inventory.ITEM_TYPE_GEM && item.slot < 35 && item.slot > 28){
-            item.equip(this.player)
-        }
     }
 
     unequipItem(item ,check = false){
         if(item.item_type === Inventory.ITEM_TYPE_EQUIP && item.slot < 9){
-            item.unequip(this.player)
-        }
-        else if(item.item_type === Inventory.ITEM_TYPE_GEM && item.slot < 35 && item.slot > 28){
             item.unequip(this.player)
         }
     }
@@ -119,6 +113,7 @@ export default class Inventory{
             return Inventory.CELL_TYPE_INVENTORY
         }
     }
+
     createItem(template){
         return ItemCreator.createItem(template, this.player)
     }
@@ -130,6 +125,7 @@ export default class Inventory{
             this.player.parseStats(res.data.char)
         }
     }
+    
     update(items){
         this.pull.forEach(elem => {
             this.unequipItem(elem)

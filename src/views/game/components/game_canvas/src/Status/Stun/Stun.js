@@ -11,7 +11,7 @@ export default class Stun extends Status{
     }
 
     act(){
-        let tick = this.target.figth_context.tick
+        let tick = this.target.fight_context.tick
         this.sprite.setPoint(this.target)
         if(tick >= (this.duration) + this.affect_time){
             this.expire()
@@ -28,11 +28,11 @@ export default class Stun extends Status{
         this.target = target
         this.target.setStunState()
         this.sprite.setSize(this.target)
-        this.affect_time = target.figth_context.tick
+        this.affect_time = target.fight_context.tick
     }
 
     update(status){
-        this.affect_time = this.target.figth_context.tick
+        this.affect_time = this.target.fight_context.tick
         this.duration = status.duration
     }
 

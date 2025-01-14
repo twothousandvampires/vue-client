@@ -16,7 +16,7 @@ export default class ShieldUp extends Status{
     }
     affect(target){
         this.target = target
-        this.affect_time = target.figth_context.tick
+        this.affect_time = target.fight_context.tick
         this.target.attack_block += this.power
     }
 

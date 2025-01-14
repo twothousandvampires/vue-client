@@ -9,8 +9,8 @@ export default class PlayerAttack{
     }
     canUse(enemy = undefined){
         if(enemy === this.player) return false
-        let figth_context = this.player.figth_context
-        return enemy && !enemy.isDead() && figth_context.checkLine(enemy.num);
+        let fight_context = this.player.fight_context
+        return enemy && !enemy.isDead() && fight_context.checkLine(enemy.num);
     }
     use(enemy = false){
         this.target = enemy

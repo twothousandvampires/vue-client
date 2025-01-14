@@ -14,7 +14,7 @@ export default class RadianceStatus extends Status{
     }
 
     newTurn(){
-        let count = this.target.figth_context.turn_queue.filter(elem => !elem.isDead() && elem !== this.target)
+        let count = this.target.fight_context.turn_queue.filter(elem => !elem.isDead() && elem !== this.target)
         let d = {
             magic_damage: this.power
         }

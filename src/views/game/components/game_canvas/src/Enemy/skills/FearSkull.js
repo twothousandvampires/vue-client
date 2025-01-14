@@ -7,9 +7,9 @@ export default class FearSkull{
     }
 
     cast(){
-        let player = this.owner.figth_context.player
+        let player = this.owner.fight_context.player
         let angle = Functions.angle(this.owner, player)
-        this.owner.figth_context.projectiles.push(new FearSkullProj(this.owner.figth_context, this.owner.point.x, this.owner.point.y,angle,this.owner))
+        this.owner.fight_context.projectiles.push(new FearSkullProj(this.owner.fight_context, this.owner.point.x, this.owner.point.y,angle,this.owner))
         this.cd = true
         setTimeout(()=> {
             this.cd = false
@@ -18,7 +18,7 @@ export default class FearSkull{
 
 
     canCast(){
-        let player = this.owner.figth_context.player
+        let player = this.owner.fight_context.player
 
         if(player.dead || player.invisible) return false
 

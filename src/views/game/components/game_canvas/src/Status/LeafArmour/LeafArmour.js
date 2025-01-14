@@ -20,7 +20,7 @@ export default class LeafArmour extends Status{
 
     affect(target, source){
         this.target = target
-        this.affect_time = target.figth_context.tick
+        this.affect_time = target.fight_context.tick
         this.source = source
     }
 

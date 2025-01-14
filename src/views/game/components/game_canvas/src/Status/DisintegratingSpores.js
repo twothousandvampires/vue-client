@@ -25,7 +25,7 @@ export default class DisintegratingSpores extends Status{
     expire(){
         this.target.evade += this.power
         this.target.attack_block_chance += this.power
-        this.target.figth_context.pushEnemyInFreeSlot('germinated mycelium')
+        this.target.fight_context.pushEnemyInFreeSlot('germinated mycelium')
         this.target.status.delete(this.name)
     }
 

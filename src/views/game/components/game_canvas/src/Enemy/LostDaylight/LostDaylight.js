@@ -41,8 +41,8 @@ export default class LostDaylight extends Enemy{
     }
 
     setDyingState(){
-        this.figth_context.player.newStatus(new Blind(50, 1), this)
-        this.figth_context.deleteFromQueue(this)
+        this.fight_context.player.newStatus(new Blind(50, 1), this)
+        this.fight_context.deleteFromQueue(this)
         this.dead = true
         this.state =  Unit.STATE_DYING
         this.resetState()

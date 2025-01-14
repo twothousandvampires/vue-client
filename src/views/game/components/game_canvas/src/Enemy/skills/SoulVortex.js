@@ -8,7 +8,7 @@ export default class SoulVortex extends EnemySkill{
     }
 
     action(){
-        let fight_context = this.owner.figth_context
+        let fight_context = this.owner.fight_context
         let player = fight_context.player
         player.newStatus(new SoulVortexStatus(1, 3), this.owner)
     }

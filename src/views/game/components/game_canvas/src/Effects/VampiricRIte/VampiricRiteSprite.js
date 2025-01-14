@@ -16,7 +16,7 @@ export default class VampiricRiteSprite extends Sprite{
             this.frame_timer = 0
             this.frame ++
             if(this.frame === this.max_frame){
-                this.owner.figth_context.removeEffect(this.owner)
+                this.owner.fight_context.removeEffect(this.owner)
             }
         }
     }

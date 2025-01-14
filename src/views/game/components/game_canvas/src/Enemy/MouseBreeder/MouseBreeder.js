@@ -39,7 +39,7 @@ export default class MouseBreeder extends Undead{
         if(this.availableToTurn()){
             if(Math.random() <= this.bat_spawn_rate/100){
                 Functions.createModal(this, 'summon bat')
-                this.figth_context.pushEnemyInFreeSlot(new CaveBat(this.figth_context))
+                this.fight_context.pushEnemyInFreeSlot(new CaveBat(this.fight_context))
             }
             else {
                 let target = this.getTarget(player)

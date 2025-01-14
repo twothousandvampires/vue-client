@@ -33,7 +33,7 @@ export default class SittingOnTheBeast extends Enemy{
     }
 
     deadState(){
-        this.figth_context.pushEnemyInFreeSlot('greenskin')
+        this.fight_context.pushEnemyInFreeSlot('greenskin')
         this.state = Unit.STATE_DEAD
         this.resetState()
         this.stateAct = this.deadAct

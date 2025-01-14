@@ -70,10 +70,10 @@ export default class CommandingGreenskin extends Enemy{
         this.status.forEach((v,k,map) => {
             v.targetDead()
         })
-        this.figth_context.deleteFromQueue(this)
+        this.fight_context.deleteFromQueue(this)
         if(Math.random() <= 0.3){
             let order = new LastOrders(this)
-            order.action(this.figth_context.turn_queue)
+            order.action(this.fight_context.turn_queue)
             Functions.createModal(this, 'use ' + order.name)
         }
         this.dead = true

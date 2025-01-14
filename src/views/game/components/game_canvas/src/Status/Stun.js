@@ -21,13 +21,13 @@ export default class Stun extends Status{
     affect(target){
         this.target = target
         this.target.frozen = true
-        this.sprite = new StunEffect(this.target.figth_context)
-        this.target.figth_context.addEffect(this.sprite, target.num)
+        this.sprite = new StunEffect(this.target.fight_context)
+        this.target.fight_context.addEffect(this.sprite, target.num)
     }
 
     expire(){
         this.target.frozen = false
-        this.target.figth_context.removeEffect(this.sprite)
+        this.target.fight_context.removeEffect(this.sprite)
         this.target.status.delete(this.name)
     }
 

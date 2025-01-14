@@ -27,14 +27,14 @@ export default class HeavyStrike extends Skill{
         }
         
         enemy.takeAttackDamage(this.player, damage)
-        this.player.figth_context.addEffect(new GroundSlam(this.player.figth_context), enemy.num)
+        this.player.fight_context.addEffect(new GroundSlam(this.player.fight_context), enemy.num)
 
         if(this.player.combo_points >= 1 && Math.random() < 0.5){
             enemy.newStatus(new Stun(1), this.player)
         }
 
         if(this.player.combo_points === 2){
-            let targets = this.player.figth_context.getEnemiesInSquare(enemy).filter(elem => !elem.isDead() && elem != enemy)
+            let targets = this.player.fight_context.getEnemiesInSquare(enemy).filter(elem => !elem.isDead() && elem != enemy)
             let damage = {
                 physical_damage: 0,
                 piercing_damage: 0,
@@ -43,7 +43,7 @@ export default class HeavyStrike extends Skill{
             }
             targets.forEach(element => {
                 element.takeAttackDamage(this.player, damage)
-                this.player.figth_context.addEffect(new GroundSlam(this.player.figth_context), element.num)
+                this.player.fight_context.addEffect(new GroundSlam(this.player.fight_context), element.num)
             });
         }
     }
@@ -66,8 +66,8 @@ export default class HeavyStrike extends Skill{
 
     canUse(enemy = undefined){
         if(enemy === this.player) return false
-        let figth_context = this.player.figth_context
-        return enemy && !enemy.isDead() && figth_context.checkLine(enemy.num);
+        let fight_context = this.player.fight_context
+        return enemy && !enemy.isDead() && fight_context.checkLine(enemy.num);
     }
 
     getDescription(){

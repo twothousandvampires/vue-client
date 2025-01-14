@@ -79,7 +79,7 @@ export default class Unit extends GameObject{
             v.targetDead()
         })
     
-        this.figth_context.deleteFromQueue(this)
+        this.fight_context.deleteFromQueue(this)
         this.dead = true
         this.state =  Unit.STATE_DYING
         this.resetState()
@@ -208,7 +208,7 @@ export default class Unit extends GameObject{
             else {
                 this.status.set(status.name, status)
                 status.affect(this, source)
-                if(this.figth_context){
+                if(this.fight_context){
                     Functions.createModal(this, status.name,12, 'white')
                 }
             }

@@ -105,14 +105,14 @@ export default class SummonedWildLightning extends Unit{
         }
     }
     setDyingState(){
-        this.figth_context.deleteFromQueue(this)
+        this.fight_context.deleteFromQueue(this)
         this.dead = true
         this.state = Unit.STATE_DYING
         this.resetState()
         this.stateAct = this.dyingAct
     }
     deadState(){
-        this.figth_context.summons = this.figth_context.summons.filter(elem => elem != this)
+        this.fight_context.summons = this.fight_context.summons.filter(elem => elem != this)
     }
     isEvade(){
         let base_chance = this.evade / 100
@@ -125,9 +125,9 @@ export default class SummonedWildLightning extends Unit{
             if(r < 0.5){
                 let t = enemies.filter((elem) => !elem.isDead())[0]
 
-                let l_effect = new LuminousArcEffect(this.figth_context, Functions.angle(t, this), Functions.distance(this, t))
+                let l_effect = new LuminousArcEffect(this.fight_context, Functions.angle(t, this), Functions.distance(this, t))
                 l_effect.point = new Point((this.point.x + t.point.x) / 2, (this.point.y + t.point.y) / 2)
-                this.figth_context.addEffect(l_effect)
+                this.fight_context.addEffect(l_effect)
         
                 if(t){
                     Functions.createModal(this, 'using lightning')
@@ -148,7 +148,7 @@ export default class SummonedWildLightning extends Unit{
                     }
                     t.forEach(elem => {
                         elem.takeSpellDamage(this, d)
-                        this.figth_context.addEffect(new SparkEffect(this.figth_context), elem.num)
+                        this.fight_context.addEffect(new SparkEffect(this.fight_context), elem.num)
                     })
                 }
             }
@@ -156,9 +156,9 @@ export default class SummonedWildLightning extends Unit{
         else{
 
             let t = enemies.filter((elem) => !elem.isDead())[0]
-                let l_effect = new LuminousArcEffect(this.figth_context, Functions.angle(t, this), Functions.distance(this, t))
+                let l_effect = new LuminousArcEffect(this.fight_context, Functions.angle(t, this), Functions.distance(this, t))
                 l_effect.point = new Point((this.point.x + t.point.x) / 2, (this.point.y + t.point.y) / 2)
-                this.figth_context.addEffect(l_effect)
+                this.fight_context.addEffect(l_effect)
         
                 if(t){
                     Functions.createModal(this, 'using lightning')
@@ -170,11 +170,11 @@ export default class SummonedWildLightning extends Unit{
         }
 
         if(this.combo === 2 && Math.random() < 0.2){
-            this.figth_context.player.summon(new SummonedWildLightning(this.figth_context, this.level, this.combo))
+            this.fight_context.player.summon(new SummonedWildLightning(this.fight_context, this.level, this.combo))
         }
        
         this.updateStatusNewTurn()
         await Functions.sleep(500)
-        this.figth_context.next(this)
+        this.fight_context.next(this)
     }
 }

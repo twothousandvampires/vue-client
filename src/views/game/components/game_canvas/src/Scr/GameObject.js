@@ -4,7 +4,7 @@ import Point from "./Point";
 export default class GameObject {
 
     constructor(context, x = 0, y = 0) {
-        this.figth_context = context
+        this.fight_context = context
         this.point = new Point(x, y)
         this.fliped = false
     }
@@ -19,7 +19,7 @@ export default class GameObject {
     }
 
     isOutOfMap(){
-        let map = this.figth_context.map
+        let map = this.fight_context.map
         return this.point.x >= map.start_x + map.width
                || this.point.x <= map.start_x
                || this.point.y >= map.start_y + map.height
@@ -41,7 +41,7 @@ export default class GameObject {
     }
 
     addPointIfPossible(x, y) {
-        let fight_context = this.figth_context
+        let fight_context = this.fight_context
         let map = fight_context.map
         let units = fight_context.enemy.concat(fight_context.player)
 
@@ -80,7 +80,7 @@ export default class GameObject {
     }
 
     collWithEnemy(){
-        let enemy = this.figth_context.enemy
+        let enemy = this.fight_context.enemy
         let exclude = Array.from(arguments);
 
         for(let i = 0; i < enemy.length; i++){

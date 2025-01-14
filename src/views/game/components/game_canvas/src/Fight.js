@@ -14,7 +14,7 @@ export default class Fight{
         this.areas = []
         this.areas_after = []
 
-        this.player.figth_context = this
+        this.player.fight_context = this
 
 
     }

@@ -25,7 +25,7 @@ export default class IcyNovaArea extends GameObject{
     }
 
     act(){
-        this.figth_context.enemy.forEach(elem => {
+        this.fight_context.enemy.forEach(elem => {
             if(!this.hitted.includes(elem) && Functions.rectCollision(this, elem)){
                 this.hitted.push(elem)
                 elem.newStatus(new Freeze(this.freeze_duration))
@@ -42,7 +42,7 @@ export default class IcyNovaArea extends GameObject{
         this.sprite.act()
         this.stage ++
         if(this.stage >= this.max_stage){
-            this.figth_context.deleteArea(this)
+            this.fight_context.deleteArea(this)
         }
     }
 }

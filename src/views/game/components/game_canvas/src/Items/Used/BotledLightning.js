@@ -12,7 +12,7 @@ export default class BoltedLigthning extends Used{
     }
 
     async use(){
-        let targets = this.player.figth_context.getFirstEnemiesInLines().filter(elem => !elem.isDead())
+        let targets = this.player.fight_context.getFirstEnemiesInLines().filter(elem => !elem.isDead())
         Functions.createModal(this.player, this.name)
 
         let damage = {
@@ -24,7 +24,7 @@ export default class BoltedLigthning extends Used{
 
         targets.forEach(elem =>{
             elem.takeSpellDamage(this.player, damage)
-            this.player.figth_context.addEffect(new SparkEffect(this.player.figth_context), elem.num)
+            this.player.fight_context.addEffect(new SparkEffect(this.player.fight_context), elem.num)
         })
 
         this.player.newStatus(new BoltedLigthningShield(20, 3), this, true)

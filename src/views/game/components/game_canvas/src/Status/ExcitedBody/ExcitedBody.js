@@ -14,7 +14,7 @@ export default class ExcitedBodyStatus extends Status{
     }
 
     act(){
-        let tick = this.target.figth_context.tick
+        let tick = this.target.fight_context.tick
         if(tick >= this.duration + this.affect_time){
             this.expire()
         }
@@ -29,14 +29,14 @@ export default class ExcitedBodyStatus extends Status{
 
     affect(target){
         this.target = target
-        this.affect_time = target.figth_context.tick
+        this.affect_time = target.fight_context.tick
         this.target['increase_attack_speed'] += this.increase_attack_speed
         this.target['increase_cast_speed'] += this.increase_cast_speed
         this.target['increase_movement_speed'] += this.increase_movement_speed
     }
 
     update(status){
-        this.affect_time = this.target.figth_context.tick
+        this.affect_time = this.target.fight_context.tick
         this.duration = status.duration
     }
 }

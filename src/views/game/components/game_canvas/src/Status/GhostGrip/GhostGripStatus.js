@@ -18,7 +18,7 @@ export default class GhostGripStatus extends Status{
 
         this.setBottomPoint()
 
-        let tick = this.target.figth_context.tick
+        let tick = this.target.fight_context.tick
 
         if(tick >= (this.duration) + this.affect_time){
             this.expire()
@@ -34,12 +34,12 @@ export default class GhostGripStatus extends Status{
     affect(target){
         this.setBottomSprite(target)
         this.target = target
-        this.affect_time = target.figth_context.tick
+        this.affect_time = target.fight_context.tick
         this.target.movement_speed -= 400
     }
 
     update(status){
-        this.affect_time = this.target.figth_context.tick
+        this.affect_time = this.target.fight_context.tick
         this.duration = status.duration
     }
 }

@@ -14,6 +14,6 @@ export default class DefendOrders extends EnemySkill{
     }
 
     check(target) {
-        return target.figth_context.enemy_pull.filter(elem => !elem.isDead() && elem !== this.owner).length >= 3
+        return target.fight_context.enemy_pull.filter(elem => !elem.isDead() && elem !== this.owner).length >= 3
     }
 }

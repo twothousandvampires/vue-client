@@ -31,21 +31,21 @@ export default class FireBall extends Skill{
 
         if(!this.player.combo_points){
             enemy.takeSpellDamage(this.player, damage)
-            this.player.figth_context.addEffect(new FireExplosion(this.player.figth_context, 80, 80), enemy.num)
+            this.player.fight_context.addEffect(new FireExplosion(this.player.fight_context, 80, 80), enemy.num)
         }
         if(this.player.combo_points === 1){
             enemy.takeSpellDamage(this.player, damage)
-            this.player.figth_context.addEffect(new FireExplosion(this.player.figth_context, 80, 80), enemy.num)
+            this.player.fight_context.addEffect(new FireExplosion(this.player.fight_context, 80, 80), enemy.num)
             if(Math.random() < 0.5){
                 enemy.newStatus(new Ignite(this.level * 3, 3), this.player)
             }
         }
         if(this.player.combo_points === 2){
-            let targets = this.player.figth_context.getEnemiesInSquare(enemy).filter(elem => !elem.isDead())
+            let targets = this.player.fight_context.getEnemiesInSquare(enemy).filter(elem => !elem.isDead())
             targets.forEach(elem =>{
                 elem.takeSpellDamage(this.player, damage)
             })
-            this.player.figth_context.addEffect(new FireExplosion(this.player.figth_context, 200, 200), enemy.num)
+            this.player.fight_context.addEffect(new FireExplosion(this.player.fight_context, 200, 200), enemy.num)
         } 
     }
 

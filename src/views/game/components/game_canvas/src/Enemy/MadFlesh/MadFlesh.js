@@ -43,7 +43,7 @@ export default class MadFlesh extends Undead{
             if(!player.status.has('bleed') && Math.random() <= 0.5){
                 Functions.createModal(this, 'tears flesh')
                 player.newStatus(new OpenWounds(1, 3))
-                this.figth_context.addEffect(new Swipe(this.figth_context), player.num)
+                this.fight_context.addEffect(new Swipe(this.fight_context), player.num)
             }
             else {
                 Functions.createModal(this, 'attack!',16,'white', true)

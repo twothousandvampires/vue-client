@@ -41,8 +41,8 @@ export default class WanderingNightShine extends Enemy{
     }
 
     setDyingState(){
-        this.figth_context.player.newStatus(new Freeze(1), this)
-        this.figth_context.deleteFromQueue(this)
+        this.fight_context.player.newStatus(new Freeze(1), this)
+        this.fight_context.deleteFromQueue(this)
         this.dead = true
         this.state =  Unit.STATE_DYING
         this.resetState()
@@ -51,7 +51,7 @@ export default class WanderingNightShine extends Enemy{
 
     dyingAct(battle){
         if (this.sprite.isSpriteLoopEnd()) {
-            this.figth_context.clearCellContent(this)
+            this.fight_context.clearCellContent(this)
         }
     }
 }

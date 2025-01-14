@@ -21,7 +21,7 @@ export default class Enemy extends Unit{
         this.priority_for_spellcasting = 0
     }
     getTarget(player){
-        let targets = [player].concat(this.figth_context.summons).filter(elem => !elem.isDead())
+        let targets = [player].concat(this.fight_context.summons).filter(elem => !elem.isDead())
         targets.sort((a, b) => Math.random() > 0.5)
 
         return targets[Math.floor(Math.random() * targets.length)]
@@ -50,7 +50,7 @@ export default class Enemy extends Unit{
     async afterTurn(){
         this.updateStatusEndTurn()
         await Functions.sleep(500)
-        this.figth_context.next(this)
+        this.fight_context.next(this)
     }
     async startTurn(enemies, player){
         this.updateStatusNewTurn()

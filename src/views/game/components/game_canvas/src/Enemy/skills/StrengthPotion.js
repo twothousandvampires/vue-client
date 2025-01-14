@@ -9,7 +9,7 @@ export default class StrengthPotion extends EnemySkill{
     }
 
     action(player){
-        let list = player.figth_context.enemy_pull.filter(elem => !elem.isDead() && elem !== this.owner)
+        let list = player.fight_context.enemy_pull.filter(elem => !elem.isDead() && elem !== this.owner)
 
         if(list.length){
             let target = list[Math.floor(Math.random() * list.length)]
@@ -20,6 +20,6 @@ export default class StrengthPotion extends EnemySkill{
     }
 
     check(target) {
-        return target.figth_context.enemy_pull.filter(elem => !elem.isDead() && elem !== this.owner).length !== 0
+        return target.fight_context.enemy_pull.filter(elem => !elem.isDead() && elem !== this.owner).length !== 0
     }
 }

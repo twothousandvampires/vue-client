@@ -38,7 +38,7 @@ export default class GlacialNova extends Skill{
         }
         Functions.createModal(this.player, this.name)
 
-        let targets = this.player.figth_context.getFirstEnemiesInLines().filter(elem => !elem.isDead())
+        let targets = this.player.fight_context.getFirstEnemiesInLines().filter(elem => !elem.isDead())
         
         let panish = this.player.combo_points === 2 ? 2 : 4
         let damage = {

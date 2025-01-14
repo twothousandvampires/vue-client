@@ -27,7 +27,7 @@ export default class TheBeehiveDragger extends Enemy{
 
     afterDamage(){
         if(Math.random() < 0.2){
-            this.figth_context.pushEnemyInFreeSlot('swarm')
+            this.fight_context.pushEnemyInFreeSlot('swarm')
         }
     }
 }

@@ -23,7 +23,7 @@ export default class LiftBody extends Skill{
         Functions.createModal(this.player, this.name)
 
 
-        let body = new SummonedLivingFlesh(this.player.figth_context, this.level, this.player.combo_points, this.player.minion_life, this.player.minion_damage)
+        let body = new SummonedLivingFlesh(this.player.fight_context, this.level, this.player.combo_points, this.player.minion_life, this.player.minion_damage)
         this.player.summon(body)
     }
 

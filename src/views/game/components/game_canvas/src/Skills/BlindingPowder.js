@@ -28,8 +28,8 @@ export default class BlindingPowder extends Skill{
 
     action(){
         let enemy = this.targer
-        let targets = this.player.figth_context.getEnemiesInSquare(enemy).filter(elem => !elem.isDead())
-        this.player.figth_context.addEffect(new MagicExplosion(this.player.figth_context, 200, 200), enemy.num)
+        let targets = this.player.fight_context.getEnemiesInSquare(enemy).filter(elem => !elem.isDead())
+        this.player.fight_context.addEffect(new MagicExplosion(this.player.fight_context, 200, 200), enemy.num)
 
         targets.forEach(elem => {
             elem.newStatus(new Blind(this.getBlindEffect(), 2), this.player)

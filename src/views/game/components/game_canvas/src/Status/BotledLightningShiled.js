@@ -36,11 +36,11 @@ export default class BoltedLigthningShield extends Status{
         if(Math.random() >= 0.7){
             let t = enemy
         
-            let l_effect = new LuminousArcEffect(this.target.figth_context, Functions.angle(t, this.target), Functions.distance(this.target, t))
+            let l_effect = new LuminousArcEffect(this.target.fight_context, Functions.angle(t, this.target), Functions.distance(this.target, t))
     
             l_effect.point = new Point((this.target.point.x + t.point.x) / 2, (this.target.point.y + t.point.y) / 2)
     
-            this.target.figth_context.addEffect(l_effect)
+            this.target.fight_context.addEffect(l_effect)
     
             let d = {
                 lightning_damage: this.power,

@@ -16,7 +16,7 @@ export default class WeaponSwing extends Skill{
 
     action(){
         let enemy = this.target
-        let targets = this.player.figth_context.getTargetsUpperAndBottom(enemy).filter(elem => !elem.isDead())
+        let targets = this.player.fight_context.getTargetsUpperAndBottom(enemy).filter(elem => !elem.isDead())
         let up_and_below = targets.filter(elem => elem !== enemy)
 
         let d = this.player.getPhysicalDamage()
@@ -39,8 +39,8 @@ export default class WeaponSwing extends Skill{
 
     canUse(enemy = undefined){
         if(enemy === this.player) return false
-        let figth_context = this.player.figth_context
-        return enemy && !enemy.isDead() && figth_context.checkLine(enemy.num);
+        let fight_context = this.player.fight_context
+        return enemy && !enemy.isDead() && fight_context.checkLine(enemy.num);
     }
 
     getMainDescription(){

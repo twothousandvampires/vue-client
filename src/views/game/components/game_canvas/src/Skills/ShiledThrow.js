@@ -30,7 +30,7 @@ export default class ShieldThrow extends Skill{
         }
         else{
             this.chain_count --
-            let new_possible_targets = this.player.figth_context.getAliveEnemies();
+            let new_possible_targets = this.player.fight_context.getAliveEnemies();
             new_possible_targets = new_possible_targets.filter(elem => !this.hitted.includes(elem))
             let new_target = new_possible_targets[Math.floor(Math.random() * new_possible_targets.length)]
             if(new_target){
@@ -45,14 +45,14 @@ export default class ShieldThrow extends Skill{
        
     }
     skillEnd(){
-        this.player.figth_context.removeEffect(this.effect)
+        this.player.fight_context.removeEffect(this.effect)
         this.chain_count = 0
         this.hitted = []
     }
     action(){
-        this.effect = new ShiledEffect(this.player.figth_context, this, this.target, Functions.angle(this.player, this.target))
+        this.effect = new ShiledEffect(this.player.fight_context, this, this.target, Functions.angle(this.player, this.target))
         this.effect.point = new Point(this.player.point.x, this.player.point.y)
-        this.player.figth_context.addEffect(this.effect)
+        this.player.fight_context.addEffect(this.effect)
     }
 
     getEnergyCost(){

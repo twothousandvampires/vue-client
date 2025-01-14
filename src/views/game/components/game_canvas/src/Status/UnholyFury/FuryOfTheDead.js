@@ -14,7 +14,7 @@ export default class FuryOfTheDead extends Status{
     act(){
         this.setTopPoint()
 
-        let tick = this.target.figth_context.tick
+        let tick = this.target.fight_context.tick
         if(tick >= (this.durairon) + this.affect_time){
             this.expire()
         }
@@ -31,7 +31,7 @@ export default class FuryOfTheDead extends Status{
     affect(target){
         this.setTopSprite(target)
         this.target = target
-        this.affect_time = target.figth_context.tick
+        this.affect_time = target.fight_context.tick
         this.target.increased_movement_speed += 40
         this.target.increased_cast_speed += 40
         this.target.increased_attack_speed += 40
@@ -39,7 +39,7 @@ export default class FuryOfTheDead extends Status{
     }
 
     update(status){
-        this.affect_time = this.target.figth_context.tick
+        this.affect_time = this.target.fight_context.tick
         this.duration = status.duration
     }
 }

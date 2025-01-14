@@ -24,7 +24,7 @@ export default class SummonWildLightning extends Skill{
         }
 
         Functions.createModal(this.player, this.name)
-        let wild = new SummonedWildLightning(this.player.figth_context, this.level, this.player.combo_points, this.player.minino_life, this.player.minion_damage)
+        let wild = new SummonedWildLightning(this.player.fight_context, this.level, this.player.combo_points, this.player.minino_life, this.player.minion_damage)
 
         this.player.summon(wild)
     }

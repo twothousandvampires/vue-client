@@ -71,7 +71,7 @@ export default {
   <div v-if="init">
     <Inventory v-if="char.inv_is_open" v-bind:char="char"></Inventory>
     <div style="background-color: wheat;visibility: hidden; position: fixed; top: 30%; left: 50%;transform: translate(-50%, -50%);text-align: center;color:black;z-index: 666666;" id="cell_info"></div>
-    <div v-if="char.figth_context" style="z-index: 66666;display: flex;flex-direction: column;position: fixed; top: 28%; left: 50%;transform: translate(-50%, -50%);text-align: center" id="spells_and_items">
+    <div v-if="char.fight_context" style="z-index: 66666;display: flex;flex-direction: column;position: fixed; top: 28%; left: 50%;transform: translate(-50%, -50%);text-align: center" id="spells_and_items">
       <div style="width: 400px;overflow-x: auto;" id="items">
         <div @click="char.selectToUse(item)" v-for="item in char.getItems((elem) => { return elem.uses_in_fight})" style="margin: 2px;border: 5px solid; display: flex; flex-direction: row;justify-content: center;align-items: center" :style="item.selected ? 'border: 5px solid #00e699' :''">
           <img :title="item.getDescription()" width="60" height="60" :src="item.getImagePath()" alt="">

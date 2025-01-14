@@ -32,10 +32,10 @@ export default class MagicSpark extends Skill{
         let total_sparks = this.getTotalSparks()
 
         for(let i = 0; i < total_sparks; i++) {
-            let targets = this.player.figth_context.enemy_pull.filter(elem => !elem.isDead())
+            let targets = this.player.fight_context.enemy_pull.filter(elem => !elem.isDead())
             let t = targets[Math.floor(Math.random() * targets.length)]
             if(t){
-                this.player.figth_context.addEffect(new SparkEffect(this.player.figth_context), t.num)
+                this.player.fight_context.addEffect(new SparkEffect(this.player.fight_context), t.num)
                 t.takeSpellDamage(this.player, damage)
             }
         }

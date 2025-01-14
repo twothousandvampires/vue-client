@@ -9,7 +9,7 @@ export default class ExplosivePotion extends Used{
     }
 
     async use(enemy = false){
-        let targets = this.player.figth_context.getEnemiesInSquare(enemy).filter(elem => !elem.isDead())
+        let targets = this.player.fight_context.getEnemiesInSquare(enemy).filter(elem => !elem.isDead())
 
         Functions.createModal(this.player, this.name)
 
@@ -23,7 +23,7 @@ export default class ExplosivePotion extends Used{
         targets.forEach(elem =>{
             elem.takeSpellDamage(this.player, damage)
         })
-        this.player.figth_context.addEffect(new FireExplosion(this.player.figth_context, 200, 200), enemy.num)
+        this.player.fight_context.addEffect(new FireExplosion(this.player.fight_context, 200, 200), enemy.num)
 
         await this.afterUse()
     }

@@ -4,7 +4,7 @@ export default class WarDrums{
         this.name = 'war drums aura'
     }
     affect(){
-        let targets = this.owner.figth_context.getEnemies()
+        let targets = this.owner.fight_context.getEnemies()
         targets.forEach(elem => {
             elem.speed += 150
             elem.physical_damage += 1
@@ -12,7 +12,7 @@ export default class WarDrums{
         })
     }
     unaffect(){
-        let targets = this.owner.figth_context.getEnemies()
+        let targets = this.owner.fight_context.getEnemies()
         targets.forEach(elem => {
             elem.speed -= 150
             elem.physical_damage -= 1

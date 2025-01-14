@@ -31,7 +31,7 @@ export default class Skull extends Undead{
     }
 
     attackAct(){
-        let player = this.figth_context.player
+        let player = this.fight_context.player
 
         if(!this.deal_hit && this.sprite.frame === 5 && this.playerInAttackRadius(player)){
             this.deal_hit = true
@@ -43,7 +43,7 @@ export default class Skull extends Undead{
     }
 
     deadState(){
-        this.figth_context.removeEnemy(this)
+        this.fight_context.removeEnemy(this)
     }
 
     dyingAct(){
@@ -58,7 +58,7 @@ export default class Skull extends Undead{
 
     getState(){
 
-        let player = this.figth_context.player
+        let player = this.fight_context.player
         let distance_to_player = Functions.distance(this, player)
 
         let range = this.getLookingRange()

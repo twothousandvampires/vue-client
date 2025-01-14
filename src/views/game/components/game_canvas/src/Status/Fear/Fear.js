@@ -17,7 +17,7 @@ export default class Fear extends Status{
 
         this.setTopPoint()
 
-        let tick = this.target.figth_context.tick
+        let tick = this.target.fight_context.tick
         if(tick >= (this.duration) + this.affect_time){
             this.expire()
         }
@@ -38,14 +38,14 @@ export default class Fear extends Status{
         }
         this.setTopSprite(target)
         this.target = target
-        this.affect_time = target.figth_context.tick
+        this.affect_time = target.fight_context.tick
         this.target.direction_angle = Functions.angle(source, target)
         target.setMove()
         this.target.feared = true
     }
 
     update(status){
-        this.affect_time = this.target.figth_context.tick
+        this.affect_time = this.target.fight_context.tick
         this.duration = status.duration
     }
 

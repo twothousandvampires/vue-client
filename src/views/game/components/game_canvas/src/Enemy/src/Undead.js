@@ -24,7 +24,7 @@ export default class Undead extends Enemy{
 
     resurrectAct(){
         if(this.sprite.isSpriteLoopEnd()){
-            this.figth_context.turn_queue.push(this)
+            this.fight_context.turn_queue.push(this)
             this.dead = false
             this.life = this.max_life
             this.idleState()

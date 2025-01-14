@@ -26,7 +26,7 @@ export default class NaughtyPieceofDarkness extends Enemy{
    
     dyingAct(battle){
         if (this.sprite.isSpriteLoopEnd()) {
-            this.figth_context.clearCellContent(this)
+            this.fight_context.clearCellContent(this)
         }
     }
 }

@@ -27,16 +27,16 @@ export default class Swarm extends Enemy{
     }
 
     deadAct() {
-        if(this.figth_context.turn_count >= this.dead_turn + 3){
+        if(this.fight_context.turn_count >= this.dead_turn + 3){
             this.life = this.max_life
             this.dead = 0
-            this.figth_context.turn_queue.push(this)
+            this.fight_context.turn_queue.push(this)
             this.idleState()
         }
     }
     
     deadState(){
-        this.dead_turn = this.figth_context.turn_count
+        this.dead_turn = this.fight_context.turn_count
         this.state = Unit.STATE_DEAD
         this.resetState()
         this.stateAct = this.deadAct

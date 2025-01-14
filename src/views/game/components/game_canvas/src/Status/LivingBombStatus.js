@@ -28,17 +28,17 @@ export default class LivingBombStatus extends Status{
     }
     targetDead(){
         this.target.status.delete(this.name)
-        let figth_context = this.target.figth_context
-        let targets = figth_context.getEnemiesInSquare(this.target).filter(elem => !elem.isDead())
+        let fight_context = this.target.fight_context
+        let targets = fight_context.getEnemiesInSquare(this.target).filter(elem => !elem.isDead())
 
         let d = {
             fire_damage: Math.floor(this.target.max_life * (this.power / 100))
         }
         targets.forEach(element => {
-            element.takeSpellDamage(figth_context.player, d)
+            element.takeSpellDamage(fight_context.player, d)
         });
 
-        figth_context.addEffect(new FireExplosion(figth_context, 200, 200), this.target.num)
+        fight_context.addEffect(new FireExplosion(fight_context, 200, 200), this.target.num)
 
         if(this.attach){
             let attached = false
@@ -50,6 +50,6 @@ export default class LivingBombStatus extends Status{
             });
         }
 
-        figth_context.clearCellContent(this.target)
+        fight_context.clearCellContent(this.target)
     }
 }

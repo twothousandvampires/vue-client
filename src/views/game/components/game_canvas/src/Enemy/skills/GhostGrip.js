@@ -7,7 +7,7 @@ export default class GhostGrip {
     }
 
     cast(){
-        let fight_context = this.owner.figth_context
+        let fight_context = this.owner.fight_context
         let player = fight_context.player
         player.newStatus(new GhostGripStatus(), this.owner)
         this.cd = true
@@ -17,7 +17,7 @@ export default class GhostGrip {
     }
 
     canCast(){
-        let fight_context = this.owner.figth_context
+        let fight_context = this.owner.fight_context
         let player = fight_context.player
         let distance = Functions.distance(this.owner, player)
         return distance <= this.owner.getLookingRange() && !this.cd

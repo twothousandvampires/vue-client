@@ -7,13 +7,13 @@ export default class RaiseTheUndead extends EnemySkill{
     }
 
     action(){
-        let list = this.owner.figth_context.enemy_pull.filter(elem => elem.isDead())
+        let list = this.owner.fight_context.enemy_pull.filter(elem => elem.isDead())
         if(list.length){
             list[Math.floor(Math.random() * list.length)].resurrectState()
         }
     }
     check() {
-        let list = this.owner.figth_context.enemy_pull.filter(elem => elem.isDead())
+        let list = this.owner.fight_context.enemy_pull.filter(elem => elem.isDead())
         return list.length !== 0
     }
 }

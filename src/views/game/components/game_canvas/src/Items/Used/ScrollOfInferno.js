@@ -11,14 +11,14 @@ export default class ScrollOfInferno extends Used{
 
     async use(enemy = false){
     
-        let targets = this.player.figth_context.getFirstEnemiesInLines().filter(elem => !elem.isDead())
+        let targets = this.player.fight_context.getFirstEnemiesInLines().filter(elem => !elem.isDead())
         let d = {
             fire_damage: this.power * 12
         }
         targets.forEach(elem => {
             elem.takeDirectSpellDamage(d, this.player)
             elem.newStatus(new Ignite(this.power * 3, 3), this.player)
-            this.player.figth_context.addEffect(new FlameWave( this.player.figth_context), elem.num)
+            this.player.fight_context.addEffect(new FlameWave( this.player.fight_context), elem.num)
         })
 
         this.afterUser()

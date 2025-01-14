@@ -113,7 +113,7 @@ export default class WanderingClot extends Skill{
     }
 
     end(proj){
-        let fight_context = this.player.figth_context
+        let fight_context = this.player.fight_context
         if(this.amplifications.has('endless energy')){
             let chance = this.amplifications.get('endless energy').getChance()
             if(Math.random() * 100 < chance){

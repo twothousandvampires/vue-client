@@ -101,7 +101,7 @@ export default class SummonedLivingFlesh extends Unit{
         }
     }
     setDyingState(){
-        this.figth_context.deleteFromQueue(this)
+        this.fight_context.deleteFromQueue(this)
         this.dead = true
         this.state = Unit.STATE_DYING
         this.resetState()
@@ -127,6 +127,6 @@ export default class SummonedLivingFlesh extends Unit{
         }
         this.updateStatusNewTurn()
         await Functions.sleep(500)
-        this.figth_context.next(this)
+        this.fight_context.next(this)
     }
 }

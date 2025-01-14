@@ -26,7 +26,7 @@ export default class GiantUndead extends Undead {
     }
 
     afterDamage(){
-        let targets = this.figth_context.enemy_pull.filter(elem => elem !== this && !elem.isDead()).sort((a, b) => Math.random() > 0.5).slice(0, 3)
+        let targets = this.fight_context.enemy_pull.filter(elem => elem !== this && !elem.isDead()).sort((a, b) => Math.random() > 0.5).slice(0, 3)
         targets.forEach(elem => {
             elem.newStatus(new BoneArmour(10, 3))
         })

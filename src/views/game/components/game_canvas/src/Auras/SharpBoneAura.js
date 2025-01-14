@@ -4,7 +4,7 @@ export default class SharpBoneAura{
         this.name = 'strong bones aura'
     }
     affect(){
-        let targets = this.owner.figth_context.getEnemies()
+        let targets = this.owner.fight_context.getEnemies()
         targets.forEach(elem => {
             elem.physical_damage ++
             elem.armour ++
@@ -14,7 +14,7 @@ export default class SharpBoneAura{
         })
     }
     unaffect(){
-        let targets = this.owner.figth_context.getEnemies()
+        let targets = this.owner.fight_context.getEnemies()
         targets.forEach(elem => {
             elem.physical_damage --
             elem.armour --

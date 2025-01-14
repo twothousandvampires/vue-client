@@ -12,8 +12,8 @@ export default class ScrollOfRaiseBones extends Used{
     async use(enemy = false){
 
         for(let i = 0; i < 6; i++){
-            let s = new SummonedLivingFlesh(this.player.figth_context, this.power, this.player.combo_points, this.player.minion_life, this.player.minion_damage)
-            this.player.figth_context.pushSummon(s)
+            let s = new SummonedLivingFlesh(this.player.fight_context, this.power, this.player.combo_points, this.player.minion_life, this.player.minion_damage)
+            this.player.fight_context.pushSummon(s)
             await Functions.sleep(200)
         }
 

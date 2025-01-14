@@ -10,7 +10,7 @@ export default class ArmyOfTheDeadCast {
     }
 
     cast(){
-        let fight_context = this.owner.figth_context
+        let fight_context = this.owner.fight_context
 
         let sw = new SkeletonWarrior(fight_context, 0, 0)
         sw.resurectState()
@@ -35,7 +35,7 @@ export default class ArmyOfTheDeadCast {
     }
 
     canCast(){
-        let fight_context = this.owner.figth_context
+        let fight_context = this.owner.fight_context
         return fight_context.enemy.length < 100 && !this.cd
     }
 

@@ -19,7 +19,7 @@ export default class VampiricRite extends Skill{
             return
         }
 
-        let targets = this.player.figth_context.turn_queue.filter(elem => !elem.isDead() && elem !== this.player)
+        let targets = this.player.fight_context.turn_queue.filter(elem => !elem.isDead() && elem !== this.player)
         
         Functions.createModal(this.player, this.name)
 
@@ -38,7 +38,7 @@ export default class VampiricRite extends Skill{
             this.player.newStatus(new VampiricRiteBuff(targets.length, this.player.combo_points >= 1 ? 6 : 3), this.player, true)
         }
        
-        this.player.figth_context.addEffect(new VampiricRiteEffect(this.player.figth_context), 18)
+        this.player.fight_context.addEffect(new VampiricRiteEffect(this.player.fight_context), 18)
     }
     use(){
         this.player.mana -= this.mana_cost

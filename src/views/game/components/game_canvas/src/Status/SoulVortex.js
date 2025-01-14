@@ -22,13 +22,13 @@ export default class SoulVortexStatus extends Status{
     }
     affect(target){
         this.target = target
-        this.sprite = new SoulVortexEffect(this.target.figth_context)
-        this.target.figth_context.addEffect(this.sprite, target.num)
+        this.sprite = new SoulVortexEffect(this.target.fight_context)
+        this.target.fight_context.addEffect(this.sprite, target.num)
     }
 
     expire(){
         this.target.energy_regeneration += this.total
-        this.target.figth_context.removeEffect(this.sprite)
+        this.target.fight_context.removeEffect(this.sprite)
         this.target.status.delete(this.name)
     }
 

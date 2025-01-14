@@ -15,6 +15,7 @@ export default class Character extends Unit{
     static STATE_WORLD_FALLEN = 20
     static CAST_FRAME = 7
     static ATTACK_FRAME = 6
+
     constructor(template) {
 
         super(undefined, 650, 850)
@@ -25,7 +26,6 @@ export default class Character extends Unit{
         this.inv = new Inventory(this)
         this.parseStats(template)
         this.log = useLogStore()
-        this.healingSources = []
         this.pretti_x = 6
         this.pretti_y = 6
         this.invisible = false
@@ -41,8 +41,11 @@ export default class Character extends Unit{
         this.box_size_x = 40
         this.box_size_y = 20
         this.box_size_z = 64
+
         this.action_count = 0
+
         this.action = new PlayerAttack(this)
+
         this.reduce_action_points = 0
         this.combo_points = 0
         this.init()
@@ -64,23 +67,25 @@ export default class Character extends Unit{
         this.skipTurn()
     }
     openInventory(){
-        if(this.figth_context) return
+        if(this.fight_context) return
 
         this.inv_is_open = !this.inv_is_open
      }
     retreat(){
         if(!this.turn) return
+
         this.fliped = true
         this.is_retreat = true
         this.skipTurn()
     }
-    successfulAttack(damage_amount){
+    successfulAttack(){
         if(this.life_leech){
             this.addLife(this.life_leech)
         }
         if(Math.random() <= this.gain_mana_when_hit_chance / 100){
             this.addMana(1)
         }
+
         this.whenAttackTriggers.forEach(elem => {
             elem.trigger(this)
         })
@@ -133,7 +138,7 @@ export default class Character extends Unit{
         Functions.createModal(this,'use ' + heal.name)
     }
 
-    getPhysicalDamage(enemy = false){
+    getPhysicalDamage(){
         return {
             physical_damage: this.physical_damage < 0 ? 0 : this.physical_damage,
             piercing_damage: this.piercing_damage,
@@ -153,7 +158,7 @@ export default class Character extends Unit{
 
     }
     rest(){
-        if(this.figth_context) return
+        if(this.fight_context) return
         if(!this.food) return 
 
         Functions.createInputModal('amount', this.playerRest.bind(this))
@@ -185,7 +190,7 @@ export default class Character extends Unit{
     }
     startTurn(){
         if(this.is_retreat){
-            this.figth_context.retreat()
+            this.fight_context.retreat()
             rerurn
         }
         if(this.was_defended){
@@ -206,12 +211,12 @@ export default class Character extends Unit{
         }
     }
     summon(summon){
-        this.figth_context.pushSummon(summon)
+        this.fight_context.pushSummon(summon)
     }
     async skipTurn(){
         this.turn = false
         await Functions.sleep(1000)
-        this.figth_context.next(this)
+        this.fight_context.next(this)
     }
     runBlockTriggers(){
         if(this.add_life_when_attack_block){
@@ -222,8 +227,8 @@ export default class Character extends Unit{
         })
     }
     createEnemy(e){
-        if(this.figth_context){
-            this.figth_context.createEnemy(e.target.value)
+        if(this.fight_context){
+            this.fight_context.createEnemy(e.target.value)
         }
     }
     async takeSpellDamage(enemy, damage){
@@ -310,208 +315,6 @@ export default class Character extends Unit{
         }
 
         await Functions.sleep(500)
-    }
-    async testFight(enemy, battle){
-
-            if(this.life <= 10){
-                this.useHeal(battle.turn_queue)
-            }
-            if(this.purge && enemy.status.size){
-                let [firstVal] = enemy.status.values()
-                firstVal.expire()
-                this.purge --
-            }
-
-            let is_range = this.figth_context.checkLine(enemy.num)
-            console.log(is_range)
-            let log = ''
-            let player_power = this.power
-            let enemy_power = enemy.power
-
-            let base_chance = 0.50
-
-            let total_player_physical_damage = this.calculatePhysicalDamage(enemy, is_range)
-            let total_enemy_physical_damage = enemy.calculatePhysicalDamage(this)
-
-            let player_magic_damage = this.calculateMagicDamage(enemy)
-            let enemy_magic_damage = enemy.calculateMagicDamage(this)
-
-            let is_player_physical_crit = this.isPhysicalCrit()
-            let is_player_magic_crit = this.isMagicCrit()
-
-            let is_enemy_block = enemy.isBlock()
-            let is_enemy_evade = enemy.isEvade(this)
-
-            if(is_enemy_block){
-                await Functions.createModal(enemy, 'block!')
-            }
-            else if(is_enemy_evade){
-                await Functions.createModal(enemy, 'evade!')
-            }
-            else {
-                if(is_player_physical_crit){
-                    await Functions.createModal(this, 'critical!')
-                    total_player_physical_damage *= 2
-                }
-                player_power += total_player_physical_damage
-            }
-
-            let is_enemy_spell_block = enemy.isSpellBlock()
-            let is_enemy_spell_suppress = enemy.isSuppress()
-
-            if(is_enemy_spell_suppress){
-                await Functions.createModal(enemy, 'spell absorb!')
-            }
-            else if(is_enemy_spell_block){
-                await Functions.createModal(enemy, 'spell block!')
-            }
-            else {
-                if(is_player_magic_crit){
-                    await Functions.createModal(this, 'magic critical!')
-                    player_magic_damage *= 2
-                }
-                player_power += player_magic_damage
-            }
-
-            if(Math.random() < this.mana_burn / 100 && enemy.mana > 0){
-                enemy.mana --
-                Functions.createModal(enemy, 'mana burned')
-            }
-
-            // -==========================enemy==============================-
-
-            if(enemy.caster){
-                enemy.cast(this, battle.turn_queue)
-                Functions.sleep(300)
-            }
-
-            let is_player_block = this.isBlock()
-            let is_player_evade = this.isEvade()
-            let is_enemy_physical_crit = enemy.isPhysicalCrit()
-            let is_enemy_magic_crit = enemy.isMagicCrit()
-
-            if(is_player_block && this.life >= total_enemy_physical_damage){
-                this.blockTriggers.forEach(elem => {
-                    elem.trigger(this)
-                })
-                if(this.state === Unit.STATE_IDLE){
-                    this.setBlock()
-                }
-                await Functions.createModal(this, 'block!')
-                this.reduceEnergy(2)
-            }
-            else if(is_player_evade){
-                await Functions.createModal(this, 'evade!')
-            }
-            else {
-                if(is_enemy_physical_crit){
-                    total_enemy_physical_damage *= 2
-                    await Functions.createModal(this, 'critical!')
-                }
-                enemy_power += total_enemy_physical_damage
-            }
-
-            let is_player_spell_block = this.isSpellBlock()
-            let is_player_spell_suppress = this.isSuppress()
-
-            if(enemy_magic_damage && is_player_spell_suppress && this.energy >= enemy_magic_damage){
-                await Functions.createModal(this, 'spell absorb!')
-                this.reduceEnergy(2)
-            }
-            else if(enemy_magic_damage && is_player_spell_block && this.mana >= enemy_magic_damage){
-                await Functions.createModal(this, 'spell block!')
-            }
-            else {
-                if(is_enemy_magic_crit){
-                    enemy_magic_damage *= 2
-                    await Functions.createModal(this, 'magic critical!')
-                }
-                enemy_power += enemy_magic_damage
-            }
-
-            let diff = Math.abs(player_power - enemy_power)
-            let sing = player_power > enemy_power
-
-            let chance_diff = 0
-
-            if(sing){
-                chance_diff = (0.04 * diff) / (1 + 0.04 * diff)
-                base_chance = base_chance * (1 + chance_diff)
-            }else {
-                chance_diff = (0.02 * diff) / (1 + 0.02 * diff)
-                base_chance = base_chance * (1 - chance_diff)
-            }
-
-            this.reduceEnergy(5)
-            let win = Math.random() < base_chance
-
-            if(win && !enemy.add_turn){
-                if(this.life_leech){
-                    this.addLife(Math.floor((player_magic_damage + player_magic_damage) * this.life_leech / 100))
-                }
-                let r = Math.random()
-                if(r > 0.5){
-                    this.setAttack()
-                }
-                else {
-                    this.setCast()
-                }
-                await Functions.sleep(1000)
-                let kill = enemy.takeDamage(this, battle)
-                if(kill){
-                    log += enemy.name + ' has been killed!'
-                }
-
-            }
-            else if(!this.add_turn){
-                await Functions.sleep(500)
-                if(enemy.damage){
-                    await Functions.createModal(enemy, 'attack!')
-                    await Functions.sleep(500)
-                    if(this.avoid / 100 >= Math.random()){
-                        Functions.createModal(this, 'damage was evaded')
-                    }
-                    else {
-                        this.life -= enemy.damage
-                        if(this.life <= 0){
-                            this.setDying()
-                            return
-                        }
-                        else{
-                            this.setDamage()
-                        }
-                    }
-                }
-            }
-            if(!enemy.isDead()){
-                enemy.afterTurn(this, battle)
-            }
-            if(log != ''){
-                this.log.addLog(log)
-            }
-
-
-        if(!enemy.add_turn && !this.add_turn && (!this.dead && !enemy.isDead())){
-            let speed_diff = Math.abs(this.speed - enemy.speed)
-            let add_turn_rating = (0.01 * speed_diff) / (15 + 0.01 * speed_diff)
-
-            if(Math.random() < add_turn_rating){
-                if(this.speed > enemy.speed){
-                    this.add_turn = true
-                    Functions.createModal(this, 'add turn')
-                    await Functions.sleep(1500)
-                }
-                else{
-                    enemy.add_turn = true
-                    Functions.createModal(enemy, 'add turn')
-                    await Functions.sleep(1000)
-                }
-                await this.testFight(enemy, battle)
-                this.add_turn = false
-                enemy.add_turn = false
-            }
-
-        }
     }
     getInfo(){
         let result = ``;
@@ -655,7 +458,7 @@ export default class Character extends Unit{
         if(this.sprite.isSpriteLoopEnd()){
             if(this.need_restore_sprite){
                 this.fliped = false
-                let cell = this.figth_context.getPlayerCell()
+                let cell = this.fight_context.getPlayerCell()
                 
                 this.point.x = cell.x + cell.width/2
                 this.point.y = cell.y + cell.height/2
@@ -706,7 +509,7 @@ export default class Character extends Unit{
         }
     }
     prepareToFight(fight){
-        this.figth_context = fight
+        this.fight_context = fight
         this.fliped = false
         this.setIdle()
         fight.player = this
@@ -862,7 +665,5 @@ export default class Character extends Unit{
                 }
             }
         }
-
-        
     }
 }

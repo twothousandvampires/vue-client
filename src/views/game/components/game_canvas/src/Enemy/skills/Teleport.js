@@ -7,7 +7,7 @@ export default class Teleport {
     }
 
     cast(){
-        let fight_context = this.owner.figth_context
+        let fight_context = this.owner.fight_context
         let player = fight_context.player
         let teleport_x = player.point.x < 650 ? Math.floor(Math.random() * (850 - 650) + 650) : Math.floor(Math.random() * (650 - 200) + 200)
         let teleport_y = player.point.y < 850 ? Math.floor(Math.random() * (1050 - 850) + 850) : Math.floor(Math.random() * (850 - 400) + 400)
@@ -26,7 +26,7 @@ export default class Teleport {
     }
 
     canCast(){
-        let fight_context = this.owner.figth_context
+        let fight_context = this.owner.fight_context
         let player = fight_context.player
         let distance = Functions.distance(this.owner, player)
         return distance <= 100 && !this.cd
