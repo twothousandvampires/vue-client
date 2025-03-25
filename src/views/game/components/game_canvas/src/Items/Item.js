@@ -64,6 +64,7 @@ export default class Item extends Cell{
         'nice mushroom': 'nice_mushroom.png',
         'royal snack': 'royal_snack.png',
         'scroll of Inferno': 'scroll.png',
+        'scroll of Raise Bones': 'scroll.png',
         'weightless chainmail': 'weightless_chainmail.png',
         'additional plates': 'additional_plates.png'
     }

@@ -113,9 +113,10 @@ export default {
     color:black;
   }
   #inv_wrap{
-    border: 3px solid #248f24;
+    border-radius: 20px;
+    border: 6px solid #293f21;
     padding: 4px;
-    background-color: #5cd65c;
+    background-color: #2a1e23;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);

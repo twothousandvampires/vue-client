@@ -11,6 +11,10 @@ export default class FireArrow extends Skill{
         this.ignite_chance = 50
     }
 
+    addMastery(){
+        this.player.combat_mastery_gained ++
+    }
+
     use(enemy = false){
         this.player.reduceEnergy(this.energy_cost)
         this.player.setAttack()

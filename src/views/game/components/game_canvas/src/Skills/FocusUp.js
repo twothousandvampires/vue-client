@@ -9,6 +9,10 @@ export default class FocusUp extends Skill{
         this.energy_cost = 10
         this.description = 'increases your speed by 200 per level for 3 turns'
     }
+
+    addMastery(){
+        this.player.movement_mastery_gained ++
+    }
     
     getEffect(){
         return this.level * 200

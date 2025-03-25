@@ -12,6 +12,10 @@ export default class ShieldThrow extends Skill{
         this.chain_count = 0
         this.hitted = []
     }
+    
+    addMastery(){
+        this.player.combat_mastery_gained ++
+    }
 
     use(enemy){
         this.target = enemy

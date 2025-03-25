@@ -17,7 +17,7 @@ export default class ScrollOfRaiseBones extends Used{
             await Functions.sleep(200)
         }
 
-        this.afterUser()
+        this.afterUse()
     }
 
     getDescription(){

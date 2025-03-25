@@ -76,7 +76,7 @@ export default class MagicSpark extends Skill{
         let result = ``
         result += `${this.name} (${this.level})\n`
         result += `${this.getMainDescription()} \n`
-        result += `mana cost - ${this.mana_cost} \n`
+        result += `${this.getCost()} \n`
         return result
     }
 

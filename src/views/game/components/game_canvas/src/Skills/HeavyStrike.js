@@ -17,6 +17,10 @@ export default class HeavyStrike extends Skill{
         this.target = enemy
     }
 
+    addMastery(){
+        this.player.combat_mastery_gained ++
+    }
+
     action(){
         let enemy = this.target
         let damage =  {

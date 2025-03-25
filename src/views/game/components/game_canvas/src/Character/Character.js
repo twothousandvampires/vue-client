@@ -48,6 +48,11 @@ export default class Character extends Unit{
 
         this.reduce_action_points = 0
         this.combo_points = 0
+
+        this.combat_mastery_gained = 0
+        this.sorcery_mastery_gained = 0
+        this.movement_mastery_gained = 0
+
         this.init()
     
     
@@ -108,6 +113,7 @@ export default class Character extends Unit{
     parsePassives(passives){
         this.passives = []
         this.available_passives = []
+
         passives.forEach(elem => {
             this.addPassive(elem)
         })
@@ -289,9 +295,11 @@ export default class Character extends Unit{
 
         if(is_evade){
             Functions.createModal(this, 'evade attack!')
+            this.movement_mastery_gained ++
             total_d = 0
         }
         else if(is_block && this.life >= total_d){
+            this.combat_mastery_gained ++
             Functions.createModal(this, 'block attack!')
             this.runBlockTriggers()
             this.setBlock()
@@ -351,10 +359,20 @@ export default class Character extends Unit{
     }
     parseSkills(skills){
         this.skill_pull = []
+        this.available_skills = []
+
         skills.forEach(elem => {
-            let skill = GemSkillFactory.create(elem, this)
-            this.skill_pull.push(skill)
+            this.addSkill(elem)
         })
+    }
+    addSkill(elem){
+        let skill = GemSkillFactory.create(elem, this)
+        if(skill.level){
+            this.skill_pull.push(skill)
+        }
+        else{
+            this.available_skills.push(skill)
+        }
     }
     init(){
         if(this.dead){
@@ -508,6 +526,15 @@ export default class Character extends Unit{
             item.selected = true
         }
     }
+    async upgradeStat(stat_name){
+        let responce = await requestService.serverRequest('upgrade_stat', {stat: stat_name})
+        if(responce.success){
+          this.parseStats(responce.data.char)
+        }
+        else{
+            alert(responce.message)
+        }
+    }
     prepareToFight(fight){
         this.fight_context = fight
         this.fliped = false
@@ -553,7 +580,17 @@ export default class Character extends Unit{
         this.resetState()
     }
     send(){
-        requestService.serverRequest('set', {life: this.life, mana: this.mana, dead: this.dead})
+        requestService.serverRequest('set', {life: this.life,
+             mana: this.mana,
+             dead: this.dead,
+             combat_mastery: this.combat_mastery_gained,
+             sorcery_mastery: this.sorcery_mastery_gained,
+             movement_mastery: this.movement_mastery_gained
+        })
+
+        this.combat_mastery_gained = 0
+        this.sorcery_mastery_gained = 0
+        this.movement_mastery_gained = 0
     }
     setDying(){
         this.dead = 1
@@ -634,6 +671,11 @@ export default class Character extends Unit{
         }
 
         this.action.use(this.cursored_target)
+        
+        if(this.action.addMastery){
+            this.action.addMastery()
+        }
+        
 
         if(!this.action.have_action){
             this.decreaseActionCount()

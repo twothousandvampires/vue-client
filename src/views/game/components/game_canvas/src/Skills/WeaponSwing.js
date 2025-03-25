@@ -43,6 +43,10 @@ export default class WeaponSwing extends Skill{
         return enemy && !enemy.isDead() && fight_context.checkLine(enemy.num);
     }
 
+    addMastery(){
+        this.player.combat_mastery_gained ++
+    }
+
     getMainDescription(){
 
         let result = `target gets attack damage plus 2 cutting damage per level target's below and upper get half damage`

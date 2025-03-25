@@ -9,6 +9,13 @@ export default class Skill {
         this.can_create_combo = true
         this.decrease_action_point = true
         this.have_action = true
+        this.exp_cost = template.exp_cost
+        this.mastery_cost =template.mastery_cost
+        this.mastery = template.mastery
+    }
+
+    addMastery(){
+        this.player.sorcery_mastery_gained ++
     }
 
     getImagePath(){
@@ -28,6 +35,14 @@ export default class Skill {
         }
         if(this.life_cost){
             result += `life cost - ${this.life_cost} \n`
+        }
+
+        if(this.exp_cost){
+            result += `exp cost - ${this.exp_cost} \n`
+        }
+
+        if(this.mastery_cost){
+            result += `${this.mastery} : ${this.mastery_cost}\n`
         }
         
         return result

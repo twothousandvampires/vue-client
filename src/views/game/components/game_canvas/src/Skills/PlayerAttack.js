@@ -26,4 +26,8 @@ export default class PlayerAttack{
             this.decrease_action_point = false
         }
     }
+
+    addMastery(){
+        this.player.combat_mastery_gained ++
+    }
 }

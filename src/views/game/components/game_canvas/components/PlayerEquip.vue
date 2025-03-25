@@ -63,40 +63,40 @@ export default {
 
         <div class="equip_cell">
           <div v-if="!char.inv.is_combat_row">
-            <img width="60" height="60" src="/src/assets/img/no_battle_line.png" alt="">
+            <img style="cursor: default !important;" width="60" height="60" src="/src/assets/img/no_battle_line.png" alt="">
           </div>
           <div v-else>
-            <img title="all items in this row have 20% more effect" width="60" height="60" src="/src/assets/img/battle_line.gif" alt="">
+            <img style="cursor: help !important;" title="all items in this row have 20% more effect" width="60" height="60" src="/src/assets/img/battle_line.gif" alt="">
           </div>
         </div>
 
-        <div v-for="item in char.inv.pull.slice(0,3)" class="equip_cell" @click="$emit('clickItem', item)" v-bind:class="{ clicked: item?.clicked}">
+        <div v-for="item in char.inv.pull.slice(0,3)" class="equip_cell" @click="$emit('clickItem', item)" v-bind:class="{ clicked: item?.clicked, pointer: item.name}">
           <img @mouseleave="$emit('mouseleave')" @mouseenter="$emit('mouseenter',$event, item)" :src="item.getImagePath()" alt="">
         </div>
 
         <div class="equip_cell">
           <div v-if="!char.inv.is_sorcery_row">
-            <img width="60" height="60" src="/src/assets/img/no_sorcery_line.png" alt="">
+            <img style="cursor: default !important;" width="60" height="60" src="/src/assets/img/no_sorcery_line.png" alt="">
           </div>
           <div v-else>
-            <img title="all items in this row have 20% more effect" width="60" height="60" src="/src/assets/img/sorcery_line.gif" alt="">
+            <img style="cursor: help !important;" title="all items in this row have 20% more effect" width="60" height="60" src="/src/assets/img/sorcery_line.gif" alt="">
           </div>
         </div>
 
-        <div v-for="item in char.inv.pull.slice(3,6)" class="equip_cell" @click="$emit('clickItem', item)" v-bind:class="{ clicked: item?.clicked}">
+        <div v-for="item in char.inv.pull.slice(3,6)" class="equip_cell" @click="$emit('clickItem', item)" v-bind:class="{ clicked: item?.clicked, pointer: item.name}">
           <img @mouseleave="$emit('mouseleave')" @mouseenter="$emit('mouseenter',$event, item)" :src="item.getImagePath()" alt="">
         </div>
 
         <div class="equip_cell">
           <div v-if="!char.inv.is_movement_row">
-            <img width="60" height="60" src="/src/assets/img/no_movement_line.png" alt="">
+            <img style="cursor: default !important;" width="60" height="60" src="/src/assets/img/no_movement_line.png" alt="">
           </div>
           <div v-else>
-            <img title="all items in this row have 20% more effect" width="60" height="60" src="/src/assets/img/movement_line.gif" alt="">
+            <img style="cursor: help !important;" title="all items in this row have 20% more effect" width="60" height="60" src="/src/assets/img/movement_line.gif" alt="">
           </div>
         </div>
 
-        <div v-for="item in char.inv.pull.slice(6,9)" class="equip_cell" @click="$emit('clickItem', item)" v-bind:class="{ clicked: item?.clicked}">
+        <div v-for="item in char.inv.pull.slice(6,9)" class="equip_cell" @click="$emit('clickItem', item)" v-bind:class="{ clicked: item?.clicked, pointer: item.name}">
           <img @mouseleave="$emit('mouseleave')" @mouseenter="$emit('mouseenter',$event, item)" :src="item.getImagePath()" alt="">
         </div>
       </div>
@@ -125,6 +125,7 @@ export default {
     justify-content: space-around;
   }
   .equip_cell{
+    
     min-height: 60px;
     min-width: 60px;
     display: flex;
@@ -133,6 +134,10 @@ export default {
     justify-content: center;
   }
   .clicked{
-
+    transform: scale(0.7,0.7);
+    z-index: 6666666;
+  }
+  .pointer{
+    cursor: pointer;
   }
 </style>

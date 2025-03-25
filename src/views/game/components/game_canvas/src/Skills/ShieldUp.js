@@ -45,8 +45,12 @@ export default class ShieldUp extends Skill{
         let result = ``
         result += `${this.name} (${this.level})\n`
         result += `${this.getMainDescription()} \n`
-        result += `energy cost - ${this.getEnergyCost()} \n`
+        result += `${this.getCost()} \n`
         return result
+    }
+    
+    addMastery(){
+        this.player.combat_mastery_gained ++
     }
 
     canUse(enemy) {

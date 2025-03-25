@@ -9,6 +9,10 @@ export default class BackStab extends Skill{
         this.mana_cost = 1
     }
 
+    addMastery(){
+        this.player.movement_mastery_gained ++
+    }
+
     use(enemy = false){
         this.target = enemy
         this.player.reduceEnergy(this.getEnergyCost())
