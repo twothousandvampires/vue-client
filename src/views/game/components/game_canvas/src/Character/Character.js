@@ -80,10 +80,17 @@ export default class Character extends Unit{
     }
 
     async changeStance(){
+        if(!this.turn) return
+        
         let result = await requestService.serverRequest('change_stance')
 
         this.parseStats(result.data.character)
         this.setDefaultAttack()
+
+        this.action_count -= 1
+        if(this.action_count <= 0){
+            this.skipTurn()
+        }
     }
 
     retreat(){
@@ -423,12 +430,6 @@ export default class Character extends Unit{
         else{
             this.action = new PlayerMagicAttack(this)
         }
-
-        this.action_count -= 1
-    
-        if(!this.action_count){
-            this.skipTurn()
-        }
     }
 
     setCast() {
@@ -455,6 +456,7 @@ export default class Character extends Unit{
 
             this.decreaseActionCount()
         }
+        
         if (this.sprite.isSpriteLoopEnd()) {
             this.setIdle()
         }
