@@ -14,6 +14,10 @@ export default {
       config
     }
   },
+  unmounted(){
+    this.closePassive()
+    this.closeSkill()
+  },
   methods:{
     async learn(id){
       let res = await requestService.serverRequest('learn_passive', { passive_id: id })
