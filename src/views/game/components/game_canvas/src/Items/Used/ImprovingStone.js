@@ -32,7 +32,6 @@ export default class ImprovingStone extends Used{
         let res = await requestService.serverRequest('upgrade_skill', { used_id: this.id, skill_id: option_id })
         if(res.success){
             this.player.parseStats(res.data.char)
-            this.player.inv.deleteItem(this)
         }
         else{
             alert(res.message)
