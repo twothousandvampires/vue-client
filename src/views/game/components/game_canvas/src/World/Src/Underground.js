@@ -5,6 +5,7 @@ import NodeFactory from "../../Scr/factories/NodeFactory";
 import {useLogStore} from "@/stores/log";
 import FlyingBat from "@/views/game/components/game_canvas/src/World/Effect/FlyingBat";
 import WildLight from "@/views/game/components/game_canvas/src/World/Effect/WildLight";
+import requestService from '../../../../../services/requestService';
 
 export default class Underground extends World{
    constructor(game, world_data) {
@@ -124,7 +125,7 @@ export default class Underground extends World{
         }
         return true
     }
-    checkInput(){
+    async checkInput(){
         let input = Input.getInput()
         if(this.player.map_cursored_elem && input.l_click && !this.delay){
             let node = this.player.map_cursored_elem
@@ -134,7 +135,6 @@ export default class Underground extends World{
                     let distance = Math.abs(node.pretti_x - this.char.pretti_x)
                     let line_check = this.checkHorizontalLine(this.char, node_to_go)
                     if(line_check){
-                        this.delay = true
                         this.char.fliped = node.x - this.char.x < 0
                         this.worldMove(node_to_go, 0, this.char.fliped ? -distance : distance)
                     }
@@ -147,7 +147,6 @@ export default class Underground extends World{
                     let distance = Math.abs(node.pretti_y - this.char.pretti_y)
                     let line_check = this.checkVerticalLine(this.char, node_to_go)
                     if(line_check){
-                        this.delay = true
                         this.char.fliped = node.y - this.char.y < 0
                         this.worldMove(node_to_go, this.char.fliped ? -distance : distance, 0)
                     }
@@ -155,7 +154,9 @@ export default class Underground extends World{
                 return;
             }
             else if(node.visited === 1){
-                this.game.updateWorldData(node, this.char.id)
+                this.delay = true
+                let result = await requestService.serverRequest('move', {x: node.x, y: node.y})
+                this.game.updateWorldData(result, this.char.id)
                 this.delay = false
             }
         }
@@ -170,14 +171,18 @@ export default class Underground extends World{
                 this.char.fliped = x < 0
                 let node_to_go = this.map[this.char.pretti_y + y][this.char.pretti_x + x]
                 if(node_to_go){
-                    this.delay = true
                     this.worldMove(node_to_go, y, x)
                 }
             }
         }
     }
 
-    worldMove(node, y, x){
+    async worldMove(node, y, x){
+        let result = await requestService.serverRequest('move', {x: node.x, y: node.y})
+        console.log(result)
+        if(!result.success) return
+        
+        this.delay = true
         this.char.setWorldMove()
         let add = y ? y/20 : x/20
         let tick = 0
@@ -191,7 +196,7 @@ export default class Underground extends World{
             if(tick === 20){
                 this.char.setWorldIdle()
                 clearInterval(move);
-                this.game.updateWorldData(node, this.char.id)
+                this.game.updateWorldData(result, this.char.id)
                 this.delay = false
             }
         },50)

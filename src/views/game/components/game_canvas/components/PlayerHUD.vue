@@ -36,6 +36,7 @@ export default {
         </div>
       </div>
       <div v-if="char.fight_context" style="display: flex;flex-direction: column;align-items: center;text-align: center">
+        <img :title="'change stance(' + char.stance + ')'" width="60" height="60" src="/src/assets/img/crystal_chain.png" style="cursor: pointer" @click="char.changeStance()">
         <img title="retreat" width="60" height="60" src="/src/assets/img/movement_line.gif" style="cursor: pointer" @click="char.retreat()">
         <img title="defend" width="60" height="60" src="/src/assets/img/shield_up_skill.png" style="cursor: pointer" @click="char.defend()">
         <img width="60" height="60" src="/src/assets/img/equipment_parts.png" style="cursor: pointer" title="skip turn(space)" @click="char.skipTurn()">

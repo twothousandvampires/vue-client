@@ -58,9 +58,8 @@ export default class Game{
        })
     }
 
-    async updateWorldData(node){
-        let res = await requestService.serverRequest('move', {x: node.x, y: node.y})
-
+    async updateWorldData(res){
+    
         if(res.data.fight){
             this.scene = new Battle(res.data.node, this)
             this.scene.start()

@@ -20,6 +20,7 @@ export default class Node{
         this.mist_timer = 0
         this.mist_frame = 0
         this.effect = null
+        this.travelled = template.travelled
     }
 
     setMist(map){

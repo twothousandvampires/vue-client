@@ -53,7 +53,7 @@ export default class NodeFactory{
         if(node.visited){
             if(node.x === 0 && node.y === 0){
                 node.effect = new Enter(node)
-                console.log(node)
+    
             }
             else{
                 node.content_sprite = new Torch()

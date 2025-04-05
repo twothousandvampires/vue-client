@@ -8,6 +8,7 @@ import GemSkillFactory from "@/views/game/components/game_canvas/src/Scr/factori
 import requestService from "@/views/game/services/requestService";
 import Input from "@/views/game/components/game_canvas/src/Singltons/Input";
 import PlayerAttack from "@/views/game/components/game_canvas/src/Skills/PlayerAttack";
+import PlayerMagicAttack from "../Skills/PlayerMagicAttack";
 
 export default class Character extends Unit{
 
@@ -44,7 +45,7 @@ export default class Character extends Unit{
 
         this.action_count = 0
 
-        this.action = new PlayerAttack(this)
+        this.setDefaultAttack()
 
         this.reduce_action_points = 0
         this.combo_points = 0
@@ -71,11 +72,20 @@ export default class Character extends Unit{
         this.addDefendStats()
         this.skipTurn()
     }
+
     openInventory(){
         if(this.fight_context) return
 
         this.inv_is_open = !this.inv_is_open
-     }
+    }
+
+    async changeStance(){
+        let result = await requestService.serverRequest('change_stance')
+
+        this.parseStats(result.data.character)
+        this.setDefaultAttack()
+    }
+
     retreat(){
         if(!this.turn) return
 
@@ -406,6 +416,21 @@ export default class Character extends Unit{
         }
     }
 
+    setDefaultAttack(){
+        if(this.stance === 'combat'){
+            this.action = new PlayerAttack(this)
+        }
+        else{
+            this.action = new PlayerMagicAttack(this)
+        }
+
+        this.action_count -= 1
+    
+        if(!this.action_count){
+            this.skipTurn()
+        }
+    }
+
     setCast() {
         this.state = Unit.STATE_CAST
         this.resetState()
@@ -518,7 +543,7 @@ export default class Character extends Unit{
     selectToUse(item){
         this.unselectAll()
         if(item.selected){
-            this.action = new PlayerAttack(this)
+            this.setDefaultAttack()
             item.selected = false
         }
         else {
@@ -649,7 +674,7 @@ export default class Character extends Unit{
             this.action_count -= 1
         }
 
-        this.action = new PlayerAttack(this)
+        this.setDefaultAttack()
         this.unselectAll()
 
         if(!this.action_count){
@@ -659,13 +684,13 @@ export default class Character extends Unit{
     doAction(){
         if(this.action.mana_cost && !this.enoughMana(this.action.mana_cost)){
             Functions.createModal(this, 'not enough mana for ' + this.action.name)
-            this.action = new PlayerAttack(this)
+            this.setDefaultAttack()
             this.unselectAll()
             return
         }
         if(this.action.energy_cost && !this.enoughEnergy(this.action.energy_cost)){
             Functions.createModal(this, 'not enough energy for ' + this.action.name)
-            this.action = new PlayerAttack(this)
+            this.setDefaultAttack()
             this.unselectAll()
             return;
         }
