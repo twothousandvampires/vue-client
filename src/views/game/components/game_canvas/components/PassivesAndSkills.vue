@@ -19,7 +19,9 @@ export default {
       let res = await requestService.serverRequest('learn_passive', { passive_id: id })
       this.char.parseStats(res.data.char)
       this.show = false
+      this.show_skill = false
       this.closePassive()
+      this.closeSkill()
     },
     async learnSkill(skill_id){
       if(this.learning_id) return
@@ -30,7 +32,9 @@ export default {
       if(res.success){
         this.char.parseStats(res.data.char)
         this.show_skill = false
+        this.show = false
         this.closePassive()
+        this.closeSkill()
       }
       else {
         alert(res.message)
@@ -77,7 +81,8 @@ export default {
     },
     closeSkill(){
       let w =  document.getElementById('inspect_skill_wrap')
-      document.getElementById('app').removeChild(w)
+      if(W)  document.getElementById('app').removeChild(w)
+     
     },
     async unlock(){
       this.show_skill = false
@@ -120,10 +125,10 @@ export default {
 </script>
 <template>
   <div id="wrap">
-    <div style="z-index: 2222222;width: 350px; display: flex;flex-direction: row; align-items: center; justify-content: space-between; border 3px solid" v-if="this.show" id="available_passives">
+    <div style="z-index: 2222222;width: 350px; display: flex;flex-direction: row; align-items: center; justify-content: space-between; border: 3px solid" v-if="this.show" id="available_passives">
         <img @click="learn(passive.id)" v-for="passive in this.char.available_passives" @mouseleave="closePassive" @mouseenter="showPassive($event, passive)" width="80" height="80" :src="config.img_url + passive.img" alt="">
     </div>
-    <div style="z-index: 2222222;width: 350px; display: flex;flex-direction: row; align-items: center; justify-content: space-between; border 3px solid" v-if="this.show_skill" id="available_passives">
+    <div style="z-index: 2222222; width: 350px; display: flex;flex-direction: row; align-items: center; justify-content: space-between; border: 3px solid" v-if="this.show_skill" id="available_passives">
        <img @click="learnSkill(skill.id)" @mouseleave="closeSkill" v-for="skill in this.char.available_skills" @mouseenter="showSkill($event, skill)" width="60" height="60" :src="config.img_url + skill.img" alt="">
     </div>
     <div>
