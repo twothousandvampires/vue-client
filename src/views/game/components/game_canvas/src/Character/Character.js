@@ -177,7 +177,7 @@ export default class Character extends Unit{
             crushing_damage: this.crushing_damage
         }
         if(this.stance === 'combat'){
-            result.physical_damage += combat_stance_value
+            result.physical_damage += this.combat_stance_value
         }
         return result
     }
@@ -189,7 +189,7 @@ export default class Character extends Unit{
             cold_damage: this.cold_damage
         }
         if(this.stance === 'sorcery'){
-            result.magic_damage += sorcery_stance_value
+            result.magic_damage += this.sorcery_stance_value
         }
         return result
     }
