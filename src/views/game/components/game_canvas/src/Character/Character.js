@@ -79,6 +79,12 @@ export default class Character extends Unit{
         this.inv_is_open = !this.inv_is_open
     }
 
+    async god(){
+        let result = await requestService.serverRequest('god')
+
+        this.parseStats(result.data.character)
+    }
+
     async changeStance(){
         if(!this.turn) return
         
@@ -87,10 +93,12 @@ export default class Character extends Unit{
         this.parseStats(result.data.character)
         this.setDefaultAttack()
 
-        this.action_count -= 1
-        if(this.action_count <= 0){
-            this.skipTurn()
-        }
+        if(this.chance_not_lose_ap_when_change_stance <= Math.random() * 100){
+            this.action_count -= 1
+            if(this.action_count <= 0){
+                this.skipTurn()
+            }
+        } 
     }
 
     retreat(){
@@ -162,20 +170,28 @@ export default class Character extends Unit{
     }
 
     getPhysicalDamage(){
-        return {
+        let result = {
             physical_damage: this.physical_damage < 0 ? 0 : this.physical_damage,
             piercing_damage: this.piercing_damage,
             cutting_damage: this.cutting_damage,
             crushing_damage: this.crushing_damage
         }
+        if(this.stance === 'combat'){
+            result.physical_damage += combat_stance_value
+        }
+        return result
     }
     getMagicDamage(){
-        return {
+        let result = {
             magic_damage: this.magic_damage < 0 ? 0 : this.magic_damage,
             fire_damage: this.fire_damage,
             lightning_damage: this.lightning_damage,
             cold_damage: this.cold_damage
         }
+        if(this.stance === 'sorcery'){
+            result.magic_damage += sorcery_stance_value
+        }
+        return result
     }
     removeNegativeStatus(count){
 
@@ -219,7 +235,14 @@ export default class Character extends Unit{
         if(this.was_defended){
             this.removeDefendStats()
         }
-        this.combo_points = 0
+
+        if(this.combo_points > 0 && this.chance_not_lose_cp_when_turn_end >= Math.random() * 100){
+            this.combo_points = 1
+        }
+        else{
+            this.combo_points = 0
+        }
+    
         this.updateStatusNewTurn()
     
         if(this.frozen){
@@ -449,7 +472,7 @@ export default class Character extends Unit{
                     Functions.createModal(this, 'combo point!', '20', 'yellow')
                     this.combo_points ++
                 }
-                else if(this.combo_points){
+                else if(this.combo_points && this.chance_not_lose_cp_when_max <= Math.random() * 100){
                     this.combo_points = 0
                 }   
             }
@@ -494,7 +517,7 @@ export default class Character extends Unit{
                     Functions.createModal(this, 'combo point!', '20', 'yellow')
                     this.combo_points ++
                 }
-                else if(this.combo_points){
+                else if(this.combo_points && this.chance_not_lose_cp_when_max <= Math.random() * 100){
                     this.combo_points = 0
                 }   
             }

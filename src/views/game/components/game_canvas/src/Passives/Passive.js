@@ -21,6 +21,8 @@ export default class Passive{
         'increased potion effect' : 'increased_potion_effect_passive.png',
         'splitting' : 'splitting.png',
         'synthesis' : 'synthesis.png',
+        'versality combatant' : 'versality_combatant.png',
+        'concentration' : 'intuition_passive.png',
     }
     constructor(template, player) {
         this.id = template.id

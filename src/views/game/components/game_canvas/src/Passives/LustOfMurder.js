@@ -16,7 +16,8 @@ export default class LustOfMurder extends Passive{
         result += `${this.name} \n`
         result += `level ${this.level} \n`
         result += `gives a chance ${this.level * 5}% to get a 1 additional physical damage when your hit enemy with attack \n`
-
+        result += `exp needed to upgrade: ${this.level * this.exp_cost}`
+        
         return result
     }
 

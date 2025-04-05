@@ -15,7 +15,7 @@ export default {
     <div>
       <img @click="char_info_expanded = !char_info_expanded" title="click to expand" style="width: 100%; cursor: pointer;" src="/src/assets/img/stats_character_top.gif" alt="">
       <div id="char_stats">
-        <p style="font-size: 24px">Character {{player.name}}</p>
+        <p @click="player.god()" style="font-size: 24px">Character {{player.name}}</p>
         
         <p>sorcery mastery points: {{player.sorcery_mastery}}</p>
         <p>movement mastery points: {{player.movement_mastery}}</p>
