@@ -81,7 +81,7 @@ export default {
     },
     closeSkill(){
       let w =  document.getElementById('inspect_skill_wrap')
-      if(W)  document.getElementById('app').removeChild(w)
+      if(w)  document.getElementById('app').removeChild(w)
      
     },
     async unlock(){
