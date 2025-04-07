@@ -21,7 +21,7 @@ export default class ScrollOfInferno extends Used{
             this.player.fight_context.addEffect(new FlameWave( this.player.fight_context), elem.num)
         })
 
-        this.afterUser()
+        this.afterUse()
     }
 
     getDescription(){

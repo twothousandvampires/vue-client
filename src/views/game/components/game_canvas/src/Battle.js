@@ -353,10 +353,6 @@ export default class Battle extends Fight{
     }
     
     frame(){
-        if( Functions.every(4, this.tick)){
-            this.player.send()
-        }
-
         this.player.act()
 
         this.enemy_pull.forEach(elem => {

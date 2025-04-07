@@ -86,7 +86,7 @@ export default class Character extends Unit{
     }
 
     async changeStance(){
-        if(!this.turn) return
+        if(!this.turn && this.in_action) return
         
         let result = await requestService.serverRequest('change_stance')
 
@@ -315,6 +315,7 @@ export default class Character extends Unit{
             }
         }
 
+        this.send()
     }
 
     async takeDamage(enemy){
@@ -361,7 +362,7 @@ export default class Character extends Unit{
                 elem.trigger(enemy)
             })
         }
-
+        this.send()
         await Functions.sleep(500)
     }
     getInfo(){
@@ -630,7 +631,7 @@ export default class Character extends Unit{
         this.resetState()
     }
     send(){
-        requestService.serverRequest('set', {life: this.life,
+        let result = requestService.serverRequest('set', {life: this.life,
              mana: this.mana,
              dead: this.dead,
              combat_mastery: this.combat_mastery_gained,
@@ -641,6 +642,8 @@ export default class Character extends Unit{
         this.combat_mastery_gained = 0
         this.sorcery_mastery_gained = 0
         this.movement_mastery_gained = 0
+
+        return result
     }
     setDying(){
         this.dead = 1
@@ -706,7 +709,9 @@ export default class Character extends Unit{
             this.skipTurn()
         }
     }
-    doAction(){
+    async doAction(){
+        this.in_action = true
+
         if(this.action.mana_cost && !this.enoughMana(this.action.mana_cost)){
             Functions.createModal(this, 'not enough mana for ' + this.action.name)
             this.setDefaultAttack()
@@ -720,16 +725,19 @@ export default class Character extends Unit{
             return;
         }
 
-        this.action.use(this.cursored_target)
+        await this.action.use(this.cursored_target)
         
         if(this.action.addMastery){
             this.action.addMastery()
         }
         
-
         if(!this.action.have_action){
             this.decreaseActionCount()
         }
+
+        await this.send()
+
+        this.in_action = false
     }
     removeFreeze(){
         this.frozen = false
